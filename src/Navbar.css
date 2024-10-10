@@ -8,11 +8,6 @@
     align-items: center;
 }
 
-.navbar-logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
 .navbar-links {
     gap: 1rem;
     list-style: none;
@@ -44,6 +39,26 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.navbarTop {
+    background-color: white;
+    height: 73px;
+    display: flex;
+    padding: 0 20px;
+    justify-content: space-around;
+}
+
+.navbarTop-links{
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+.navbar-logo {
+    height: 25px;
+    width: auto;
+    display: flex;
+    align-self: center;
 }
 
 
