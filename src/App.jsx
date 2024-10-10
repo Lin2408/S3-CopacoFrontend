@@ -13,6 +13,7 @@ function App() {
 
   return (
     <AuthProviderWithHistory>
+
       <div className="card">
         <LoginButton/> <LogoutButton/>
       </div>
