@@ -1,0 +1,64 @@
+.navbar {
+    display: flex;
+    background-color: #003f74;
+    /*padding: 1rem 2rem;*/
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    height: 51px;
+    align-items: center;
+}
+
+.navbar-links {
+    gap: 1rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+.navbar-links a {
+    text-decoration: none;
+    font-size: 20px;
+    color: #ffffff;
+    height: 51px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.navbar-auth {
+    display: flex;
+    gap: 1rem;
+}
+.navbar-links a:hover {
+    background-color: #ffffff;
+    color: #003f74;
+}
+.login-button,
+.register-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.navbarTop {
+    background-color: white;
+    height: 73px;
+    display: flex;
+    padding: 0 20px;
+    justify-content: space-around;
+}
+
+.navbarTop-links{
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+.navbar-logo {
+    height: 25px;
+    width: auto;
+    display: flex;
+    align-self: center;
+}
+
+
