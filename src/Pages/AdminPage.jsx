@@ -1,4 +1,4 @@
-import './AdminPage.css';
+import { Box, Button, TextField, MenuItem, Grid } from '@mui/material';
 
 const AdminPage = () => {
     const handleSubmit = (event) => {
@@ -6,37 +6,63 @@ const AdminPage = () => {
     };
 
     return (
-        <form className="form-container" onSubmit={handleSubmit}>
-            <div className="form-row">
-                <div className="form-column">
-                    <label htmlFor="ruleName">Rule Name</label>
-                    <input type="text" id="ruleName" placeholder="Enter rule name" required />
-                </div>
-                <div className="form-column">
-                    <label htmlFor="ruleCondition">Rule Condition</label>
-                    <select id="ruleCondition" required>
-                        <option value="">Select condition</option>
+        <Box component="form" onSubmit={handleSubmit} sx={{ p: 2 }}>
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        fullWidth
+                        label="Rule Name"
+                        id="ruleName"
+                        placeholder="Enter rule name"
+                        required
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        fullWidth
+                        select
+                        label="Rule Condition"
+                        id="ruleCondition"
+                        required
+                    >
+                        <MenuItem value="">
+                            <em>Select condition</em>
+                        </MenuItem>
                         {/* Add options here */}
-                    </select>
-                </div>
-            </div>
-
-            <div className="form-row">
-                <div className="form-column">
-                    <label htmlFor="discountPercentage">Discount Percentage</label>
-                    <input type="number" id="discountPercentage" placeholder="Enter percentage" min="0" required />
-                </div>
-                <div className="form-column">
-                    <label htmlFor="discountValue">Discount Value</label>
-                    <input type="number" id="discountValue" placeholder="Enter value" min="0" required />
-                </div>
-            </div>
-
-            <div className="button-row">
-                <button type="submit" className="create-btn">Create item</button>
-                <button type="button" className="import-btn">Import</button>
-            </div>
-        </form>
+                    </TextField>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        fullWidth
+                        type="number"
+                        label="Discount Percentage"
+                        id="discountPercentage"
+                        placeholder="Enter percentage"
+                        inputProps={{ min: 0 }}
+                        required
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        fullWidth
+                        type="number"
+                        label="Discount Value"
+                        id="discountValue"
+                        placeholder="Enter value"
+                        inputProps={{ min: 0 }}
+                        required
+                    />
+                </Grid>
+            </Grid>
+            <Box mt={2} display="flex" justifyContent="space-between">
+                <Button type="submit" variant="contained" color="primary">
+                    Create item
+                </Button>
+                <Button type="button" variant="outlined">
+                    Import
+                </Button>
+            </Box>
+        </Box>
     );
 };
 
