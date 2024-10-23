@@ -1,11 +1,37 @@
+import {NavLink} from "react-router-dom";
+import { Fragment } from 'react';
 
-function Item({ name, type, price })  {
+function Item({ name, details, price })  {
+
     return (
-        <div className="computer-part">
-            <h3>{name}</h3>
-            <p>Type: {type}</p>
-            <p>Price: ${price}</p>
+
+        <div className="item">
+            <img
+                src="https://www.copaco.com/Copaco/static/WFS/copaco-Nederland-Site/-/copaco/nl_NL/L/93093667_2865543118.jpg"
+                alt="placeholder"/>
+            <div className="item-content">
+                <div className="item-top">
+                     <NavLink to="/Item"><h3>{name}</h3></NavLink>
+                    <div className="item-buttonprice">
+                        <span className="item-price">${price}</span>
+                        <button >Add</button>
+                    </div>
+                </div>
+                {/*<p className="item-code">{code}</p>*/}
+
+                <p className="item-details">
+                    {details.map((detail, index) => (
+                        <Fragment key={index}>
+                            <span  className="details"><span
+                                className="detail-title">{detail.title}</span> {detail.description}</span>
+                                {index < details.length - 1 && <span className="item-divider">|</span>}
+                        </Fragment>
+                    ))}
+                </p>
+
+            </div>
         </div>
+
     );
 };
 

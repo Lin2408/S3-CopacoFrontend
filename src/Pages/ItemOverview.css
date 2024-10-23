@@ -1,0 +1,118 @@
+.item-overview {
+    margin: 0px auto;
+    width: 70%;
+
+}
+
+.item{
+    display: flex;
+    justify-content: flex-start;
+    margin: 10px 0px;
+}
+.item-top{
+    display: flex;
+    flex-direction: row ;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.item img{
+    width: 50px;
+    height: 50px;
+    padding:0px 20px;
+    margin: auto;
+}
+.item-details{
+    color: grey;
+    font-size: 14px;
+    font-weight: 450;
+    margin: 0px;
+}
+.item-content{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+.item-content h3{
+    color: black;
+    font-size: 17px;
+    margin: 0px;
+}
+.item-code{
+    color: grey;
+    font-size: 12px;
+    align-self: flex-start;
+    margin: 0px;
+    font-style: italic;
+}
+
+.item-price{
+    margin: 0px 10px;
+    font-size: 15px;
+}
+
+.item-divider{
+    padding: 0px 10px;
+}
+.detail-title{
+    font-weight: bold;
+}
+
+/*filter styles*/
+
+.filter-bar .css-1808mag-MuiPaper-root-MuiAccordion-root::before{
+    background-color: rgba(0, 0, 0, 0);
+}
+.filter-bar h3{
+    color: #5c5c5c;
+    font-size: 16px;
+}
+
+
+.filter-searchbar{
+    display: flex;
+    margin: 20px 0px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.filter{
+    margin-bottom: 20px;
+}
+.filter-top{
+    width: 100%;
+    border-bottom: #c8c8c8 1px solid;
+}
+.filter-top h3{
+    margin: 0px;
+}
+
+.filter-top:hover {
+    color: #003f63;
+    cursor: pointer;
+}
+
+.filter-content{
+    color: grey;
+
+}
+.filter-title:hover .MuiSvgIcon-root {
+    color: #003f63;
+}
+.filter-content .MuiCheckbox-root.Mui-checked  {
+    color: grey;
+}
+.filter-content .MuiCheckbox-root.Mui-checked  {
+    color: #003f63;
+}
+.filter-title{
+    padding: 0px !important;
+    margin: 0px!important;
+}
+
+
+@media (max-width: 1300px){
+    .item-list{
+        width: 95%;
+    }
+}
