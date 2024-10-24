@@ -7,7 +7,7 @@
 .item{
     display: flex;
     justify-content: flex-start;
-    margin: 10px 0px;
+    margin-top: 10px;
 }
 .item-top{
     display: flex;
@@ -19,9 +19,10 @@
 .item img{
     width: 50px;
     height: 50px;
-    padding:0px 20px;
-    margin: auto;
+    padding: 0px 10px;
+    margin-top: 5px;
 }
+
 .item-details{
     color: grey;
     font-size: 14px;
@@ -65,7 +66,7 @@
     background-color: rgba(0, 0, 0, 0);
 }
 .filter-bar h3{
-    color: #5c5c5c;
+    color: grey;
     font-size: 16px;
 }
 
@@ -87,23 +88,20 @@
     margin: 0px;
 }
 
-.filter-top:hover {
-    color: #003f63;
-    cursor: pointer;
-}
-
 .filter-content{
     color: grey;
+}
+.filter-top:hover h3,
+.filter-title:hover .MuiSvgIcon-root{
+    color: #003f63;
+}
 
-}
-.filter-title:hover .MuiSvgIcon-root {
+.filter-content .MuiCheckbox-root.Mui-checked .MuiSvgIcon-root {
     color: #003f63;
 }
-.filter-content .MuiCheckbox-root.Mui-checked  {
+.filter-content .MuiCheckbox-root .MuiSvgIcon-root{
     color: grey;
-}
-.filter-content .MuiCheckbox-root.Mui-checked  {
-    color: #003f63;
+    font-size: 23px;
 }
 .filter-title{
     padding: 0px !important;
@@ -112,7 +110,12 @@
 
 
 @media (max-width: 1300px){
-    .item-list{
+    .item-overview{
         width: 95%;
+    }
+}
+@media (max-width: 750px){
+    .item-overview{
+        width: 100%;
     }
 }

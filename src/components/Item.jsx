@@ -6,12 +6,13 @@ function Item({ name, details, price })  {
     return (
 
         <div className="item">
-            <img
-                src="https://www.copaco.com/Copaco/static/WFS/copaco-Nederland-Site/-/copaco/nl_NL/L/93093667_2865543118.jpg"
-                alt="placeholder"/>
+            <NavLink to="/Item">
+                <img src="https://www.copaco.com/Copaco/static/WFS/copaco-Nederland-Site/-/copaco/nl_NL/L/93093667_2865543118.jpg"
+                    alt="placeholder"/>
+            </NavLink>
             <div className="item-content">
                 <div className="item-top">
-                     <NavLink to="/Item"><h3>{name}</h3></NavLink>
+                    <NavLink to="/Item"><h3>{name}</h3></NavLink>
                     <div className="item-buttonprice">
                         <span className="item-price">${price}</span>
                         <button >Add</button>
