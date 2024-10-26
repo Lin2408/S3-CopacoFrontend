@@ -44,6 +44,9 @@ const Navbar = () => {
                     <li>
                         <NavLink to="/items">Item overview</NavLink>
                     </li>
+                    <li>
+                        <NavLink to="/profile">Profile</NavLink>
+                   </li>
                 {user && user.role === "Admin" && (
                     <>
                         <li>

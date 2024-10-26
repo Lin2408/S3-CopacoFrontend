@@ -7,6 +7,7 @@ import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage.jsx";
 import AdminPage from "./Pages/AdminPage.jsx";
 import ItemDetailsPage from "./Pages/ItemDetailsPage.jsx";
+import ProfilePage from './Pages/ProfilePage.jsx';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/Items" element={<ItemDetailsPage/>}/>
                 <Route path="/Admin" element={<AdminPage/>}/>
                 <Route path="/Homepage" element={<HomePage/>}/>
+                <Route path="/profile" element={<ProfilePage />} />
             </Routes>
         </Router>
     </AuthProviderWithHistory>
