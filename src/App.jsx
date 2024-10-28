@@ -1,27 +1,30 @@
 import {useEffect, useState} from 'react'
+import reactLogo from './assets/react.svg'
 import './App.css'
+import {LoginButton, LogoutButton} from "./Components/AuthButtons.jsx";
 import AuthProviderWithHistory from "./Components/AuthProvider.jsx";
 import Profile from "./Components/Profile.jsx";
-import Navbar from "./components/Navbar.jsx";
-import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
-import HomePage from "./pages/HomePage.jsx";
+import {getProtectedResource, getPublicResource} from "./Apis/message.service.js";
+import {useAuth0} from "@auth0/auth0-react";
+import {ThemeProvider} from "@mui/material";
+import {theme} from "./Theme.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [count, setCount] = useState(0)
 
 
-  return (
-    <AuthProviderWithHistory>
-        <Router>
-            <Navbar/>
-            <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="/Configurator" element={<HomePage/>}/>
-                <Route path="/Items" element={<HomePage/>}/>
-            </Routes>
-        </Router>
-    </AuthProviderWithHistory>
-  )
+    return (
+        <ThemeProvider theme={theme}>
+            <AuthProviderWithHistory>
+                <div className="card">
+                    <LoginButton/> <LogoutButton/>
+                </div>
+                <div>
+                    <Profile/>
+                </div>
+            </AuthProviderWithHistory>
+        </ThemeProvider>
+    )
 }
 
 export default App
