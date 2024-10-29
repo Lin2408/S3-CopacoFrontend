@@ -1,6 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, {useEffect, useState} from "react";
-import {getProtectedResource} from "../Apis/message.service.js";
+import {getAdminResource, getProtectedResource, getPublicResource} from "../Apis/message.service.js";
 
 const Profile = () => {
     const { user, isAuthenticated, isLoading,getAccessTokenSilently } = useAuth0();
