@@ -9,6 +9,7 @@ import ItemOverview from "./Pages/ItemOverview.jsx";
 import ItemDetailsPage from "./Pages/ItemDetailsPage.jsx";
 
 
+
 function App() {
   const [count, setCount] = useState(0)
 
@@ -21,6 +22,7 @@ function App() {
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="/Configurator" element={<HomePage/>}/>
                 <Route path="/Items" element={<ItemOverview/>}/>
+
                 <Route path="/Admin" element={<AdminPage/>}/>
                 <Route path="/Item" element={<ItemDetailsPage/>}/>
             </Routes>
