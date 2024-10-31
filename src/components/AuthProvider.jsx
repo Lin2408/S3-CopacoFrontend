@@ -1,7 +1,6 @@
 import React from "react";
 import { Auth0Provider } from "@auth0/auth0-react";
-import { BrowserRouter as Router } from "react-router-dom";
-import App from '../App.jsx';
+
 const AuthProviderWithHistory=({children}) => {
  const redirectUri = window.location.origin;
 
@@ -10,7 +9,8 @@ const AuthProviderWithHistory=({children}) => {
          domain="dev-vesakq2d1qaixg0k.eu.auth0.com"
          clientId="jiK0m3jaivBwe0LJW2vvpHRD0gJaXWZ9"
          authorizationParams={{
-          redirect_uri: redirectUri
+          redirect_uri: redirectUri,
+             audience:"Rule-Engine.nl"
          }}
      >
       {children}
