@@ -1,7 +1,5 @@
 import React from "react";
 import { Auth0Provider } from "@auth0/auth0-react";
-import {BrowserRouter as Router, useNavigate} from "react-router-dom";
-import App from '../App.jsx';
 const AuthProviderWithHistory=({children}) => {
     const redirectUri = "http://localhost:5173/callback";
     const audience = "https://rule-engine.nl/";
@@ -12,7 +10,7 @@ const AuthProviderWithHistory=({children}) => {
          clientId="jiK0m3jaivBwe0LJW2vvpHRD0gJaXWZ9"
          authorizationParams={{
           redirect_uri: redirectUri,
-             audience: audience,
+             audience:"https://rule-engine.nl/"
          }}
      >
       {children}

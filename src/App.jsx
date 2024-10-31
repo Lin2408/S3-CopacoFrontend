@@ -4,33 +4,32 @@ import reactLogo from './assets/react.svg';
 import './App.css';
 import { LoginButton, LogoutButton } from "./Components/AuthButtons.jsx";
 import AuthProviderWithHistory from "./Components/AuthProvider.jsx";
-import Profile from "./Components/Profile.jsx";
-import { ThemeProvider } from "@mui/material";
-import { theme } from "./Theme.jsx";
+import Navbar from "./components/Navbar.jsx";
+import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
+import HomePage from "./pages/HomePage.jsx";
+import AdminPage from "./Pages/AdminPage.jsx";
+import ItemOverview from "./Pages/ItemOverview.jsx";
 import ItemDetailsPage from "./Pages/ItemDetailsPage.jsx";
-import HomePage from "./Pages/HomePage.jsx";
 
 function App() {
     const [count, setCount] = useState(0);
 
-    return (
-        <ThemeProvider theme={theme}>
-            <AuthProviderWithHistory>
-                <Router>
-                    <div className="card">
-                        <LoginButton /> <LogoutButton />
-                    </div>
-                    <div>
-                        <Profile />
-                    </div>
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/items/:id" element={<ItemDetailsPage />} />
-                    </Routes>
-                </Router>
-            </AuthProviderWithHistory>
-        </ThemeProvider>
-    );
+
+  return (
+    <AuthProviderWithHistory>
+        <Router>
+            <Navbar/>
+            <Routes>
+                <Route path="/" element={<HomePage/>}/>
+                <Route path="/Configurator" element={<HomePage/>}/>
+                <Route path="/Items" element={<ItemOverview/>}/>
+
+                <Route path="/Admin" element={<AdminPage/>}/>
+                <Route path="/Item" element={<ItemDetailsPage/>}/>
+            </Routes>
+        </Router>
+    </AuthProviderWithHistory>
+  )
 }
 
 export default App;
