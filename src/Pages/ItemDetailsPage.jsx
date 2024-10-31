@@ -1,48 +1,76 @@
-import { Box, Typography, Button, List, ListItem, ListItemText, Grid } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { Box, Typography, Button, List, ListItem, ListItemText, Grid, Divider, CircularProgress } from '@mui/material';
 
 const ItemDetailsPage = () => {
+    const { id } = useParams();
+    const [item, setItem] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchItemDetails = async () => {
+            try {
+                const response = await fetch(`http://localhost:6060/items/${id}`);
+                const data = await response.json();
+                setItem(data);
+            } catch (error) {
+                console.error("Error fetching item details:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchItemDetails();
+    }, [id]);
+
+    if (loading) {
+        return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><CircularProgress /></Box>;
+    }
+
     return (
-        <Box className="product-container" sx={{ p: 2 }}>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                    <Box className="product-image" sx={{ textAlign: 'center' }}>
-                        <img
-                            src="path_to_image.jpg"
-                            alt="AMD Ryzen 7 7800X3D 4.2 GHz 8-Core Processor"
-                            style={{ maxWidth: '100%', height: 'auto' }}
-                        />
-                    </Box>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <Box className="product-details">
-                        <Typography variant="h4" gutterBottom>
-                            AMD Ryzen 7 7800X3D 4.2 GHz 8-Core Processor
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#f4f4f9', p: 3 }}>
+            <Box sx={{ bgcolor: 'white', borderRadius: 2, boxShadow: 3, maxWidth: 900, width: '100%', p: 3 }}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                            <img
+                                src={item?.image || "default-image.jpg"}
+                                alt={item?.name || "Product image"}
+                                style={{ maxWidth: '100%', borderRadius: '8px' }}
+                            />
+                        </Box>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 1 }}>
+                            {item?.name || "Item Name"}
                         </Typography>
-                        <Box className="features" sx={{ mb: 2 }}>
-                            <Typography variant="h5">Features</Typography>
-                            <List>
-                                <ListItem>
-                                    <ListItemText primary="Processor Speed: 4.20 GHz" />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText primary="Processor Cores: 8" />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText primary="Socket: AM5" />
-                                </ListItem>
-                            </List>
-                        </Box>
-                        <Box className="price" sx={{ mb: 2 }}>
-                            <Typography variant="h6" color="primary">
-                                €558.58
-                            </Typography>
-                        </Box>
-                        <Button variant="contained" color="primary">
+                        <Typography variant="subtitle1" color="textSecondary" sx={{ mb: 2 }}>
+                            {item?.description || "No description available."}
+                        </Typography>
+                        <Divider sx={{ my: 2 }} />
+                        <Typography variant="h5" sx={{ fontWeight: 'medium', mb: 1 }}>Specifications</Typography>
+                        <List dense>
+                            {item?.specificationList?.length ? (
+                                item.specificationList.map((spec, index) => (
+                                    <ListItem key={index}>
+                                        <ListItemText
+                                            primary={`${spec.name}: ${spec.presentationValue} ${spec.unit}`}
+                                        />
+                                    </ListItem>
+                                ))
+                            ) : (
+                                <Typography variant="body2">No specifications available.</Typography>
+                            )}
+                        </List>
+                        <Divider sx={{ my: 2 }} />
+                        <Typography variant="h5" sx={{ color: '#1e88e5', fontWeight: 'bold', mb: 2 }}>
+                            €{item?.price || "N/A"}
+                        </Typography>
+                        <Button variant="contained" color="primary" size="large" fullWidth>
                             Add to Cart
                         </Button>
-                    </Box>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </Box>
         </Box>
     );
 };

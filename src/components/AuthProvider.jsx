@@ -1,8 +1,8 @@
 import React from "react";
 import { Auth0Provider } from "@auth0/auth0-react";
-
 const AuthProviderWithHistory=({children}) => {
- const redirectUri = window.location.origin;
+    const redirectUri = "http://localhost:5173/callback";
+    const audience = "https://rule-engine.nl/";
 
  return (
      <Auth0Provider
