@@ -10,7 +10,7 @@ const AuthProviderWithHistory=({children}) => {
          clientId="jiK0m3jaivBwe0LJW2vvpHRD0gJaXWZ9"
          authorizationParams={{
           redirect_uri: redirectUri,
-             audience:"Rule-Engine.nl"
+             audience:"https://rule-engine.nl/"
          }}
      >
       {children}
