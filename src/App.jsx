@@ -1,18 +1,13 @@
-import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import reactLogo from './assets/react.svg';
 import './App.css';
-import { LoginButton, LogoutButton } from "./Components/AuthButtons.jsx";
 import AuthProviderWithHistory from "./Components/AuthProvider.jsx";
 import Navbar from "./components/Navbar.jsx";
-import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage.jsx";
 import AdminPage from "./Pages/AdminPage.jsx";
 import ItemOverview from "./Pages/ItemOverview.jsx";
 import ItemDetailsPage from "./Pages/ItemDetailsPage.jsx";
 
 function App() {
-    const [count, setCount] = useState(0);
 
 
   return (
