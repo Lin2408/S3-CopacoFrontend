@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography, Button, List, ListItem, ListItemText, Grid, Divider, CircularProgress } from '@mui/material';
+import { getItemDetails } from '/src/Apis/get-item-details.service';
 
 const ItemDetailsPage = () => {
     const { id } = useParams();
@@ -8,18 +9,17 @@ const ItemDetailsPage = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchItemDetails = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:6060/items/${id}`);
-                const data = await response.json();
+                const data = await getItemDetails(id);
                 setItem(data);
             } catch (error) {
-                console.error("Error fetching item details:", error);
+                console.error("Error:", error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchItemDetails();
+        fetchData();
     }, [id]);
 
     if (loading) {
