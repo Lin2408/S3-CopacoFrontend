@@ -7,6 +7,7 @@ import AdminPage from "./Pages/AdminPage.jsx";
 import ItemOverview from "./Pages/ItemOverview.jsx";
 import ItemDetailsPage from "./Pages/ItemDetailsPage.jsx";
 import ProfilePage from './Pages/ProfilePage.jsx';
+import PrebuildTemplatesPage from './Pages/PrebuildTemplatesPage.jsx';
 
 function App() {
 
@@ -23,7 +24,7 @@ function App() {
                 <Route path="/Homepage" element={<HomePage/>}/>
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/Item" element={<ItemDetailsPage/>}/>
-
+                <Route path="/PrebuildTemplatesPage" element={<PrebuildTemplatesPage/>}/>
             </Routes>
         </Router>
     </AuthProviderWithHistory>
