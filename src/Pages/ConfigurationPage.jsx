@@ -1,56 +1,77 @@
 import ConfiguratorItem from "../components/ConfiguratorItem.jsx";
 import {useEffect, useState} from "react";
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
-
+import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import "./ConfigurationPage.css";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 function load(key, categories) {
-    const items = window.sessionStorage.getItem(key);
+    const items = sessionStorage.getItem(key);
     return items != null ? JSON.parse(items) : Object.fromEntries(categories.map(category => [category, { }]));
+}
+function loadCategories() {
+    const categories = ['CPU', 'Video Card', 'Memory', 'storage', 'motherboard', 'powersupply', 'case', 'cooling'];
+    return categories;
 }
 
 
 function ConfigurationPage() {
-
+    const categories = loadCategories();
     const [loading, setLoading] = useState(true);
-    /*const {itemss} = useContext(ItemsContext);*/
-    const categories = ['cpu', 'gpu', 'ram', 'storage', 'motherboard', 'powersupply', 'case', 'cooling']
     const [items, setItems] = useState(() => load('items',categories));
+    const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
-        const storedItems = window.sessionStorage.getItem('items');
+        const storedItems = sessionStorage.getItem('items');
         if (storedItems) {
             console.log("Restoring items from sessionStorage:", JSON.parse(storedItems));
             setItems(JSON.parse(storedItems));
         } else {
             console.log('Initializing items');
-            window.sessionStorage.setItem('items', JSON.stringify(items));
+            sessionStorage.setItem('items', JSON.stringify(items));
         }
         setLoading(false);
     }, []);
-
+    useEffect(() => {
+        const price = Object.values(items).reduce((total, item) => total + (item.price || 0), 0);
+        setTotalPrice(price);
+    }, [items]);
+    function handleSubmit() {
+        console.log('Saving configuration:', items);
+    }
   return (
     <div>
       <h1>Configuration Page</h1>
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Component</TableCell>
-                        <TableCell align="right">Selection</TableCell>
-                        <TableCell align="right">Price</TableCell>
-                        <TableCell align="right"></TableCell>
-                        <TableCell align="right"></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {categories.map((category) => (
-                        <ConfiguratorItem key={category} category={category} items={items} setItems={setItems} loading={loading} />
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
-        <p>Total price: $100</p>
-        <button>Save Configuration</button>
+        <div className="configuratorTable">
+            <TableContainer component={Paper} >
+                <Table sx={{minWidth: 550}} aria-label="simple table">
+                    <TableHead>
+                        <TableRow >{/*style={{backgroundColor: "#F5FBFD"}}*/}
+                            <TableCell>Component</TableCell>
+                            <TableCell>Selection</TableCell>
+                            <TableCell>Price</TableCell>
+                            <TableCell align="right"></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {categories.map((category, index) => (
+                            <ConfiguratorItem key={category} index={index} category={category} items={items} setItems={setItems}
+                                              loading={loading}/>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <div className="tableBottom">
+                <p>Total price: €{totalPrice.toFixed(2)}</p>
+                <Button startIcon={<ShoppingCartIcon />} variant="contained" sx={{
+                    backgroundColor: '#2BAD70',
+                    color: '#ffffff',
+                    '&:hover': {backgroundColor: '#278f5f',},
+                }} onClick={handleSubmit}>Save Configuration</Button>
+            </div>
+        </div>
+
+
     </div>
   );
 }
+
 export default ConfigurationPage;

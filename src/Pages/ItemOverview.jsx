@@ -18,7 +18,7 @@ const filterData = [
 
 ]
 function load(key) {
-    const items = window.sessionStorage.getItem(key);
+    const items = sessionStorage.getItem(key);
     return items != null ? JSON.parse(items) : [];
 }
 
@@ -49,7 +49,7 @@ function ItemOverview() {
                 [category]: newItem
             };
             // Store in sessionStorage after updating items
-            window.sessionStorage.setItem('items', JSON.stringify(updatedItems));
+            sessionStorage.setItem('items', JSON.stringify(updatedItems));
             return updatedItems;
         });
         navigate('/Configurator');
@@ -58,7 +58,7 @@ function ItemOverview() {
 
     return (
         <div>
-            <h1>Choose { /^[aeiou]/i.test(category) ? 'an' : 'a' } {category}</h1>
+            <h1>Choose {category}</h1>{/*{ /^[aeiou]/i.test(category) ? 'an' : 'a' }*/}
             <div className="item-overview">
                 <Grid container spacing={5}>
                     <Grid size={3} className="filter-bar">

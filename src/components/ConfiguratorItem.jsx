@@ -2,7 +2,7 @@ import {TableCell, TableRow} from "@mui/material";
 import {useEffect, useState} from "react";
 import { useNavigate } from 'react-router-dom';
 
-function ConfiguratorItem({category, items, setItems, loading}) {
+function ConfiguratorItem({category, index, items, setItems, loading}) {
     const[item, setItem] = useState({});
     const navigate = useNavigate();
 
@@ -11,17 +11,19 @@ function ConfiguratorItem({category, items, setItems, loading}) {
         navigate('/Items', {state: {category}});
     }
     const onClickRemove = () => {
-        console.log(items);
-        setItems(prevItems => ({
-            ...prevItems,
-            [category]: {} // Resetting the item for this category
-        }));
+        setItems(prevItems => {
+            const updatedItems = {
+                ...prevItems,
+                [category]: {}
+            };
+            sessionStorage.setItem('items', JSON.stringify(updatedItems));
+            return updatedItems;
+        });
     };
     useEffect(() => {
         if (!loading) {
             const currentItem = items[category] || {};
             setItem(currentItem);
-            console.log("Setting item for category", category, ":", currentItem);
         }
     }, [loading, items]);
   return (
@@ -29,6 +31,9 @@ function ConfiguratorItem({category, items, setItems, loading}) {
           <TableRow
               key={item.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              style={{
+                  backgroundColor: index % 2 === 0 ? '#F5FBFD' : 'white',
+              }}
           >
               <TableCell component="th" scope="row">
                   {category}
@@ -36,12 +41,14 @@ function ConfiguratorItem({category, items, setItems, loading}) {
 
               {!item.name ? (
                   <>
-                  <TableCell align="right"><button onClick={onClick}>Select {category}</button></TableCell>
+                  <TableCell ><button onClick={onClick}>Select {category}</button></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell align="right"></TableCell>
                   </>
               ) : (
                   <>
-                      <TableCell align="right">{item.name}</TableCell>
-                      <TableCell align="right">{item.price}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell >€{item.price.toFixed(2)}</TableCell>
                       <TableCell align="right"><button onClick={onClickRemove}>Remove</button></TableCell>
                   </>
               )}
