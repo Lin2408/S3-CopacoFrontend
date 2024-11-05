@@ -1,4 +1,5 @@
 import { Box, Button, TextField, MenuItem, Grid } from '@mui/material';
+import ImportButton from "../Components/ImportButton.jsx";
 
 const AdminPage = () => {
     const handleSubmit = (event) => {
@@ -58,9 +59,7 @@ const AdminPage = () => {
                 <Button type="submit" variant="contained" color="primary">
                     Create item
                 </Button>
-                <Button type="button" variant="outlined">
-                    Import
-                </Button>
+                <ImportButton />
             </Box>
         </Box>
     );
