@@ -1,44 +1,38 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, TextField, Button, Divider, Select, MenuItem, FormControl, InputLabel, Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Typography, TextField, Button, Divider, Chip, Autocomplete } from '@mui/material';
 import { getItemsFromCategories } from '/src/Apis/get-items-from-category.service.js';
 import './AdminTemplatePage.css';
 
+const categoryOptions = ['CPU', 'Motherboard', 'GPU', 'RAM', 'Cooling', 'PSU', 'Case', 'Monitor', 'Keyboard', 'Mouse', 'Headset'];
+
 const AdminTemplatePage = () => {
     const [templateName, setTemplateName] = useState('');
-    const [selectedItems, setSelectedItems] = useState({});
     const [items, setItems] = useState({});
-    const [selectedCategories, setSelectedCategories] = useState({
-        CPU: false,
-        Motherboard: false,
-        GPU: false,
-        RAM: false,
-    });
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
         const fetchItems = async () => {
             const fetchedItems = await getItemsFromCategories();
             setItems(fetchedItems);
-            setSelectedItems({
-                CPU: '',
-                Motherboard: '',
-                GPU: '',
-                RAM: '',
-            });
         };
 
         fetchItems();
     }, []);
 
-    const handleSelectChange = (category, value) => {
-        setSelectedItems({ ...selectedItems, [category]: value });
+    const handleCategoryChange = (event, newValue) => {
+        if (newValue && !selectedCategories.includes(newValue)) {
+            setSelectedCategories((prev) => [...prev, newValue]);
+            setInputValue('');
+        }
     };
 
-    const handleCategoryToggle = (category) => {
-        setSelectedCategories({ ...selectedCategories, [category]: !selectedCategories[category] });
+    const handleDelete = (categoryToDelete) => {
+        setSelectedCategories((prev) => prev.filter(category => category !== categoryToDelete));
     };
 
     const handleSubmit = () => {
-        const newTemplate = { templateName, selectedItems };
+        const newTemplate = { templateName, selectedCategories };
         console.log("Template Created:", newTemplate);
         // Send template to backend
     };
@@ -57,37 +51,29 @@ const AdminTemplatePage = () => {
             />
 
             <Typography variant="h6" sx={{ mb: 2 }}>Select Categories</Typography>
-            {Object.keys(selectedCategories).map((category) => (
-                <FormControlLabel
-                    key={category}
-                    control={
-                        <Checkbox
-                            checked={selectedCategories[category]}
-                            onChange={() => handleCategoryToggle(category)}
-                            color="primary"
-                        />
-                    }
-                    label={category}
-                />
-            ))}
+            <Autocomplete
+                options={categoryOptions.filter(option => !selectedCategories.includes(option))}
+                onChange={(event, newValue) => handleCategoryChange(event, newValue)}
+                inputValue={inputValue}
+                onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+                value={null}
+                renderInput={(params) => (
+                    <TextField {...params} variant="outlined" label="Search Categories" placeholder="Search Categories" />
+                )}
+                freeSolo
+                sx={{ mb: 3 }}
+            />
 
-            {Object.keys(selectedCategories).map((category) => (
-                selectedCategories[category] && (
-                    <FormControl fullWidth variant="outlined" sx={{ mb: 3 }} key={category}>
-                        <InputLabel>{category}</InputLabel>
-                        <Select
-                            value={selectedItems[category]}
-                            onChange={(e) => handleSelectChange(category, e.target.value)}
-                            label={category}
-                        >
-                            <MenuItem value=""><em>None</em></MenuItem>
-                            {items[category]?.map((item) => (
-                                <MenuItem key={item.id} value={item.name}>{item.name}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                )
-            ))}
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                {selectedCategories.map((category) => (
+                    <Chip
+                        key={category}
+                        label={category}
+                        color="primary"
+                        onDelete={() => handleDelete(category)}
+                    />
+                ))}
+            </Box>
 
             <Divider sx={{ my: 3 }} />
 
