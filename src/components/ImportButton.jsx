@@ -56,7 +56,7 @@ function FileImport() {
             const options = {
                 config: {
                     method: 'post',
-                    url: 'http://localhost:6060/Import',
+                    url: 'http://localhost:6060/import',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${ await getAccessTokenSilently()}`,
