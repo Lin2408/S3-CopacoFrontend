@@ -1,7 +1,7 @@
 import {NavLink} from "react-router-dom";
 import { Fragment } from 'react';
 
-function Item({ name, details, price })  {
+function Item({ name, details, price , onSelect}) {
 
     return (
 
@@ -15,7 +15,7 @@ function Item({ name, details, price })  {
                     <NavLink to="/Item"><h3>{name}</h3></NavLink>
                     <div className="item-buttonprice">
                         <span className="item-price">${price}</span>
-                        <button >Add</button>
+                        <button onClick={() => onSelect(5,{name,price})}>Add</button>
                     </div>
                 </div>
                 {/*<p className="item-code">{code}</p>*/}

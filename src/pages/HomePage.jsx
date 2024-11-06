@@ -13,7 +13,7 @@ function HomePage() {
                 <Grid size={3}>
                     <Button
                         variant="contained"
-                        href="/"
+                        href="/Configurator"
                         sx={{
                             position: 'relative',
                             overflow: 'hidden',
