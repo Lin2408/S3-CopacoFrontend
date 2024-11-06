@@ -8,6 +8,8 @@ import ItemOverview from "./Pages/ItemOverview.jsx";
 import ItemDetailsPage from "./Pages/ItemDetailsPage.jsx";
 import ProfilePage from './Pages/ProfilePage.jsx';
 import PrebuildTemplatesPage from './Pages/PrebuildTemplatesPage.jsx';
+import ConfigurationPage from "./Pages/ConfigurationPage.jsx";
+
 
 function App() {
 
@@ -18,7 +20,7 @@ function App() {
             <Navbar/>
             <Routes>
                 <Route path="/" element={<HomePage/>}/>
-                <Route path="/Configurator" element={<HomePage/>}/>
+                <Route path="/Configurator" element={<ConfigurationPage/>}/>
                 <Route path="/Items" element={<ItemOverview/>}/>
                 <Route path="/Admin" element={<AdminPage/>}/>
                 <Route path="/Homepage" element={<HomePage/>}/>

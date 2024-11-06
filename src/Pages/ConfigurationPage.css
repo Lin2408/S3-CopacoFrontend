@@ -1,0 +1,20 @@
+.configuratorTable {
+
+  margin-left: auto;
+    margin-right: auto;
+  width: 60%;
+}
+.tableBottom{
+  display: flex;
+  justify-content: flex-end;
+  gap: 30px;
+  margin: 20px;
+}
+
+@media (max-width: 1300px) {
+  .configuratorTable {
+    width: 75%;
+  }
+
+}
+

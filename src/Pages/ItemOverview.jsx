@@ -8,17 +8,26 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
-import {useState} from "react";
-
+import {useEffect, useState} from "react";
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import {isTSTypeReference} from "eslint-plugin-react/lib/util/ast.js";
 const filterData = [
     {title: "Brand", options: [{name: "Intel"},{name: "AMD"}]},
     {title: "Cores", options: [{name: "4"},{name: "6"},{name: "8"},{name: "12"},{name: "16"}]},
 
 ]
-
+function load(key) {
+    const items = sessionStorage.getItem(key);
+    return items != null ? JSON.parse(items) : [];
+}
 
 function ItemOverview() {
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState([]);
+    const [items, setItems] = useState(() => load('items'));
+    const navigate = useNavigate();
+    const { state } = useLocation();
+    const category = state?.category || 'item';
 
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
@@ -30,9 +39,23 @@ function ItemOverview() {
         }
     };
 
+    const onSelect = (id, itemDetails) => {
+        const newItem = { id, ...itemDetails };
+        setItems(prevItems => {
+            const updatedItems = {
+                ...prevItems,
+                [category]: newItem
+            };
+            sessionStorage.setItem('items', JSON.stringify(updatedItems));
+            return updatedItems;
+        });
+        navigate('/Configurator');
+
+    };
+
     return (
         <div>
-            <h1>Choose a CPU</h1>
+            <h1>Choose {category}</h1>{/*{ /^[aeiou]/i.test(category) ? 'an' : 'a' }*/}
             <div className="item-overview">
                 <Grid container spacing={5}>
                     <Grid size={3} className="filter-bar">
@@ -83,7 +106,7 @@ function ItemOverview() {
                         ))}
                     </Grid>
                     <Grid size={8}>
-                        <ListOfItems/>
+                        <ListOfItems onSelect={onSelect}/>
                     </Grid>
                 </Grid>
             </div>
