@@ -3,6 +3,8 @@ import {Container} from "@mui/material";
 import * as React from 'react';
 import Grid from '@mui/material/Grid2';
 import './HomePage.css';
+import prebuiltImage from '../assets/prebuilt.jpg';
+import configureImage from '../assets/configure.webp';
 function HomePage() {
   return (
     <div className="home">
@@ -13,20 +15,21 @@ function HomePage() {
                 <Grid size={3}>
                     <Button
                         variant="contained"
-                        href="/"
+                        href="/Configurator"
                         sx={{
                             position: 'relative',
                             overflow: 'hidden',
-                            backgroundImage: `url("https://img.freepik.com/premium-vector/blueprint-plan-outline-draft-pc-set_70347-1369.jpg")`,
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),url(${configureImage})`,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                             height: '200px',
                             width: '100%',
                             color: 'white',
-                            fontSize: '1.2rem',
+                            fontSize: '1.4rem',
                             transition: 'transform 0.3s ease-in-out',
+                            textShadow: '1px 1px 2px rgba(0, 0, 0, 1)',
                             '&:hover': {
-                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://img.freepik.com/premium-vector/blueprint-plan-outline-draft-pc-set_70347-1369.jpg")`,
+                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url(${configureImage})`,
                                 color: 'white',
                                 transform: 'scale(1.1)',
                                 textDecoration: "underline",
@@ -38,26 +41,27 @@ function HomePage() {
                 <Grid size={3}>
                     <Button
                         variant="contained"
-                        href="/"
+                        href="/PrebuildTemplatesPage"
                         sx={{
                             position: 'relative',
                             overflow: 'hidden',
-                            backgroundImage: `url("https://fixautousa.com/wp-content/uploads/2020/06/bigstock-Car-Schematic-Or-Car-Blueprint-228148870.jpg")`,
+                            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${prebuiltImage})`,
                             backgroundSize: 'cover',
-                            backgroundPosition: 'center',
+                            backgroundPosition: 'left',
                             height: '200px',
                             width: '100%',
                             color: 'white',
-                            fontSize: '1.2rem',
+                            fontSize: '1.4rem',
                             transition: 'transform 0.3s ease-in-out',
+                            textShadow: '1px 1px 2px rgba(0, 0, 0, 1)',
                             '&:hover': {
-                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("https://fixautousa.com/wp-content/uploads/2020/06/bigstock-Car-Schematic-Or-Car-Blueprint-228148870.jpg")`,
+                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url(${prebuiltImage})`,
                                 color: 'white',
                                 transform: 'scale(1.1)',
                                 textDecoration: "underline",
                             },
                         }}
-                    >Configure Car
+                    >Pre Built PC&#39;s
                  </Button>
                 </Grid>
 

@@ -34,29 +34,33 @@ const Navbar = () => {
             </nav>
             <nav className="navbar">
 
-            <ul className="navbar-links">
+                <ul className="navbar-links">
                     <li>
-                    <NavLink to="/">Home</NavLink>
+                        <NavLink to="/">Home</NavLink>
                     </li>
                     <li>
                         <NavLink to="/configurator">Configuration</NavLink>
                     </li>
                     <li>
-                        <NavLink to="/items">Item overview</NavLink>
+                        <NavLink to="/PrebuildTemplatesPage">Pre builds</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/Items">Item overview</NavLink>
                     </li>
                     <li>
                         <NavLink to="/profile">Profile</NavLink>
-                   </li>
-                {user && user.role === "Admin" && (
-                    <>
-                        <li>
-                            <NavLink to="/adminConfig">Configure products</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/rules">rules</NavLink>
-                        </li>
-                    </>
-                )}
+                    </li>
+
+                    {user && user.role === "Admin" && (
+                        <>
+                            <li>
+                                <NavLink to="/adminConfig">Configure products</NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/rules">rules</NavLink>
+                            </li>
+                        </>
+                    )}
                 </ul>
             </nav>
         </>

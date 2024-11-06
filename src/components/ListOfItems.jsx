@@ -10,14 +10,14 @@ const parts = [
 ];
 
 
-function listOfItems(){
+function listOfItems({onSelect}) {
 
 
     return (
         <>
                 {parts.map((part, index) => (
                     <Fragment key={part.id}>
-                    <Item key={part.id} name={part.name} code={part.code} details={part.details} price={part.price}/>
+                    <Item key={part.id} name={part.name} code={part.code} details={part.details} price={part.price} onSelect={onSelect}/>
                 {index < parts.length - 1 && <hr/>}
                 </Fragment>
                 ))}
