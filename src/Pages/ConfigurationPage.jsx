@@ -22,10 +22,8 @@ function ConfigurationPage() {
     useEffect(() => {
         const storedItems = sessionStorage.getItem('items');
         if (storedItems) {
-            console.log("Restoring items from sessionStorage:", JSON.parse(storedItems));
             setItems(JSON.parse(storedItems));
         } else {
-            console.log('Initializing items');
             sessionStorage.setItem('items', JSON.stringify(items));
         }
         setLoading(false);

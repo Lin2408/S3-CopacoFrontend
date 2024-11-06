@@ -41,14 +41,11 @@ function ItemOverview() {
 
     const onSelect = (id, itemDetails) => {
         const newItem = { id, ...itemDetails };
-        console.log("Selecting item for category:", category, "Item details:", newItem);
-
         setItems(prevItems => {
             const updatedItems = {
                 ...prevItems,
                 [category]: newItem
             };
-            // Store in sessionStorage after updating items
             sessionStorage.setItem('items', JSON.stringify(updatedItems));
             return updatedItems;
         });
