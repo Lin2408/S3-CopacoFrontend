@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import './ProfilePage.css';
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, Avatar } from '@mui/material';
 
 const ProfilePage = () => {
     const { user, isAuthenticated } = useAuth0();
@@ -11,7 +11,7 @@ const ProfilePage = () => {
         userID: user?.sub || "N/A",
         username: user?.name || "N/A",
         email: user?.email || "N/A",
-        password: "*******", 
+        password: "*******",
         role: user?.role || "User",
         phoneNumber: user?.phoneNumber || "N/A",
         address: user?.address || "N/A"
@@ -20,6 +20,7 @@ const ProfilePage = () => {
     const toggleEdit = () => {
         setIsEditing(!isEditing);
     };
+
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setFormData((prevData) => ({
@@ -35,6 +36,20 @@ const ProfilePage = () => {
     return (
         <div className="profile-page">
             <h2>User Profile</h2>
+            
+            <div className="profile-image-container">
+                <Avatar
+                    src={user?.picture || '/placeholder-image.png'} 
+                    alt="Profile Image"
+                    sx={{ width: 100, height: 100 }}
+                />
+                {isEditing && (
+                    <Button variant="outlined" size="small" sx={{ mt: 1 }}>
+                        Upload Image
+                    </Button>
+                )}
+            </div>
+
             <div className="profile-details">
                 <div className="profile-field">
                     <label>UserID:</label>
