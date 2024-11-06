@@ -1,14 +1,14 @@
 import ConfiguratorItem from "../components/ConfiguratorItem.jsx";
 import {useEffect, useState} from "react";
 import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
-import "./ConfigurationPage.css";
+import "./CSS/ConfigurationPage.css";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 function load(key, categories) {
     const items = sessionStorage.getItem(key);
     return items != null ? JSON.parse(items) : Object.fromEntries(categories.map(category => [category, { }]));
 }
 function loadCategories() {
-    const categories = ['CPU', 'Video Card', 'Memory', 'storage', 'motherboard', 'powersupply', 'case', 'cooling'];
+    const categories = ['CPU', 'Video Card', 'Memory', 'Storage', 'Motherboard', 'Powersupply', 'Case', 'Cooling'];
     return categories;
 }
 

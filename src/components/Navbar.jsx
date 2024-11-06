@@ -45,7 +45,7 @@ const Navbar = () => {
                         <NavLink to="/PrebuildTemplatesPage">Pre builds</NavLink>
                     </li>
                     <li>
-                        <NavLink to="/Items">Item overview</NavLink>
+                        <NavLink to="/ItemsDetailed">Item overview</NavLink>
                     </li>
                     <li>
                         <NavLink to="/profile">Profile</NavLink>
