@@ -83,7 +83,7 @@ const PrebuildTemplatesPage = () => {
 
     return (
         <div className="templates-page">
-            <h2>Prebuilt PC Templates</h2>
+            <h2>Prebuilt PC Configuration</h2>
             <div className="template-grid">
                 {templates.map((template) => (
                     <div key={template.id} className="template-card">
