@@ -1,0 +1,56 @@
+.templates-page {
+    text-align: center;
+    padding: 20px;
+}
+
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+    padding: 20px;
+}
+
+.template-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    color: #333;
+    text-align: left;
+}
+
+.template-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.template-card h3 {
+    color: #004080;
+    margin-bottom: 10px;
+}
+
+.description {
+    color: #666;
+    margin-top: 10px;
+}
+
+.buy-now-button {
+    background-color: #005b96;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.buy-now-button:hover {
+    background-color: #003f63;
+}

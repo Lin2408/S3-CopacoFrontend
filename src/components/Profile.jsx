@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import React, {useEffect, useState} from "react";
-import {getAdminResource, getProtectedResource, getPublicResource} from "../Apis/message.service.js";
+import {getAdminResource} from "../Apis/message.service.js";
+
 
 const Profile = () => {
     const { user, isAuthenticated, isLoading,getAccessTokenSilently } = useAuth0();
@@ -12,8 +13,7 @@ const Profile = () => {
         const getMessage = async () => {
 
             const accessToken = await getAccessTokenSilently();
-            console.log(accessToken)
-            const { data, error } = await getProtectedResource(accessToken);
+            const { data, error } = await getAdminResource(accessToken);
 
             if (!isMounted) {
                 return;

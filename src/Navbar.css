@@ -60,5 +60,9 @@
     display: flex;
     align-self: center;
 }
+.authButton {
+    background-color: #003f74!important;
+    color: white!important;
+}
 
 
