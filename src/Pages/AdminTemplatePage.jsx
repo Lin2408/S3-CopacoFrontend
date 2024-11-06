@@ -1,22 +1,25 @@
 import { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Divider, Chip, Autocomplete } from '@mui/material';
-import { getItemsFromCategories } from '/src/Apis/get-items-from-category.service.js';
+import { fetchCategories } from '/src/Apis/get-item-categories.service.js';
+import { createTemplate } from '/src/Apis/create-template.service.js';
 import './AdminTemplatePage.css';
-
-const categoryOptions = ['CPU', 'Motherboard', 'GPU', 'RAM', 'Cooling', 'PSU', 'Case', 'Monitor', 'Keyboard', 'Mouse', 'Headset'];
 
 const AdminTemplatePage = () => {
     const [templateName, setTemplateName] = useState('');
-    const [items, setItems] = useState({});
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [inputValue, setInputValue] = useState('');
+    const [categoryOptions, setCategoryOptions] = useState([]);
+    const [statusMessage, setStatusMessage] = useState('');
 
     useEffect(() => {
         const fetchItems = async () => {
-            const fetchedItems = await getItemsFromCategories();
-            setItems(fetchedItems);
+            try {
+                const categories = await fetchCategories();
+                setCategoryOptions(categories);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
         };
-
         fetchItems();
     }, []);
 
@@ -31,10 +34,14 @@ const AdminTemplatePage = () => {
         setSelectedCategories((prev) => prev.filter(category => category !== categoryToDelete));
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const newTemplate = { templateName, selectedCategories };
-        console.log("Template Created:", newTemplate);
-        // Send template to backend
+        try {
+            await createTemplate(newTemplate);
+            setStatusMessage("Template saved successfully!");
+        } catch (error) {
+            setStatusMessage("Failed to save the template. Please try again.");
+        }
     };
 
     return (
@@ -86,6 +93,12 @@ const AdminTemplatePage = () => {
             >
                 Create Template
             </Button>
+
+            {statusMessage && (
+                <Typography variant="body2" sx={{ mt: 2, color: statusMessage.includes('successfully') ? 'green' : 'red' }}>
+                    {statusMessage}
+                </Typography>
+            )}
         </Box>
     );
 };
