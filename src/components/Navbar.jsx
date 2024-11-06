@@ -10,6 +10,7 @@ const Navbar = () => {
     let isAdmin = false;
     if (isAuthenticated){
         const roles = user[`https://myroles.com/roles`];
+        console.log(roles)
         isAdmin = roles.includes("Admin");
     }
 
@@ -56,13 +57,13 @@ const Navbar = () => {
                         <NavLink to="/profile">Profile</NavLink>
                     </li>
 
-                    {user && user.role === "Admin" && (
+                    {user && isAdmin && (
                         <>
                             <li>
                                 <NavLink to="/adminConfig">Configure products</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/rules">rules</NavLink>
+                                <NavLink to="/AdminTemplate">Create Template</NavLink>
                             </li>
                         </>
                     )}

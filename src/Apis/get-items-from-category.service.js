@@ -2,7 +2,7 @@ const BASE_URL = 'http://localhost:6060/items';
 
 const fetchItemsByCategory = async (category) => {
     try {
-        const response = await fetch(`${BASE_URL}/${category.toLowerCase()}`);
+        const response = await fetch(`${BASE_URL}?category=${category}}`);
         if (!response.ok) {
             throw new Error(`Error fetching ${category}: ${response.statusText}`);
         }
