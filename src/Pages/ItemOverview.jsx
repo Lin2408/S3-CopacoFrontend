@@ -8,10 +8,9 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import {isTSTypeReference} from "eslint-plugin-react/lib/util/ast.js";
 const filterData = [
     {title: "Brand", options: [{name: "Intel"},{name: "AMD"}]},
     {title: "Cores", options: [{name: "4"},{name: "6"},{name: "8"},{name: "12"},{name: "16"}]},
