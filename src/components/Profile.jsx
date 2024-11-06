@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import React, {useEffect, useState} from "react";
 import {getAdminResource} from "../Apis/message.service.js";
 
+
 const Profile = () => {
     const { user, isAuthenticated, isLoading,getAccessTokenSilently } = useAuth0();
 

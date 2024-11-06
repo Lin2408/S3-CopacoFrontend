@@ -7,10 +7,14 @@ import {useAuth0} from "@auth0/auth0-react";
 
 const Navbar = () => {
     const { user, isAuthenticated } = useAuth0();
+    let isAdmin = false;
+    if (isAuthenticated){
+        const roles = user[`https://myroles.com/roles`];
+        isAdmin = roles.includes("Admin");
+    }
 
     return (
         <>
-
             <nav className={"navbarTop"}>
                 <a className="navbar-logo" href="/">
                     <img className="navbar-logo" src={copacoLogo} alt="Copaco logo"/>
@@ -42,6 +46,7 @@ const Navbar = () => {
                         <NavLink to="/configurator">Configuration</NavLink>
                     </li>
                     <li>
+
                         <NavLink to="/PrebuildTemplatesPage">Pre builds</NavLink>
                     </li>
                     <li>

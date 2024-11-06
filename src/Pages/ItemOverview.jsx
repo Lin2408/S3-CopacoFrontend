@@ -1,3 +1,4 @@
+
 import  ListOfItems  from '../components/listOfItems.jsx';
 import Grid from "@mui/material/Grid2";
 import {
@@ -109,7 +110,6 @@ function ItemOverview() {
                     </Grid>
                 </Grid>
             </div>
-
         </div>
     )
 }

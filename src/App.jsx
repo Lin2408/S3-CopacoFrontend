@@ -12,6 +12,7 @@ import PrebuildTemplatesPage from './Pages/PrebuildTemplatesPage.jsx';
 import ConfigurationPage from "./Pages/ConfigurationPage.jsx";
 import DetailedItemOverview from "./Pages/DetailedItemOverview.jsx";
 
+
 function App() {
 
 
