@@ -1,5 +1,7 @@
-import {Fragment} from "react";
+import {Fragment, useEffect, useState} from "react";
 import DetailedItem from "./DetailedItem.jsx";
+import * as React from "react";
+import {fetchItems} from "../Apis/Get-Items.service.js";
 
 const parts = [
     { id: 1, name: 'HPE Intel Xeon‑Silver 4514Y', code: 'HPE-P67092-B21', details: [{title: "Memory", description:"30mb"},{title: "Clock-speed", description: "2 GHz"}], price: 500 },
@@ -8,7 +10,21 @@ const parts = [
     { id: 4, name: 'HPE Intel Xeon-Gold 6426Y', code: 'HPE-P49598-B21', details: [{title: "Memory", description:"30mb"},{title: "Clock-speed", description: "2 GHz"}], price: 500 },
 ];
 
-function ListOfDetailedItems() {
+const ListOfDetailedItems = () => {
+    const [items,setItems] = useState([]);
+    useEffect(() => {
+        const getItems = async () => {
+            try {
+                const data = await fetchItems();
+                console.log(data.data.items)
+                setItems(data.data.items);
+                console.log(items)
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+        getItems();
+    }, []);
   return (
     <div>
       <>

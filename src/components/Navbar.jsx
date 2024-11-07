@@ -53,9 +53,6 @@ const Navbar = () => {
                     <li>
                         <NavLink to="/ItemsDetailed">Item overview</NavLink>
                     </li>
-                    <li>
-                        <NavLink to="/profile">Profile</NavLink>
-                    </li>
 
                     {user && isAdmin && (
                         <>
@@ -66,6 +63,11 @@ const Navbar = () => {
                                 <NavLink to="/AdminTemplate">Create Template</NavLink>
                             </li>
                         </>
+                    )}
+                    {isAuthenticated && (
+                        <li>
+                            <NavLink to="/profile">Profile</NavLink>
+                        </li>
                     )}
                 </ul>
             </nav>

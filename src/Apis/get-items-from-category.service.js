@@ -1,17 +1,21 @@
 const BASE_URL = 'http://localhost:6060/items';
-
+import {callExternalApi} from "./external-api.service.js";
 const fetchItemsByCategory = async (category) => {
-    try {
-        const response = await fetch(`${BASE_URL}?category=${category}}`);
-        if (!response.ok) {
-            throw new Error(`Error fetching ${category}: ${response.statusText}`);
+
+        const config = {
+            url: `http://localhost:6060/categories?category=${category}`,
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            },
         }
-        return await response.json();
-    } catch (error) {
-        console.error(error);
-        return [];
+        const { data, error } = await callExternalApi({ config });
+        console.log(data)
+        return {
+            data: data || null,
+            error,
+        };
     }
-};
 
 const getItemsFromCategories = async () => {
     const categories = ['cpu', 'gpu', 'motherboard', 'ram'];
