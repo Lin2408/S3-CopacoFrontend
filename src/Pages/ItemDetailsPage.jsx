@@ -5,14 +5,14 @@ import { getItemDetails } from '/src/Apis/get-item-details.service';
 
 const ItemDetailsPage = () => {
     const { id } = useParams();
-    const [item, setItem] = useState(null);
+    const [item, setItem] = useState({"name":"testitem","description":"this is for a testitem","price":102,"image":"https://www.copaco.com/Copaco/static/WFS/copaco-Nederland-Site/-/copaco/nl_NL/L/93093667_2865543118.jpg"});
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getItemDetails(id);
-                setItem(data);
+
             } catch (error) {
                 console.error("Error:", error);
             } finally {

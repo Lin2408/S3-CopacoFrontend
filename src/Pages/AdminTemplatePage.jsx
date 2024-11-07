@@ -14,8 +14,10 @@ const AdminTemplatePage = () => {
     useEffect(() => {
         const fetchItems = async () => {
             try {
-                const categories = await fetchCategories();
-                setCategoryOptions(categories);
+                const data = await fetchCategories();
+                console.log(data)
+                setCategoryOptions(data.data.categories);
+                console.log(categoryOptions)
             } catch (error) {
                 console.error("Error fetching categories:", error);
             }
@@ -24,7 +26,7 @@ const AdminTemplatePage = () => {
     }, []);
 
     const handleCategoryChange = (event, newValue) => {
-        if (newValue && !selectedCategories.includes(newValue)) {
+        if (newValue && !selectedCategories.some(category => category.id === newValue.id)) {
             setSelectedCategories((prev) => [...prev, newValue]);
             setInputValue('');
         }
@@ -59,23 +61,25 @@ const AdminTemplatePage = () => {
 
             <Typography variant="h6" sx={{ mb: 2 }}>Select Categories</Typography>
             <Autocomplete
-                options={categoryOptions.filter(option => !selectedCategories.includes(option))}
-                onChange={(event, newValue) => handleCategoryChange(event, newValue)}
+                options={categoryOptions.filter(option =>
+                    !selectedCategories.some(selected => selected.id === option.id)
+                )}
+                getOptionLabel={(option) => option.value}  // Display the 'value' property
+                onChange={handleCategoryChange}
                 inputValue={inputValue}
                 onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
                 value={null}
                 renderInput={(params) => (
                     <TextField {...params} variant="outlined" label="Search Categories" placeholder="Search Categories" />
                 )}
-                freeSolo
                 sx={{ mb: 3 }}
             />
 
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                 {selectedCategories.map((category) => (
                     <Chip
-                        key={category}
-                        label={category}
+                        key={category.id}
+                        label={category.value}
                         color="primary"
                         onDelete={() => handleDelete(category)}
                     />

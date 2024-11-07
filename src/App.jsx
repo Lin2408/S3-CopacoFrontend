@@ -31,6 +31,7 @@ function App() {
                 <Route path="/AdminTemplate" element={<AdminTemplatePage/>}/>
                 <Route path="/PrebuildTemplatesPage" element={<PrebuildTemplatesPage/>}/>
                 <Route path="/ItemsDetailed" element={<DetailedItemOverview/>}/>
+                <Route path="/adminConfig" element={<AdminPage/>}/>
             </Routes>
         </Router>
     </AuthProviderWithHistory>
