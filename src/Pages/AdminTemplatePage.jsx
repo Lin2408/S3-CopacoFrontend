@@ -37,7 +37,10 @@ const AdminTemplatePage = () => {
     };
 
     const handleSubmit = async () => {
-        const newTemplate = { templateName, selectedCategories };
+        const newTemplate = {
+            templateName,
+            selectedCategories: selectedCategories.map(category => category.id)
+        };
         try {
             await createTemplate(newTemplate);
             setStatusMessage("Template saved successfully!");
