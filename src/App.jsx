@@ -4,7 +4,7 @@ import AuthProviderWithHistory from "./Components/AuthProvider.jsx";
 import Navbar from "./components/Navbar.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import AdminPage from "./Pages/AdminPage.jsx";
-import ItemOverview from "./Pages/ItemOverview.jsx";
+import ItemSelectionOverview from "./Pages/ItemSelectionOverview.jsx";
 import ItemDetailsPage from "./Pages/ItemDetailsPage.jsx";
 import ProfilePage from './Pages/ProfilePage.jsx';
 import AdminTemplatePage from "./Pages/AdminTemplatePage.jsx";
@@ -23,7 +23,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="/Configurator" element={<ConfigurationPage/>}/>
-                <Route path="/Items" element={<ItemOverview/>}/>
+                <Route path="/Items" element={<ItemSelectionOverview/>}/>
                 <Route path="/Admin" element={<AdminPage/>}/>
                 <Route path="/Homepage" element={<HomePage/>}/>
                 <Route path="/profile" element={<ProfilePage />} />

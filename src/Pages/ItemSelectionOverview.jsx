@@ -1,5 +1,5 @@
 
-import  ListOfItems  from '../components/configuratorOverview/ListOfItems.jsx';
+import  ListOfItemSelections  from '../components/configuratorOverview/ListOfItemSelections.jsx';
 import Grid from "@mui/material/Grid2";
 import {
     Accordion,
@@ -22,7 +22,7 @@ function load(key) {
     return items != null ? JSON.parse(items) : [];
 }
 
-function ItemOverview() {
+function ItemSelectionOverview() {
     const [searchTerm, setSearchTerm] = useState([]);
     const [items] = useState(() => load('items'));
     const navigate = useNavigate();
@@ -102,7 +102,7 @@ function ItemOverview() {
                         ))}
                     </Grid>
                     <Grid size={8}>
-                        <ListOfItems onSelect={onSelect} category={category}/>
+                        <ListOfItemSelections onSelect={onSelect} category={category}/>
                     </Grid>
                 </Grid>
             </div>
@@ -110,4 +110,4 @@ function ItemOverview() {
     )
 }
 
-export default ItemOverview;
+export default ItemSelectionOverview;

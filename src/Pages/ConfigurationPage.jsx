@@ -1,4 +1,4 @@
-import ConfiguratorItem from "../components/ConfiguratorItem.jsx";
+import ConfiguratorItem from "../components/configuratorOverview/ConfiguratorItem.jsx";
 import {useEffect, useState} from "react";
 import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import "./CSS/ConfigurationPage.css";
@@ -8,7 +8,7 @@ function load(key, categories) {
     return items != null ? JSON.parse(items) : Object.fromEntries(categories.map(category => [category, { }]));
 }
 function loadCategories() {
-    const categories = ['CPU', 'Video Card', 'Memory', 'Storage', 'Motherboard', 'Powersupply', 'Case', 'Cooling'];
+    const categories = ['Processoren','VideoKaarten','Moederborden','Geheugenmodules'];
     return categories;
 }
 
@@ -28,10 +28,12 @@ function ConfigurationPage() {
         }
         setLoading(false);
     }, []);
+
     useEffect(() => {
-        const price = Object.values(items).reduce((total, item) => total + (item.price || 0), 0);
+        const price = Object.values(items).reduce((total, item) => total + (item.part && item.part.price ? parseFloat(item.part.price) : 0), 0);
         setTotalPrice(price);
     }, [items]);
+
     function handleSubmit() {
         console.log('Saving configuration:', items);
     }

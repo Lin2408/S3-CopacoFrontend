@@ -11,7 +11,7 @@ const parts = [
 ];
 
 
-function ListOfItems({onSelect,category}){
+function ListOfItemSelections({onSelect,category}){
     const [items,setItems] = useState([]);
     useEffect(() => {
         const getItems = async () => {
@@ -52,4 +52,4 @@ function ListOfItems({onSelect,category}){
 
 }
 
-export default ListOfItems;
+export default ListOfItemSelections;

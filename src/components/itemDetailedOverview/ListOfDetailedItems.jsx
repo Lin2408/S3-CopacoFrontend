@@ -1,7 +1,7 @@
 import {Fragment, useEffect, useState} from "react";
 import DetailedItem from "./DetailedItem.jsx";
 import * as React from "react";
-import {fetchItems} from "../Apis/Get-Items.service.js";
+import {fetchItems} from "../../Apis/Get-Items.service.js";
 
 const parts = [
     { id: 1, name: 'HPE Intel Xeon‑Silver 4514Y', code: 'HPE-P67092-B21', details: [{title: "Memory", description:"30mb"},{title: "Clock-speed", description: "2 GHz"}], price: 500 },

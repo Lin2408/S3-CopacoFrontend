@@ -1,6 +1,6 @@
 import {NavLink} from "react-router-dom";
 import {Fragment} from "react";
-import "../Pages/CSS/DetailedItemOverview.css";
+import "../../Pages/CSS/DetailedItemOverview.css";
 
 function DetailedItem( { name, code, details, price  }) {
 

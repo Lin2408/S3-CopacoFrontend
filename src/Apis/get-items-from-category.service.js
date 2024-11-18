@@ -3,7 +3,7 @@ import {callExternalApi} from "./external-api.service.js";
 const fetchItemsByCategory = async (category) => {
 
         const config = {
-            url: `http://localhost:6060/categories?category=${category}`,
+            url: `http://localhost:6060/items?category=${category}`,
             method: "GET",
             headers: {
                 "content-type": "application/json",
@@ -16,6 +16,7 @@ const fetchItemsByCategory = async (category) => {
             error,
         };
     }
+    export { fetchItemsByCategory };
 
 const getItemsFromCategories = async () => {
     const categories = ['cpu', 'gpu', 'motherboard', 'ram'];

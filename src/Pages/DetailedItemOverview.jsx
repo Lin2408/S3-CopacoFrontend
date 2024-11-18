@@ -9,9 +9,10 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {useState} from "react";
-import ListOfDetailedItems from "../components/ListOfDetailedItems.jsx";
+import {useEffect, useState} from "react";
+import ListOfDetailedItems from "../components/itemDetailedOverview/ListOfDetailedItems.jsx";
 import "../Pages/CSS/DetailedItemOverview.css"
+import {fetchCategories} from "../Apis/get-item-categories.service.js";
 
 
 const filterData = [
@@ -22,9 +23,27 @@ const filterData = [
 
 function DetailedItemOverview() {
     const [searchTerm, setSearchTerm] = useState([]);
-    const categories = ['CPU', 'Video Card', 'Memory', 'Storage', 'Motherboard', 'Powersupply', 'Case', 'Cooling'];
+    const [categoryOptions, setCategoryOptions] = useState([]);
     const [categorySelection, setCategorySelection] = useState("CPU");
+    useEffect(() => {
+        const getCategories = async () => {
+            try {
+                const data = await fetchCategories();
+                console.log("dataaaaaa",data)
+                if(data.data.items.length === 0){
+                        setCategoryOptions(['CPU', 'Video Card', 'Memory', 'Storage', 'Motherboard', 'Powersupply', 'Case', 'Cooling'])
+                    }else{
+                    setCategoryOptions(data.data.items);
 
+                }
+                    console.log(categoryOptions)
+                } catch (error) {
+                console.error("Error fetching categories:", error);
+                }
+
+        };
+        getCategories();
+    }, []);
 
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
@@ -82,7 +101,7 @@ function DetailedItemOverview() {
                                     defaultValue={categorySelection}
                                     name="radio-buttons-group"
                                 >
-                                    {categories.map((category, index) => (
+                                    {categoryOptions.map((category, index) => (
                                         <FormControlLabel key={index} value={category} control={<Radio onChange={handleCategoryChange}/>} label={category}/>
                                     ))}
                                 </RadioGroup>
