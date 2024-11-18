@@ -1,5 +1,5 @@
 
-import  ListOfItems  from '../components/listOfItems.jsx';
+import  ListOfItems  from '../components/configuratorOverview/ListOfItems.jsx';
 import Grid from "@mui/material/Grid2";
 import {
     Accordion,
@@ -24,10 +24,10 @@ function load(key) {
 
 function ItemOverview() {
     const [searchTerm, setSearchTerm] = useState([]);
-    const [items, setItems] = useState(() => load('items'));
+    const [items] = useState(() => load('items'));
     const navigate = useNavigate();
     const { state } = useLocation();
-    const category = state?.category || 'item';
+    const category = state?.category || 'Videokaarten';
 
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
@@ -39,18 +39,14 @@ function ItemOverview() {
         }
     };
 
-    const onSelect = (id, itemDetails) => {
-        const newItem = { id, ...itemDetails };
-        setItems(prevItems => {
-            const updatedItems = {
-                ...prevItems,
-                [category]: newItem
-            };
-            sessionStorage.setItem('items', JSON.stringify(updatedItems));
-            return updatedItems;
-        });
+    const onSelect = (part) => {
+        const newItem = {part};
+        const updatedItems = {
+            ...items,
+            [category]: newItem
+        };
+        sessionStorage.setItem('items', JSON.stringify(updatedItems));
         navigate('/Configurator');
-
     };
 
     return (
@@ -106,7 +102,7 @@ function ItemOverview() {
                         ))}
                     </Grid>
                     <Grid size={8}>
-                        <ListOfItems onSelect={onSelect}/>
+                        <ListOfItems onSelect={onSelect} category={category}/>
                     </Grid>
                 </Grid>
             </div>
