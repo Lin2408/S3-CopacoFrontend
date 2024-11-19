@@ -2,9 +2,9 @@ import Grid from "@mui/material/Grid2";
 import {
     Accordion,
     AccordionDetails,
-    AccordionSummary, Checkbox, FormControlLabel,
+    AccordionSummary, Autocomplete, Checkbox, FormControlLabel,
     FormGroup,
-    InputAdornment, Radio, RadioGroup,
+    InputAdornment, Popper, Radio, RadioGroup,
     TextField
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,29 +21,29 @@ const filterData = [
 
 ]
 
-function DetailedItemOverview() {
+function DetailedItemsOverview() {
     const [searchTerm, setSearchTerm] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
-    const [categorySelection, setCategorySelection] = useState("CPU");
+    const [inputValue, setInputValue] = useState('');
+    const [categorySelection, setCategorySelection] = useState(null);
     useEffect(() => {
         const getCategories = async () => {
             try {
                 const data = await fetchCategories();
-                console.log("dataaaaaa",data)
-                if(data.data.items.length === 0){
-                        setCategoryOptions(['CPU', 'Video Card', 'Memory', 'Storage', 'Motherboard', 'Powersupply', 'Case', 'Cooling'])
+                if(data.length === 0){
+                    console.log("no data")
+                    setCategoryOptions(['Processoren','VideoKaarten','Moederborden','Geheugenmodules'])
                     }else{
-                    setCategoryOptions(data.data.items);
-
-                }
-                    console.log(categoryOptions)
+                    setCategorySelection(data.data.categories.find(option => option.value === 'Processoren'));
+                    setCategoryOptions(data.data.categories);
+                    }
                 } catch (error) {
                 console.error("Error fetching categories:", error);
                 }
-
         };
         getCategories();
     }, []);
+
 
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
@@ -54,12 +54,15 @@ function DetailedItemOverview() {
             handleSearch();
         }
     };
-    const handleCategoryChange = (event) => {
-        setCategorySelection(event.target.value);
+    const handleCategoryChange = (event, value) => {
+        if(!value){
+            return;
+        }
+        setCategorySelection(value);
     }
     return (
     <div>
-        <h1>{categorySelection}</h1>
+        <h1>{categorySelection ? categorySelection.value : "Item overview"}</h1>
         <div className="item-overview">
             <Grid container spacing={5}>
                 <Grid size={3} className="filter-bar">
@@ -96,15 +99,18 @@ function DetailedItemOverview() {
                         </div>
                         <div className="filter-content">
                             <AccordionDetails>
-                                <RadioGroup
-                                    aria-labelledby="demo-radio-buttons-group-label"
-                                    defaultValue={categorySelection}
-                                    name="radio-buttons-group"
-                                >
-                                    {categoryOptions.map((category, index) => (
-                                        <FormControlLabel key={index} value={category} control={<Radio onChange={handleCategoryChange}/>} label={category}/>
-                                    ))}
-                                </RadioGroup>
+                                <Autocomplete
+                                    options={categoryOptions}
+                                    getOptionLabel={(option) => option.value}
+                                    onChange={handleCategoryChange}
+                                    inputValue={inputValue}
+                                    onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
+                                    value={categorySelection ? categorySelection : null}
+                                    renderInput={(params) => (
+                                        <TextField {...params} variant="outlined"  placeholder="Select category" />
+                                    )}
+                                    sx={{mt: 1 }}
+                                />
 
                             </AccordionDetails>
                         </div>
@@ -123,6 +129,7 @@ function DetailedItemOverview() {
                                 </AccordionSummary>
                             </div>
                             <div className="filter-content">
+
                                 <AccordionDetails>
                                     <FormGroup>
                                         {filter.options.map((option, index) => (
@@ -130,7 +137,6 @@ function DetailedItemOverview() {
                                                               label={option.name}/>
                                         ))}
                                     </FormGroup>
-
                                 </AccordionDetails>
                             </div>
 
@@ -138,7 +144,7 @@ function DetailedItemOverview() {
                     ))}
                 </Grid>
                 <Grid size={8}>
-                    <ListOfDetailedItems />
+                    <ListOfDetailedItems selectedCategory={categorySelection}/>
                 </Grid>
             </Grid>
         </div>
@@ -147,4 +153,4 @@ function DetailedItemOverview() {
 )
 }
 
-export default DetailedItemOverview;
+export default DetailedItemsOverview;

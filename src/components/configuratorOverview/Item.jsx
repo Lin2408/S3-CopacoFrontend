@@ -1,5 +1,7 @@
 import {NavLink} from "react-router-dom";
 import { Fragment } from 'react';
+import placeholder from "../../assets/placeholder.png";
+
 
 function Item({ part, onSelect}) {
 
@@ -7,8 +9,8 @@ function Item({ part, onSelect}) {
 
         <div className="item">
             <NavLink to="/Item">
-                <img src={part.image}
-                    alt="placeholder"/>
+                <img src={part.image ? part.image : placeholder}
+                    alt="item image"/>
             </NavLink>
             <div className="item-content">
                 <div className="item-top">

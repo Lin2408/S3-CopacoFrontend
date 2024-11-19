@@ -10,7 +10,7 @@ import ProfilePage from './Pages/ProfilePage.jsx';
 import AdminTemplatePage from "./Pages/AdminTemplatePage.jsx";
 import PrebuildTemplatesPage from './Pages/PrebuildTemplatesPage.jsx';
 import ConfigurationPage from "./Pages/ConfigurationPage.jsx";
-import DetailedItemOverview from "./Pages/DetailedItemOverview.jsx";
+import DetailedItemsOverview from "./Pages/DetailedItemsOverview.jsx";
 
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
                 <Route path="/Item" element={<ItemDetailsPage/>}/>
                 <Route path="/AdminTemplate" element={<AdminTemplatePage/>}/>
                 <Route path="/PrebuildTemplatesPage" element={<PrebuildTemplatesPage/>}/>
-                <Route path="/ItemsDetailed" element={<DetailedItemOverview/>}/>
+                <Route path="/ItemsDetailed" element={<DetailedItemsOverview/>}/>
                 <Route path="/adminConfig" element={<AdminPage/>}/>
             </Routes>
         </Router>
