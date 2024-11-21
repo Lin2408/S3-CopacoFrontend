@@ -9,7 +9,7 @@ function DetailedItem({image, name, manufacturer, price, specifications}) {
         <div className="itemDI">
             <NavLink to="/Item">
                 <img
-                    src={image ? image : placeholder}
+                    src={image && !image.includes('https://inishop.com') ? image : placeholder}
                     alt="item image"/>
             </NavLink>
             <div className="item-content">
