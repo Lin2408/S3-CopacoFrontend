@@ -1,16 +1,22 @@
 const BASE_URL = 'http://localhost:6060/items';
 import {callExternalApi} from "./external-api.service.js";
-const fetchItemsByCategory = async (category) => {
-
+const fetchItemsByCategory = async (getItemByCategoryRequest) => {
+    const queryString = new URLSearchParams({
+        category: getItemByCategoryRequest.category,
+        page: getItemByCategoryRequest.page,
+        itemPerPage: getItemByCategoryRequest.itemPerPage,
+    }).toString();
+console.log("test", queryString)
         const config = {
-            url: `http://localhost:6060/items?category=${category}`,
+            url: `http://localhost:6060/items/category?${queryString}`,
             method: "GET",
             headers: {
                 "content-type": "application/json",
             },
-        }
+}
+        console.log("config", config)
         const { data, error } = await callExternalApi({ config });
-        console.log(data)
+        console.log("received", data)
         return {
             data: data || null,
             error,
