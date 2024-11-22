@@ -1,15 +1,10 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Typography,
     TextField,
     Button,
-    Checkbox,
-    FormControlLabel,
     Autocomplete,
-    List,
-    ListItem,
-    ListItemText,
     Card,
     CardContent,
 } from '@mui/material';
@@ -17,30 +12,36 @@ import { fetchCategories } from '/src/Apis/get-categories.service.js';
 import './CategoriesPage.css';
 
 const CategoriesPage = () => {
-    const [categories, setCategories] = useState([]);
+    const [categories1, setCategories1] = useState([]);
+    const [categories2, setCategories2] = useState([]);
     const [selectedCategory1, setSelectedCategory1] = useState(null);
     const [selectedCategory2, setSelectedCategory2] = useState(null);
-    const [specifications] = useState(['Spec 1', 'Spec 2', 'Spec 3', 'Spec 4']);
-    const [specification1, setSpecification1] = useState('');
-    const [specification2, setSpecification2] = useState('');
-    const [match, setMatch] = useState(null);
+    const [inputValue1, setInputValue1] = useState('');
+    const [inputValue2, setInputValue2] = useState('');
+
+    const fetchCategoriesData = async (query, setCategories) => {
+        const { data, error } = await fetchCategories();
+        if (data) {
+            const filteredCategories = data.categories.filter(
+                (category) => category.value && category.value.toLowerCase().includes(query.toLowerCase())
+            );
+            setCategories(filteredCategories);
+        } else {
+            console.error('Error fetching categories:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchCategoriesData = async () => {
-            const { data, error } = await fetchCategories();
-            if (data) {
-                setCategories(data);
-            } else {
-                console.error('Error fetching categories:', error);
-            }
-        };
+        if (inputValue1.length >= 3) {
+            fetchCategoriesData(inputValue1, setCategories1);
+        }
+    }, [inputValue1]);
 
-        fetchCategoriesData();
-    }, []);
-
-    const handleCheckMatch = () => {
-        setMatch(specification1 === specification2);
-    };
+    useEffect(() => {
+        if (inputValue2.length >= 3) {
+            fetchCategoriesData(inputValue2, setCategories2);
+        }
+    }, [inputValue2]);
 
     return (
         <Box className="categories-container">
@@ -62,88 +63,42 @@ const CategoriesPage = () => {
                     <Box className="inner-card-container">
                         <Box className="categories-box">
                             <Autocomplete
-                                options={categories.map((category) => category.name)}
+                                options={categories1}
+                                getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory1}
                                 onChange={(e, value) => setSelectedCategory1(value)}
+                                inputValue={inputValue1}
+                                onInputChange={(e, value) => setInputValue1(value)}
                                 renderInput={(params) => (
-                                    <TextField {...params} label="Autofill Categories" variant="outlined" />
+                                    <TextField {...params} label="Select Category 1" variant="outlined" />
                                 )}
-                                className="autocomplete"
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
-                            <TextField
-                                label="Autofill unique specifications"
-                                variant="outlined"
-                                value={specification1}
-                                onChange={(e) => setSpecification1(e.target.value)}
-                                className="specification-input"
-                            />
-                            <FormControlLabel
-                                control={<Checkbox />}
-                                label="Weird naming scheme"
-                            />
-                            <List className="list-box">
-                                {specifications.map((spec, index) => (
-                                    <ListItem
-                                        key={index}
-                                        button
-                                        selected={specification1 === spec}
-                                        onClick={() => setSpecification1(spec)}
-                                    >
-                                        <ListItemText primary={spec} />
-                                    </ListItem>
-                                ))}
-                            </List>
                         </Box>
 
                         <Box className="categories-box">
                             <Autocomplete
-                                options={categories.map((category) => category.name)}
+                                options={categories2}
+                                getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory2}
                                 onChange={(e, value) => setSelectedCategory2(value)}
+                                inputValue={inputValue2}
+                                onInputChange={(e, value) => setInputValue2(value)}
                                 renderInput={(params) => (
-                                    <TextField {...params} label="Autofill Categories" variant="outlined" />
+                                    <TextField {...params} label="Select Category 2" variant="outlined" />
                                 )}
-                                className="autocomplete"
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
-                            <TextField
-                                label="Autofill unique specifications"
-                                variant="outlined"
-                                value={specification2}
-                                onChange={(e) => setSpecification2(e.target.value)}
-                                className="specification-input"
-                            />
-                            <FormControlLabel
-                                control={<Checkbox />}
-                                label="Weird naming scheme"
-                            />
-                            <List className="list-box">
-                                {specifications.map((spec, index) => (
-                                    <ListItem
-                                        key={index}
-                                        button
-                                        selected={specification2 === spec}
-                                        onClick={() => setSpecification2(spec)}
-                                    >
-                                        <ListItemText primary={spec} />
-                                    </ListItem>
-                                ))}
-                            </List>
                         </Box>
                     </Box>
 
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={handleCheckMatch}
                         className="check-button"
                     >
-                        Check Match
+                        Submit Categories
                     </Button>
-                    {match !== null && (
-                        <Typography className="result-message">
-                            {match ? 'Specifications Match!' : 'Specifications Do Not Match.'}
-                        </Typography>
-                    )}
                 </CardContent>
             </Card>
         </Box>

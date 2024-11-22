@@ -2,9 +2,9 @@ import axios from 'axios';
 
 export async function fetchCategories() {
     try {
-        const response = await axios.get('http://localhost:8080/categories');
+        const response = await axios.get('http://localhost:6060/categories');
         return {
-            data: response.data.Categories || [],
+            data: response.data || [],
             error: null,
         };
     } catch (error) {
