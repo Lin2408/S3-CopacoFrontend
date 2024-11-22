@@ -9,7 +9,8 @@ import {
     CardContent,
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
-import { fetchSpecifications } from '/src/Apis/get-specifications-service.js';
+import { fetchItemsByCategory } from '/src/Apis/get-items-from-category.service.js';
+import { fetchSpecifications } from "../Apis/get-specifications-service.js";
 import './CategoriesPage.css';
 
 const removeDuplicatesByValue = (categories) => {
@@ -30,10 +31,10 @@ const CategoriesPage = () => {
     const [specifications2, setSpecifications2] = useState([]);
     const [selectedCategory1, setSelectedCategory1] = useState(null);
     const [selectedCategory2, setSelectedCategory2] = useState(null);
-    const [inputValue1, setInputValue1] = useState('');
-    const [inputValue2, setInputValue2] = useState('');
     const [selectedSpecification1, setSelectedSpecification1] = useState(null);
     const [selectedSpecification2, setSelectedSpecification2] = useState(null);
+    const [inputValue1, setInputValue1] = useState('');
+    const [inputValue2, setInputValue2] = useState('');
 
     const fetchCategoriesData = async (query, setCategories) => {
         const { data, error } = await fetchCategories();
@@ -47,15 +48,40 @@ const CategoriesPage = () => {
         }
     };
 
-    const fetchCategorySpecifications = async (categoryId, setSpecifications) => {
-        if (categoryId) {
-            const { data, error } = await fetchSpecifications(categoryId);
-            if (data) {
-                setSpecifications(data.specifications);
-            } else {
-                console.error('Error fetching specifications:', error);
+    const fetchItemsAndSpecifications = async (category, setSpecifications) => {
+        const itemsData = await fetchItemsByCategory(category.id);
+
+        console.log('API Response:', itemsData);
+
+        const categoryItems = itemsData.data?.items;
+
+        if (!categoryItems) {
+            console.error('No items found for category:', category);
+            return;
+        }
+
+        if (!Array.isArray(categoryItems)) {
+            console.error('Expected an array of items, but received:', categoryItems);
+            return;
+        }
+
+        const itemIds = categoryItems.map(item => item.id);
+
+        const specifications = [];
+        for (const itemId of itemIds) {
+            const { data: specsData, error: specsError } = await fetchSpecifications(itemId);
+            if (specsError) {
+                console.error(`Error fetching specifications for item ${itemId}:`, specsError);
+                continue;
+            }
+
+            if (specsData && specsData.specifications) {
+                specifications.push(...specsData.specifications);
             }
         }
+
+        const uniqueSpecifications = removeDuplicatesByValue(specifications);
+        setSpecifications(uniqueSpecifications);
     };
 
     useEffect(() => {
@@ -72,13 +98,13 @@ const CategoriesPage = () => {
 
     useEffect(() => {
         if (selectedCategory1) {
-            fetchCategorySpecifications(selectedCategory1.id, setSpecifications1);
+            fetchItemsAndSpecifications(selectedCategory1.value, setSpecifications1); // Fetch items and specifications for selected category 1
         }
     }, [selectedCategory1]);
 
     useEffect(() => {
         if (selectedCategory2) {
-            fetchCategorySpecifications(selectedCategory2.id, setSpecifications2);
+            fetchItemsAndSpecifications(selectedCategory2.value, setSpecifications2); // Fetch items and specifications for selected category 2
         }
     }, [selectedCategory2]);
 
@@ -117,7 +143,7 @@ const CategoriesPage = () => {
                                 )}
                                 isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
-                            {selectedCategory1 && specifications1.length > 0 && (
+                            {selectedCategory1 && (
                                 <Autocomplete
                                     options={specifications1}
                                     getOptionLabel={(option) => option.name || ''}
@@ -147,7 +173,7 @@ const CategoriesPage = () => {
                                 )}
                                 isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
-                            {selectedCategory2 && specifications2.length > 0 && (
+                            {selectedCategory2 && (
                                 <Autocomplete
                                     options={specifications2}
                                     getOptionLabel={(option) => option.name || ''}
