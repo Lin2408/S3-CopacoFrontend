@@ -12,6 +12,17 @@ import { fetchCategories } from '/src/Apis/get-categories.service.js';
 import { fetchSpecifications } from '/src/Apis/get-specifications-service.js';
 import './CategoriesPage.css';
 
+const removeDuplicatesByValue = (categories) => {
+    const seen = new Set();
+    return categories.filter((category) => {
+        if (seen.has(category.value)) {
+            return false;
+        }
+        seen.add(category.value);
+        return true;
+    });
+};
+
 const CategoriesPage = () => {
     const [categories1, setCategories1] = useState([]);
     const [categories2, setCategories2] = useState([]);
@@ -30,7 +41,7 @@ const CategoriesPage = () => {
             const filteredCategories = data.categories.filter(
                 (category) => category.value && category.value.toLowerCase().includes(query.toLowerCase())
             );
-            setCategories(filteredCategories);
+            setCategories(removeDuplicatesByValue(filteredCategories));
         } else {
             console.error('Error fetching categories:', error);
         }
@@ -71,33 +82,6 @@ const CategoriesPage = () => {
         }
     }, [selectedCategory2]);
 
-    const handleCategory1Change = (e, value) => {
-        setSelectedCategory1(value);
-        if (value) {
-            setCategories2((prevCategories) =>
-                prevCategories.filter((category) => category.value !== value.value)
-            );
-        }
-    };
-
-    const handleCategory2Change = (e, value) => {
-        setSelectedCategory2(value);
-        if (value) {
-            setCategories1((prevCategories) =>
-                prevCategories.filter((category) => category.value !== value.value)
-            );
-        }
-    };
-
-    // Remove duplicates based on 'value' between categories1 and categories2
-    const filteredCategories1 = categories1.filter(
-        (category1) => !categories2.some((category2) => category1.value === category2.value)
-    );
-
-    const filteredCategories2 = categories2.filter(
-        (category2) => !categories1.some((category1) => category1.value === category2.value)
-    );
-
     return (
         <Box className="categories-container">
             <Card className="outer-card">
@@ -119,22 +103,19 @@ const CategoriesPage = () => {
                     <Box className="category-spec-container">
                         <Box className="category-box">
                             <Autocomplete
-                                options={filteredCategories1}
+                                options={categories1.filter(
+                                    (category) =>
+                                        !selectedCategory2 || category.value !== selectedCategory2.value
+                                )}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory1}
-                                onChange={handleCategory1Change}
+                                onChange={(e, value) => setSelectedCategory1(value)}
                                 inputValue={inputValue1}
-                                onInputChange={(e, value) => {
-                                    setInputValue1(value);
-                                    if (value.length >= 3) {
-                                        fetchCategoriesData(value, setCategories1);
-                                    }
-                                }}
+                                onInputChange={(e, value) => setInputValue1(value)}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Select Category 1" variant="outlined" />
                                 )}
                                 isOptionEqualToValue={(option, value) => option.id === value.id}
-                                key={(option) => option.id}
                             />
                             {selectedCategory1 && specifications1.length > 0 && (
                                 <Autocomplete
@@ -146,29 +127,25 @@ const CategoriesPage = () => {
                                         <TextField {...params} label="Select Specification 1" variant="outlined" />
                                     )}
                                     isOptionEqualToValue={(option, value) => option.id === value.id}
-                                    key={(option) => option.id}
                                 />
                             )}
                         </Box>
 
                         <Box className="category-box">
                             <Autocomplete
-                                options={filteredCategories2}
+                                options={categories2.filter(
+                                    (category) =>
+                                        !selectedCategory1 || category.value !== selectedCategory1.value
+                                )}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory2}
-                                onChange={handleCategory2Change}
+                                onChange={(e, value) => setSelectedCategory2(value)}
                                 inputValue={inputValue2}
-                                onInputChange={(e, value) => {
-                                    setInputValue2(value);
-                                    if (value.length >= 3) {
-                                        fetchCategoriesData(value, setCategories2);
-                                    }
-                                }}
+                                onInputChange={(e, value) => setInputValue2(value)}
                                 renderInput={(params) => (
                                     <TextField {...params} label="Select Category 2" variant="outlined" />
                                 )}
                                 isOptionEqualToValue={(option, value) => option.id === value.id}
-                                key={(option) => option.id}
                             />
                             {selectedCategory2 && specifications2.length > 0 && (
                                 <Autocomplete
@@ -180,17 +157,12 @@ const CategoriesPage = () => {
                                         <TextField {...params} label="Select Specification 2" variant="outlined" />
                                     )}
                                     isOptionEqualToValue={(option, value) => option.id === value.id}
-                                    key={(option) => option.id}
                                 />
                             )}
                         </Box>
                     </Box>
 
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className="check-button"
-                    >
+                    <Button variant="contained" color="primary" className="check-button">
                         Submit Categories
                     </Button>
                 </CardContent>
