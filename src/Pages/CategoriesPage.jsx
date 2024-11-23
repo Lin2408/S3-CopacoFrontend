@@ -49,25 +49,26 @@ const CategoriesPage = () => {
     };
 
     const fetchItemsAndSpecifications = async (category, setSpecifications) => {
-        const itemsData = await fetchItemsByCategory(category.id);
+        if (!category || !category.value) {
+            console.error('Invalid category:', category);
+            return;
+        }
+
+        const itemsData = await fetchItemsByCategory(category.value);
 
         console.log('API Response:', itemsData);
 
         const categoryItems = itemsData.data?.items;
 
-        if (!categoryItems) {
-            console.error('No items found for category:', category);
+        if (!categoryItems || !Array.isArray(categoryItems)) {
+            console.error('No valid items found for category:', category.value);
             return;
         }
 
-        if (!Array.isArray(categoryItems)) {
-            console.error('Expected an array of items, but received:', categoryItems);
-            return;
-        }
-
-        const itemIds = categoryItems.map(item => item.id);
+        const itemIds = categoryItems.map((item) => item.value);
 
         const specifications = [];
+
         for (const itemId of itemIds) {
             const { data: specsData, error: specsError } = await fetchSpecifications(itemId);
             if (specsError) {
@@ -75,7 +76,7 @@ const CategoriesPage = () => {
                 continue;
             }
 
-            if (specsData && specsData.specifications) {
+            if (specsData?.specifications) {
                 specifications.push(...specsData.specifications);
             }
         }
@@ -85,26 +86,26 @@ const CategoriesPage = () => {
     };
 
     useEffect(() => {
-        if (inputValue1.length >= 3) {
+        if (inputValue1.length >= 2) {
             fetchCategoriesData(inputValue1, setCategories1);
         }
     }, [inputValue1]);
 
     useEffect(() => {
-        if (inputValue2.length >= 3) {
+        if (inputValue2.length >= 2) {
             fetchCategoriesData(inputValue2, setCategories2);
         }
     }, [inputValue2]);
 
     useEffect(() => {
-        if (selectedCategory1) {
-            fetchItemsAndSpecifications(selectedCategory1.value, setSpecifications1); // Fetch items and specifications for selected category 1
+        if (selectedCategory1 && selectedCategory1.value) {
+            fetchItemsAndSpecifications(selectedCategory1, setSpecifications1);
         }
     }, [selectedCategory1]);
 
     useEffect(() => {
-        if (selectedCategory2) {
-            fetchItemsAndSpecifications(selectedCategory2.value, setSpecifications2); // Fetch items and specifications for selected category 2
+        if (selectedCategory2 && selectedCategory2.value) {
+            fetchItemsAndSpecifications(selectedCategory2, setSpecifications2);
         }
     }, [selectedCategory2]);
 
@@ -141,7 +142,7 @@ const CategoriesPage = () => {
                                 renderInput={(params) => (
                                     <TextField {...params} label="Select Category 1" variant="outlined" />
                                 )}
-                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                isOptionEqualToValue={(option, value) => option.value === value.value}
                             />
                             {selectedCategory1 && (
                                 <Autocomplete
@@ -152,7 +153,7 @@ const CategoriesPage = () => {
                                     renderInput={(params) => (
                                         <TextField {...params} label="Select Specification 1" variant="outlined" />
                                     )}
-                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    isOptionEqualToValue={(option, value) => option.name === value.name}
                                 />
                             )}
                         </Box>
@@ -171,7 +172,7 @@ const CategoriesPage = () => {
                                 renderInput={(params) => (
                                     <TextField {...params} label="Select Category 2" variant="outlined" />
                                 )}
-                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                isOptionEqualToValue={(option, value) => option.value === value.value}
                             />
                             {selectedCategory2 && (
                                 <Autocomplete
@@ -182,7 +183,7 @@ const CategoriesPage = () => {
                                     renderInput={(params) => (
                                         <TextField {...params} label="Select Specification 2" variant="outlined" />
                                     )}
-                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    isOptionEqualToValue={(option, value) => option.name === value.name}
                                 />
                             )}
                         </Box>
