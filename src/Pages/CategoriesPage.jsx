@@ -56,32 +56,27 @@ const CategoriesPage = () => {
 
         const itemsData = await fetchItemsByCategory(category.value);
 
-        console.log('API Response:', itemsData);
 
         const categoryItems = itemsData.data?.items;
 
-        if (!categoryItems || !Array.isArray(categoryItems)) {
-            console.error('No valid items found for category:', category.value);
-            return;
-        }
+        const itemIds = categoryItems.map((item) => item.id);
 
-        const itemIds = categoryItems.map((item) => item.value);
-
-        const specifications = [];
+        const allSpecifications = [];
 
         for (const itemId of itemIds) {
             const { data: specsData, error: specsError } = await fetchSpecifications(itemId);
+
             if (specsError) {
                 console.error(`Error fetching specifications for item ${itemId}:`, specsError);
                 continue;
             }
 
             if (specsData?.specifications) {
-                specifications.push(...specsData.specifications);
+                allSpecifications.push(...specsData.specifications);
             }
         }
 
-        const uniqueSpecifications = removeDuplicatesByValue(specifications);
+        const uniqueSpecifications = removeDuplicatesByValue(allSpecifications);
         setSpecifications(uniqueSpecifications);
     };
 
