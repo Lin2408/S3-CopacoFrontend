@@ -60,9 +60,16 @@
     padding: 10px;
 }
 
-.list-box .MuiListItem-root {
+.list-box .MuiListItemButton-root {
     padding: 10px;
     cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.list-box .MuiListItemButton-root:hover {
+    background-color: #1976d2;
+    color: white;
 }
 
 .list-box .MuiListItem-root.Mui-selected {

@@ -7,6 +7,12 @@ import {
     Autocomplete,
     Card,
     CardContent,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemButton,
+    Checkbox,
+    FormControlLabel,
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
 import { fetchItemsByCategory } from '/src/Apis/get-items-from-category.service.js';
@@ -35,6 +41,10 @@ const removeDuplicateSpecifications = (specifications) => {
     });
 };
 
+const isWeirdNamingScheme = (name) => {
+    return /[^a-zA-Z0-9\s]/.test(name);  // Match names with special characters, excluding letters, numbers, and spaces
+};
+
 const CategoriesPage = () => {
     const [categories1, setCategories1] = useState([]);
     const [categories2, setCategories2] = useState([]);
@@ -46,6 +56,8 @@ const CategoriesPage = () => {
     const [selectedSpecification2, setSelectedSpecification2] = useState(null);
     const [inputValue1, setInputValue1] = useState('');
     const [inputValue2, setInputValue2] = useState('');
+    const [filterWeirdNames1, setFilterWeirdNames1] = useState(false);
+    const [filterWeirdNames2, setFilterWeirdNames2] = useState(false);
 
     const fetchCategoriesData = async (query, setCategories) => {
         const { data, error } = await fetchCategories();
@@ -149,20 +161,48 @@ const CategoriesPage = () => {
                                 isOptionEqualToValue={(option, value) => option.value === value.value}
                             />
                             {selectedCategory1 && (
-                                <Autocomplete
-                                    options={specifications1.filter(
-                                        (spec) =>
-                                            !selectedSpecification2 ||
-                                            spec.name !== selectedSpecification2.name
+                                <>
+                                    <Autocomplete
+                                        options={specifications1.filter(
+                                            (spec) =>
+                                                !selectedSpecification2 ||
+                                                spec.name !== selectedSpecification2.name
+                                        )}
+                                        getOptionLabel={(option) => option.name || ''}
+                                        value={selectedSpecification1}
+                                        onChange={(e, value) => setSelectedSpecification1(value)}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Select Specification 1" variant="outlined" />
+                                        )}
+                                        isOptionEqualToValue={(option, value) => option.name === value.name}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={filterWeirdNames1}
+                                                onChange={() => setFilterWeirdNames1((prev) => !prev)}
+                                            />
+                                        }
+                                        label="Filter weird names"
+                                    />
+                                    {selectedSpecification1 && (
+                                        <Box className="list-box">
+                                            <List>
+                                                {specifications1
+                                                    .filter((spec) =>
+                                                        filterWeirdNames1
+                                                            ? isWeirdNamingScheme(spec.name)
+                                                            : true
+                                                    )
+                                                    .map((spec, index) => (
+                                                        <ListItemButton key={index}>
+                                                            <ListItemText primary={spec.value || 'No value'} />
+                                                        </ListItemButton>
+                                                    ))}
+                                            </List>
+                                        </Box>
                                     )}
-                                    getOptionLabel={(option) => option.name || ''}
-                                    value={selectedSpecification1}
-                                    onChange={(e, value) => setSelectedSpecification1(value)}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Select Specification 1" variant="outlined" />
-                                    )}
-                                    isOptionEqualToValue={(option, value) => option.name === value.name}
-                                />
+                                </>
                             )}
                         </Box>
 
@@ -183,20 +223,48 @@ const CategoriesPage = () => {
                                 isOptionEqualToValue={(option, value) => option.value === value.value}
                             />
                             {selectedCategory2 && (
-                                <Autocomplete
-                                    options={specifications2.filter(
-                                        (spec) =>
-                                            !selectedSpecification1 ||
-                                            spec.name !== selectedSpecification1.name
+                                <>
+                                    <Autocomplete
+                                        options={specifications2.filter(
+                                            (spec) =>
+                                                !selectedSpecification1 ||
+                                                spec.name !== selectedSpecification1.name
+                                        )}
+                                        getOptionLabel={(option) => option.name || ''}
+                                        value={selectedSpecification2}
+                                        onChange={(e, value) => setSelectedSpecification2(value)}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Select Specification 2" variant="outlined" />
+                                        )}
+                                        isOptionEqualToValue={(option, value) => option.name === value.name}
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={filterWeirdNames2}
+                                                onChange={() => setFilterWeirdNames2((prev) => !prev)}
+                                            />
+                                        }
+                                        label="Filter weird names"
+                                    />
+                                    {selectedSpecification2 && (
+                                        <Box className="list-box">
+                                            <List>
+                                                {specifications2
+                                                    .filter((spec) =>
+                                                        filterWeirdNames2
+                                                            ? isWeirdNamingScheme(spec.name)
+                                                            : true
+                                                    )
+                                                    .map((spec, index) => (
+                                                        <ListItemButton key={index}>
+                                                            <ListItemText primary={spec.value || 'No value'} />
+                                                        </ListItemButton>
+                                                    ))}
+                                            </List>
+                                        </Box>
                                     )}
-                                    getOptionLabel={(option) => option.name || ''}
-                                    value={selectedSpecification2}
-                                    onChange={(e, value) => setSelectedSpecification2(value)}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Select Specification 2" variant="outlined" />
-                                    )}
-                                    isOptionEqualToValue={(option, value) => option.name === value.name}
-                                />
+                                </>
                             )}
                         </Box>
                     </Box>
