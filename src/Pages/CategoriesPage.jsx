@@ -24,6 +24,17 @@ const removeDuplicatesByValue = (categories) => {
     });
 };
 
+const removeDuplicateSpecifications = (specifications) => {
+    const seen = new Set();
+    return specifications.filter((spec) => {
+        if (seen.has(spec.name)) {
+            return false;
+        }
+        seen.add(spec.name);
+        return true;
+    });
+};
+
 const CategoriesPage = () => {
     const [categories1, setCategories1] = useState([]);
     const [categories2, setCategories2] = useState([]);
@@ -55,8 +66,6 @@ const CategoriesPage = () => {
         }
 
         const itemsData = await fetchItemsByCategory(category.value);
-
-
         const categoryItems = itemsData.data?.items;
 
         const itemIds = categoryItems.map((item) => item.id);
@@ -76,7 +85,7 @@ const CategoriesPage = () => {
             }
         }
 
-        const uniqueSpecifications = removeDuplicatesByValue(allSpecifications);
+        const uniqueSpecifications = removeDuplicateSpecifications(allSpecifications);
         setSpecifications(uniqueSpecifications);
     };
 
@@ -141,7 +150,11 @@ const CategoriesPage = () => {
                             />
                             {selectedCategory1 && (
                                 <Autocomplete
-                                    options={specifications1}
+                                    options={specifications1.filter(
+                                        (spec) =>
+                                            !selectedSpecification2 ||
+                                            spec.name !== selectedSpecification2.name
+                                    )}
                                     getOptionLabel={(option) => option.name || ''}
                                     value={selectedSpecification1}
                                     onChange={(e, value) => setSelectedSpecification1(value)}
@@ -171,7 +184,11 @@ const CategoriesPage = () => {
                             />
                             {selectedCategory2 && (
                                 <Autocomplete
-                                    options={specifications2}
+                                    options={specifications2.filter(
+                                        (spec) =>
+                                            !selectedSpecification1 ||
+                                            spec.name !== selectedSpecification1.name
+                                    )}
                                     getOptionLabel={(option) => option.name || ''}
                                     value={selectedSpecification2}
                                     onChange={(e, value) => setSelectedSpecification2(value)}
