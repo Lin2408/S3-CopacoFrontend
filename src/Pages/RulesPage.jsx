@@ -219,7 +219,7 @@ const RulesPage = () => {
                     </Box>
 
                     <Button variant="contained" color="primary" className="check-button">
-                        Submit Categories
+                        Submit Rule
                     </Button>
                 </CardContent>
             </Card>
