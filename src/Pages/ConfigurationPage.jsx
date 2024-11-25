@@ -29,6 +29,7 @@ function ConfigurationPage() {
             sessionStorage.setItem('items', JSON.stringify(items));
         }
         setLoading(false);
+        console.log('Items:', items);
     }, []);
 
     useEffect(() => {

@@ -1,6 +1,7 @@
 import {TableCell, TableRow} from "@mui/material";
 import {useEffect, useState} from "react";
 import { useNavigate } from 'react-router-dom';
+import placeholder from "../../assets/placeholder.png";
 
 function ConfiguratorItem({category, index, items, setItems, loading}) {
     const[item, setItem] = useState({});
@@ -51,7 +52,7 @@ function ConfiguratorItem({category, index, items, setItems, loading}) {
                   <>
                       <TableCell><span className="tableName">
                          {item.part.image ?
-                            <img src={item.part.image} alt="part"/> : null
+                            <img src={item.part.image && !item.part.image.includes('https://inishop.com') ? item.part.image : placeholder} alt="part"/> : null
                          }
                           <p>{item.part.name}</p>
                       </span></TableCell>

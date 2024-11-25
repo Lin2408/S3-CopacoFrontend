@@ -1,4 +1,3 @@
-
 import  ListOfItemSelections  from '../components/configuratorOverview/ListOfItemSelections.jsx';
 import Grid from "@mui/material/Grid2";
 import {
@@ -27,10 +26,12 @@ function ItemSelectionOverview() {
     const [items] = useState(() => load('items'));
     const navigate = useNavigate();
     const { state } = useLocation();
+    const [search, setSearch] = useState('');
     const category = state?.category || 'Videokaarten';
 
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
+        setSearch(searchTerm);
     };
 
     const handleKeyPress = (event) => {
@@ -102,7 +103,7 @@ function ItemSelectionOverview() {
                         ))}
                     </Grid>
                     <Grid size={8}>
-                        <ListOfItemSelections onSelect={onSelect} category={category}/>
+                        <ListOfItemSelections onSelect={onSelect} category={category} search={search}/>
                     </Grid>
                 </Grid>
             </div>

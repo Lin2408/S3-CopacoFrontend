@@ -4,7 +4,8 @@ import "../../Pages/CSS/ItemOverView.css";
 import {fetchItemsByCategory} from "../../Apis/get-items-from-category.service.js";
 import ItemPaginationButtons from "../ItemPaginationButtons.jsx";
 import * as React from "react";
-import {Alert, Box, CircularProgress} from "@mui/material";
+import {Alert, Box, CircularProgress, Typography} from "@mui/material";
+import SearchOffIcon from "@mui/icons-material/SearchOff";
 
 const parts = [
     {
@@ -38,7 +39,7 @@ const parts = [
 ];
 
 
-function ListOfItemSelections({onSelect, category}) {
+function ListOfItemSelections({onSelect, category, search}) {
     const [items, setItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(1);
@@ -48,7 +49,7 @@ function ListOfItemSelections({onSelect, category}) {
 
     useEffect(() => {
         setPage(1);
-    }, [category]);
+    }, [category, search]);
 
     useEffect(() => {
         if (category === null) {
@@ -59,7 +60,7 @@ function ListOfItemSelections({onSelect, category}) {
             try {
                 setLoading(true);
                 setError(null);
-                const data = await fetchItemsByCategory({category: category, itemPerPage: itemPerPage, page: page});
+                const data = await fetchItemsByCategory({category: category, itemPerPage: itemPerPage, page: page, searchString: search});
 
                 setItems(data.data.items);
                 setPageCount(Math.ceil(data.data.itemCount / itemPerPage));
@@ -71,11 +72,10 @@ function ListOfItemSelections({onSelect, category}) {
             }
         };
         getItems();
-    }, [page, category]);
+    }, [page, category, search]);
 
     function handlePageChange(event, value) {
         setPage(value);
-        console.log("pageOh", page)
         window.scrollTo(0, 0);
     }
 
@@ -114,7 +114,25 @@ function ListOfItemSelections({onSelect, category}) {
                     <ItemPaginationButtons page={page} pageCount={pageCount} handlePageChange={handlePageChange}/>
                 </>
             ) : (
-                <p>No items available.</p>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '50vh',
+                        textAlign: 'center',
+                        padding: 2,
+                    }}
+                >
+                    <SearchOffIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
+                    <Typography variant="h5" sx={{ mb: 1 }}>
+                        No Items Found
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                        Sorry, we couldn't find any items matching your search. Try again with different keywords.
+                    </Typography>
+                </Box>
             ))))}
         </>
     );

@@ -34,15 +34,6 @@ function DetailedItem({image, name, manufacturer, price, specifications}) {
                         </Fragment>
                     ))}
                 </p>
-                {/* <p className="itemDI-details">
-              {details.map((detail, index) => (
-                  <Fragment key={index}>
-                            <span className="details">
-                                <span className="detail-title">{detail.title}</span> {detail.description}</span>
-                      {index < details.length - 1 && <span className="item-divider">|</span>}
-                  </Fragment>
-              ))}
-          </p>*/}
 
             </div>
         </div>

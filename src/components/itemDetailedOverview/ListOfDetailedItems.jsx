@@ -59,7 +59,6 @@ const ListOfDetailedItems = ({selectedCategory, search}) => {
 
     function handlePageChange(event, value) {
         setPage(value);
-        console.log("pageOh", page)
         window.scrollTo(0, 0);
     }
 
