@@ -9,7 +9,6 @@ export async function fetchCategories() {
         },
     }
     const { data, error } = await callExternalApi({ config });
-    console.log(data)
     return {
         data: data || null,
         error,

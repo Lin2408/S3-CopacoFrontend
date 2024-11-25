@@ -1,5 +1,4 @@
-
-import  ListOfItems  from '../components/listOfItems.jsx';
+import  ListOfItemSelections  from '../components/configuratorOverview/ListOfItemSelections.jsx';
 import Grid from "@mui/material/Grid2";
 import {
     Accordion,
@@ -22,15 +21,17 @@ function load(key) {
     return items != null ? JSON.parse(items) : [];
 }
 
-function ItemOverview() {
+function ItemSelectionOverview() {
     const [searchTerm, setSearchTerm] = useState([]);
-    const [items, setItems] = useState(() => load('items'));
+    const [items] = useState(() => load('items'));
     const navigate = useNavigate();
     const { state } = useLocation();
-    const category = state?.category || 'item';
+    const [search, setSearch] = useState('');
+    const category = state?.category || '';
 
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
+        setSearch(searchTerm);
     };
 
     const handleKeyPress = (event) => {
@@ -39,18 +40,14 @@ function ItemOverview() {
         }
     };
 
-    const onSelect = (id, itemDetails) => {
-        const newItem = { id, ...itemDetails };
-        setItems(prevItems => {
-            const updatedItems = {
-                ...prevItems,
-                [category]: newItem
-            };
-            sessionStorage.setItem('items', JSON.stringify(updatedItems));
-            return updatedItems;
-        });
+    const onSelect = (part) => {
+        const newItem = {part};
+        const updatedItems = {
+            ...items,
+            [category]: newItem
+        };
+        sessionStorage.setItem('items', JSON.stringify(updatedItems));
         navigate('/Configurator');
-
     };
 
     return (
@@ -106,7 +103,7 @@ function ItemOverview() {
                         ))}
                     </Grid>
                     <Grid size={8}>
-                        <ListOfItems onSelect={onSelect}/>
+                        <ListOfItemSelections onSelect={onSelect} category={category} search={search}/>
                     </Grid>
                 </Grid>
             </div>
@@ -114,4 +111,4 @@ function ItemOverview() {
     )
 }
 
-export default ItemOverview;
+export default ItemSelectionOverview;
