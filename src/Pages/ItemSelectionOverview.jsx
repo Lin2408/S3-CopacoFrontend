@@ -27,7 +27,7 @@ function ItemSelectionOverview() {
     const navigate = useNavigate();
     const { state } = useLocation();
     const [search, setSearch] = useState('');
-    const category = state?.category || 'Videokaarten';
+    const category = state?.category || '';
 
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
