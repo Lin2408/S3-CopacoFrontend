@@ -2,8 +2,9 @@ import {Fragment, useEffect, useState} from "react";
 import DetailedItem from "./DetailedItem.jsx";
 import * as React from "react";
 import {fetchItemsByCategory} from "../../Apis/get-items-from-category.service.js";
-import {Alert, Box, CircularProgress, Pagination, Stack} from "@mui/material";
+import {Alert, Box, Button, CircularProgress, Typography} from "@mui/material";
 import ItemPaginationButtons from "../ItemPaginationButtons.jsx";
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 
 /*const parts = [
     { id: 1, name: 'HPE Intel Xeon‑Silver 4514Y', code: 'HPE-P67092-B21', details: [{title: "Memory", description:"30mb"},{title: "Clock-speed", description: "2 GHz"}], price: 500 },
@@ -12,7 +13,7 @@ import ItemPaginationButtons from "../ItemPaginationButtons.jsx";
     { id: 4, name: 'HPE Intel Xeon-Gold 6426Y', code: 'HPE-P49598-B21', details: [{title: "Memory", description:"30mb"},{title: "Clock-speed", description: "2 GHz"}], price: 500 },
 ];*/
 
-const ListOfDetailedItems = ({selectedCategory}) => {
+const ListOfDetailedItems = ({selectedCategory, search}) => {
     const [items, setItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(1);
@@ -22,7 +23,7 @@ const ListOfDetailedItems = ({selectedCategory}) => {
 
     useEffect(() => {
         setPage(1);
-    }, [selectedCategory]);
+    }, [selectedCategory, search]);
 
     useEffect(() => {
         if (selectedCategory === null) {
@@ -33,12 +34,16 @@ const ListOfDetailedItems = ({selectedCategory}) => {
             try {
                 setLoading(true);
                 setError(null);
-                const data = await fetchItemsByCategory({
+                console.log("search", search)
+                const request = {
                     category: selectedCategory.value,
                     itemPerPage: itemPerPage,
-                    page: page
-                });
+                    page: page,
+                    searchString: search
+                }
+                console.log("request", request)
 
+                const data = await fetchItemsByCategory(request);
                 setItems(data.data.items);
                 setPageCount(Math.ceil(data.data.itemCount / itemPerPage));
             } catch (error) {
@@ -49,7 +54,8 @@ const ListOfDetailedItems = ({selectedCategory}) => {
             }
         };
         getItems();
-    }, [page, selectedCategory]);
+    }, [page, selectedCategory, search]);
+
 
     function handlePageChange(event, value) {
         setPage(value);
@@ -77,6 +83,7 @@ const ListOfDetailedItems = ({selectedCategory}) => {
                     <Alert severity="error">{error}</Alert>
                 </Box>
             ) : (
+                items.length > 0 ? (
                 <div>
                     <div className="listDisplay">
                         {items.map((part, index) => (
@@ -89,7 +96,26 @@ const ListOfDetailedItems = ({selectedCategory}) => {
                         ))}
                     </div>
                     <ItemPaginationButtons page={page} pageCount={pageCount} handlePageChange={handlePageChange}/>
-                </div>
+                </div>) :(
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '50vh',
+                            textAlign: 'center',
+                            padding: 2,
+                        }}
+                    >
+                        <SearchOffIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
+                        <Typography variant="h5" sx={{ mb: 1 }}>
+                            No Items Found
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                            Sorry, we couldn't find any items matching your search. Try again with different keywords.
+                        </Typography>
+                    </Box>)
             )
 
         )

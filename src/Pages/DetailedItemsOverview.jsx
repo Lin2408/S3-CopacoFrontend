@@ -26,6 +26,7 @@ function DetailedItemsOverview() {
     const [categoryOptions, setCategoryOptions] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [categorySelection, setCategorySelection] = useState(null);
+    const [search, setSearch] = useState('');
     useEffect(() => {
         const getCategories = async () => {
             try {
@@ -47,6 +48,7 @@ function DetailedItemsOverview() {
 
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
+        setSearch(searchTerm);
     };
 
     const handleKeyPress = (event) => {
@@ -59,6 +61,8 @@ function DetailedItemsOverview() {
             return;
         }
         setCategorySelection(value);
+        setSearchTerm('');
+        setSearch('');
     }
     return (
     <div>
@@ -144,7 +148,7 @@ function DetailedItemsOverview() {
                     ))}
                 </Grid>
                 <Grid size={8}>
-                    <ListOfDetailedItems selectedCategory={categorySelection}/>
+                    <ListOfDetailedItems selectedCategory={categorySelection} search={search}/>
                 </Grid>
             </Grid>
         </div>

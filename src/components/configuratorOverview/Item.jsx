@@ -9,12 +9,13 @@ function Item({ part, onSelect}) {
 
         <div className="item">
             <NavLink to="/Item">
-                <img src={part.image ? part.image : placeholder}
+                <img src={part.image && !part.image.includes('https://inishop.com') ? part.image : placeholder}
                     alt="item image"/>
             </NavLink>
             <div className="item-content">
                 <div className="item-top">
                     <NavLink to="/Item"><h3>{part.name}</h3></NavLink>
+
                     <div className="item-buttonprice">
                         <span className="item-price">$ {parseFloat(part.price).toFixed(2)}</span>
                         <button onClick={() => onSelect(part)}>Add</button>

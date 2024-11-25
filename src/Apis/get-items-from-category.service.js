@@ -1,12 +1,14 @@
 const BASE_URL = 'http://localhost:6060/items';
 import {callExternalApi} from "./external-api.service.js";
 
-const fetchItemsByCategory = async (getItemByCategoryRequest) => {
+const fetchItemsByCategory = async (request) => {
     const queryString = new URLSearchParams({
-        category: getItemByCategoryRequest.category,
-        page: getItemByCategoryRequest.page,
-        itemPerPage: getItemByCategoryRequest.itemPerPage,
+        category: request.category,
+        page: request.page,
+        itemPerPage: request.itemPerPage,
+        searchString: request.searchString,
     }).toString();
+
     const config = {
         url: `http://localhost:6060/items/category?${queryString}`,
         method: "GET",
