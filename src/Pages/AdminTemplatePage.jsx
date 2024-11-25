@@ -67,7 +67,7 @@ const AdminTemplatePage = () => {
                 options={categoryOptions.filter(option =>
                     !selectedCategories.some(selected => selected.id === option.id)
                 )}
-                getOptionLabel={(option) => option.value}  // Display the 'value' property
+                getOptionLabel={(option) => option.value}
                 onChange={handleCategoryChange}
                 inputValue={inputValue}
                 onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
