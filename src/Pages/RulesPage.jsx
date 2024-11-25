@@ -10,19 +10,21 @@ import {
     List,
     ListItemButton,
     ListItemText,
+    FormControlLabel,
+    Checkbox,
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
-import { fetchItemsByCategory } from '/src/Apis/get-items-from-category.service.js';
-import { fetchSpecifications } from "../Apis/get-specifications-service.js";
+import getSpecificationsFromCategory from '../Apis/get-specifications-from-categories.service.js';
+import createRule from '../Apis/create-rule.service.js';
 import './RulesPage.css';
 
-const removeDuplicatesByValue = (categories) => {
+const removeDuplicatesById = (categories) => {
     const seen = new Set();
     return categories.filter((category) => {
-        if (seen.has(category.value)) {
+        if (seen.has(category.id)) {
             return false;
         }
-        seen.add(category.value);
+        seen.add(category.id);
         return true;
     });
 };
@@ -38,6 +40,11 @@ const RulesPage = () => {
     const [selectedSpecification2, setSelectedSpecification2] = useState(null);
     const [inputValue1, setInputValue1] = useState('');
     const [inputValue2, setInputValue2] = useState('');
+    const [isWeirdName1, setIsWeirdName1] = useState(false);
+    const [isWeirdName2, setIsWeirdName2] = useState(false);
+    const [selectedItems1, setSelectedItems1] = useState([]);
+    const [selectedItems2, setSelectedItems2] = useState([]);
+    const [resultMessage, setResultMessage] = useState('');
 
     const fetchCategoriesData = async (query, setCategories) => {
         const { data, error } = await fetchCategories();
@@ -45,39 +52,25 @@ const RulesPage = () => {
             const filteredCategories = data.categories.filter(
                 (category) => category.value && category.value.toLowerCase().includes(query.toLowerCase())
             );
-            setCategories(removeDuplicatesByValue(filteredCategories));
+            setCategories(removeDuplicatesById(filteredCategories));
         } else {
             console.error('Error fetching categories:', error);
         }
     };
 
-    const fetchItemsAndSpecifications = async (category, setSpecifications) => {
-        if (!category || !category.value) {
+    const fetchSpecifications = async (category, setSpecifications) => {
+        if (!category || !category.id) {
             console.error('Invalid category:', category);
             return;
         }
 
-        const itemsData = await fetchItemsByCategory(category.value);
-        const categoryItems = itemsData.data?.items;
-
-        const itemIds = categoryItems.map((item) => item.id);
-
-        const allSpecifications = [];
-
-        for (const itemId of itemIds) {
-            const { data: specsData, error: specsError } = await fetchSpecifications(itemId);
-
-            if (specsError) {
-                console.error(`Error fetching specifications for item ${itemId}:`, specsError);
-                continue;
-            }
-
-            if (specsData?.specifications) {
-                allSpecifications.push(...specsData.specifications);
-            }
+        try {
+            const { specifications } = await getSpecificationsFromCategory(category.id);
+            console.log(`Specifications for category ${category.id}:`, specifications);
+            setSpecifications(Array.isArray(specifications) ? specifications : []);
+        } catch (error) {
+            console.error('Error fetching specifications:', error);
         }
-
-        setSpecifications(allSpecifications);
     };
 
     useEffect(() => {
@@ -93,16 +86,51 @@ const RulesPage = () => {
     }, [inputValue2]);
 
     useEffect(() => {
-        if (selectedCategory1 && selectedCategory1.value) {
-            fetchItemsAndSpecifications(selectedCategory1, setSpecifications1);
+        if (selectedCategory1 && selectedCategory1.id) {
+            fetchSpecifications(selectedCategory1, setSpecifications1);
         }
     }, [selectedCategory1]);
 
     useEffect(() => {
-        if (selectedCategory2 && selectedCategory2.value) {
-            fetchItemsAndSpecifications(selectedCategory2, setSpecifications2);
+        if (selectedCategory2 && selectedCategory2.id) {
+            fetchSpecifications(selectedCategory2, setSpecifications2);
         }
     }, [selectedCategory2]);
+
+    const handleSelectItem1 = (item) => {
+        setSelectedItems1((prevSelectedItems) =>
+            prevSelectedItems.includes(item)
+                ? prevSelectedItems.filter((i) => i !== item)
+                : [...prevSelectedItems, item]
+        );
+    };
+
+    const handleSelectItem2 = (item) => {
+        setSelectedItems2((prevSelectedItems) =>
+            prevSelectedItems.includes(item)
+                ? prevSelectedItems.filter((i) => i !== item)
+                : [...prevSelectedItems, item]
+        );
+    };
+
+    const handleSubmit = async () => {
+        const ruleData = {
+            categoryFrom: selectedCategory1,
+            nameFrom: selectedSpecification1?.name,
+            valuesFrom: selectedItems1.map(item => item.value),
+            categoryTo: selectedCategory2,
+            nameTo: selectedSpecification2?.name,
+            valuesTo: selectedItems2.map(item => item.value),
+            unit: 'unit' // Replace with the actual unit if needed
+        };
+
+        try {
+            const result = await createRule(ruleData);
+            setResultMessage(result ? 'Rule created successfully!' : 'Failed to create rule.');
+        } catch (error) {
+            setResultMessage('Error creating rule.');
+        }
+    };
 
     return (
         <Box className="categories-container">
@@ -127,7 +155,7 @@ const RulesPage = () => {
                             <Autocomplete
                                 options={categories1.filter(
                                     (category) =>
-                                        !selectedCategory2 || category.value !== selectedCategory2.value
+                                        !selectedCategory2 || category.id !== selectedCategory2.id
                                 )}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory1}
@@ -137,16 +165,12 @@ const RulesPage = () => {
                                 renderInput={(params) => (
                                     <TextField {...params} label="Select Category 1" variant="outlined" />
                                 )}
-                                isOptionEqualToValue={(option, value) => option.value === value.value}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
                             {selectedCategory1 && (
                                 <>
                                     <Autocomplete
-                                        options={specifications1.filter(
-                                            (spec) =>
-                                                !selectedSpecification2 ||
-                                                spec.name !== selectedSpecification2.name
-                                        )}
+                                        options={specifications1}
                                         getOptionLabel={(option) => option.name || ''}
                                         value={selectedSpecification1}
                                         onChange={(e, value) => setSelectedSpecification1(value)}
@@ -155,11 +179,24 @@ const RulesPage = () => {
                                         )}
                                         isOptionEqualToValue={(option, value) => option.name === value.name}
                                     />
-                                    {selectedSpecification1 && (
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={isWeirdName1}
+                                                onChange={(e) => setIsWeirdName1(e.target.checked)}
+                                            />
+                                        }
+                                        label="Is weird name"
+                                    />
+                                    {!isWeirdName1 && selectedSpecification1 && (
                                         <Box className="list-box">
                                             <List>
                                                 {specifications1.map((spec, index) => (
-                                                    <ListItemButton key={index}>
+                                                    <ListItemButton
+                                                        key={index}
+                                                        selected={selectedItems1.includes(spec)}
+                                                        onClick={() => handleSelectItem1(spec)}
+                                                    >
                                                         <ListItemText primary={spec.value || 'No value'} />
                                                     </ListItemButton>
                                                 ))}
@@ -174,7 +211,7 @@ const RulesPage = () => {
                             <Autocomplete
                                 options={categories2.filter(
                                     (category) =>
-                                        !selectedCategory1 || category.value !== selectedCategory1.value
+                                        !selectedCategory1 || category.id !== selectedCategory1.id
                                 )}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory2}
@@ -184,16 +221,12 @@ const RulesPage = () => {
                                 renderInput={(params) => (
                                     <TextField {...params} label="Select Category 2" variant="outlined" />
                                 )}
-                                isOptionEqualToValue={(option, value) => option.value === value.value}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
                             {selectedCategory2 && (
                                 <>
                                     <Autocomplete
-                                        options={specifications2.filter(
-                                            (spec) =>
-                                                !selectedSpecification1 ||
-                                                spec.name !== selectedSpecification1.name
-                                        )}
+                                        options={specifications2}
                                         getOptionLabel={(option) => option.name || ''}
                                         value={selectedSpecification2}
                                         onChange={(e, value) => setSelectedSpecification2(value)}
@@ -202,11 +235,24 @@ const RulesPage = () => {
                                         )}
                                         isOptionEqualToValue={(option, value) => option.name === value.name}
                                     />
-                                    {selectedSpecification2 && (
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={isWeirdName2}
+                                                onChange={(e) => setIsWeirdName2(e.target.checked)}
+                                            />
+                                        }
+                                        label="Is weird name"
+                                    />
+                                    {!isWeirdName2 && selectedSpecification2 && (
                                         <Box className="list-box">
                                             <List>
                                                 {specifications2.map((spec, index) => (
-                                                    <ListItemButton key={index}>
+                                                    <ListItemButton
+                                                        key={index}
+                                                        selected={selectedItems2.includes(spec)}
+                                                        onClick={() => handleSelectItem2(spec)}
+                                                    >
                                                         <ListItemText primary={spec.value || 'No value'} />
                                                     </ListItemButton>
                                                 ))}
@@ -218,9 +264,10 @@ const RulesPage = () => {
                         </Box>
                     </Box>
 
-                    <Button variant="contained" color="primary" className="check-button">
+                    <Button variant="contained" color="primary" className="check-button" onClick={handleSubmit}>
                         Submit Rule
                     </Button>
+                    {resultMessage && <Typography className="result-message">{resultMessage}</Typography>}
                 </CardContent>
             </Card>
         </Box>
