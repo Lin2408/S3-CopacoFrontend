@@ -5,7 +5,7 @@ import { createTemplate } from '/src/Apis/create-template.service.js';
 import './AdminTemplatePage.css';
 
 const AdminTemplatePage = () => {
-    const [templateName, setTemplateName] = useState('');
+    const [name, setTemplateName] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [categoryOptions, setCategoryOptions] = useState([]);
@@ -38,8 +38,8 @@ const AdminTemplatePage = () => {
 
     const handleSubmit = async () => {
         const newTemplate = {
-            templateName,
-            selectedCategories: selectedCategories.map(category => category.id)
+            name,
+            categories: selectedCategories.map(category => category.id)
         };
         try {
             await createTemplate(newTemplate);
@@ -57,7 +57,7 @@ const AdminTemplatePage = () => {
                 label="Template Name"
                 variant="outlined"
                 fullWidth
-                value={templateName}
+                value={name}
                 onChange={(e) => setTemplateName(e.target.value)}
                 sx={{ mb: 3 }}
             />
@@ -67,7 +67,7 @@ const AdminTemplatePage = () => {
                 options={categoryOptions.filter(option =>
                     !selectedCategories.some(selected => selected.id === option.id)
                 )}
-                getOptionLabel={(option) => option.value}  // Display the 'value' property
+                getOptionLabel={(option) => option.value}
                 onChange={handleCategoryChange}
                 inputValue={inputValue}
                 onInputChange={(event, newInputValue) => setInputValue(newInputValue)}

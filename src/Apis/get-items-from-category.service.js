@@ -1,4 +1,9 @@
 const BASE_URL = 'http://localhost:6060/items';
+import { callExternalApi } from "./external-api.service.js";
+
+const fetchItemsByCategory = async (category) => {
+    const config = {
+        url: `http://localhost:6060/items?category=${category}`,
 import {callExternalApi} from "./external-api.service.js";
 
 const fetchItemsByCategory = async (request) => {
@@ -24,16 +29,11 @@ const fetchItemsByCategory = async (request) => {
 }
 export {fetchItemsByCategory};
 
-const getItemsFromCategories = async () => {
-    const categories = ['cpu', 'gpu', 'motherboard', 'ram'];
-    const promises = categories.map(category => fetchItemsByCategory(category));
-    const results = await Promise.all(promises);
+    const { data, error } = await callExternalApi({ config });
 
     return {
-        CPU: results[0],
-        GPU: results[1],
-        Motherboard: results[2],
-        RAM: results[3],
+        data: data || null,
+        error,
     };
 };
 
