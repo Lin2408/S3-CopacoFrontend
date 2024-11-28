@@ -38,10 +38,10 @@ const RulesPage = () => {
     const [selectedCategory2, setSelectedCategory2] = useState(null);
     const [selectedSpecification1, setSelectedSpecification1] = useState(null);
     const [selectedSpecification2, setSelectedSpecification2] = useState(null);
-    const [SpecificationsFrom, setSpecificationsFrom] = useState([])
-    const [SpecificationsTo, setSpecificationsTo] = useState([])
-    const [selectedSpecificationsFrom, setSelectedSpecificationsFrom] = useState([])
-    const [selectedSpecificationsTo, setSelectedSpecificationsTo] = useState([])
+    const [SpecificationsFrom, setSpecificationsFrom] = useState([]);
+    const [SpecificationsTo, setSpecificationsTo] = useState([]);
+    const [selectedSpecificationsFrom, setSelectedSpecificationsFrom] = useState([]);
+    const [selectedSpecificationsTo, setSelectedSpecificationsTo] = useState([]);
     const [inputValue1, setInputValue1] = useState('');
     const [inputValue2, setInputValue2] = useState('');
     const [isWeirdName1, setIsWeirdName1] = useState(false);
@@ -49,6 +49,9 @@ const RulesPage = () => {
     const [selectedItems1, setSelectedItems1] = useState([]);
     const [selectedItems2, setSelectedItems2] = useState([]);
     const [resultMessage, setResultMessage] = useState('');
+    const [showOnlySpecNames1, setShowOnlySpecNames1] = useState(false);
+    const [showOnlySpecNames2, setShowOnlySpecNames2] = useState(false);
+
 
     const fetchCategoriesData = async (query, setCategories) => {
         const { data, error } = await fetchCategories();
@@ -112,16 +115,30 @@ const RulesPage = () => {
             fetchSpecifications(selectedCategory2, setSpecifications2);
         }
     }, [selectedCategory2]);
+
     useEffect(() => {
-        if (selectedSpecification1){
-            fetchSpecValues(selectedSpecification1.name,selectedCategory1.id,setSpecificationsFrom)
+        if (selectedSpecification1) {
+            fetchSpecValues(selectedSpecification1.name, selectedCategory1.id, setSpecificationsFrom);
         }
     }, [selectedSpecification1]);
+
     useEffect(() => {
-        if (selectedSpecification2){
-            fetchSpecValues(selectedSpecification2.name,selectedCategory2.id,setSpecificationsTo)
+        if (selectedSpecification2) {
+            fetchSpecValues(selectedSpecification2.name, selectedCategory2.id, setSpecificationsTo);
         }
     }, [selectedSpecification2]);
+
+    useEffect(() => {
+        if (showOnlySpecNames1 && selectedCategory1) {
+            setSpecificationsFrom(specifications1.map(spec => spec.name));
+        }
+    }, [showOnlySpecNames1, specifications1]);
+
+    useEffect(() => {
+        if (showOnlySpecNames2 && selectedCategory2) {
+            setSpecificationsTo(specifications2.map(spec => spec.name));
+        }
+    }, [showOnlySpecNames2, specifications2]);
 
     const handleSelectItem1 = (item) => {
         setSelectedSpecificationsFrom((prevSelectedItems) =>
@@ -193,43 +210,41 @@ const RulesPage = () => {
                                 )}
                                 isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
-                            {selectedCategory1 && (
-                                <>
-                                    <Autocomplete
-                                        options={specifications1}
-                                        getOptionLabel={(option) => option.name || ''}
-                                        value={selectedSpecification1}
-                                        onChange={(e, value) => setSelectedSpecification1(value)}
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Select Specification 1" variant="outlined" />
-                                        )}
-                                        isOptionEqualToValue={(option, value) => option.name === value.name}
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={showOnlySpecNames1}
+                                        onChange={(e) => setShowOnlySpecNames1(e.target.checked)}
                                     />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={isWeirdName1}
-                                                onChange={(e) => setIsWeirdName1(e.target.checked)}
-                                            />
-                                        }
-                                        label="Is weird name"
-                                    />
-                                    {!isWeirdName1 && selectedSpecification1 && (
-                                        <Box className="list-box">
-                                            <List>
-                                                {SpecificationsFrom.map((spec, index) => (
-                                                    <ListItemButton
-                                                        key={index}
-                                                        selected={selectedSpecificationsFrom.includes(spec)}
-                                                        onClick={() => handleSelectItem1(spec)}
-                                                    >
-                                                        <ListItemText primary={spec || 'No value'} />
-                                                    </ListItemButton>
-                                                ))}
-                                            </List>
-                                        </Box>
+                                }
+                                label="Show only Specification Names"
+                            />
+                            {selectedCategory1 && !showOnlySpecNames1 && (
+                                <Autocomplete
+                                    options={specifications1}
+                                    getOptionLabel={(option) => option.name || ''}
+                                    value={selectedSpecification1}
+                                    onChange={(e, value) => setSelectedSpecification1(value)}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Select Specification 1" variant="outlined" />
                                     )}
-                                </>
+                                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                                />
+                            )}
+                            {selectedCategory1 && (
+                                <Box className="list-box">
+                                    <List>
+                                        {SpecificationsFrom.map((spec, index) => (
+                                            <ListItemButton
+                                                key={index}
+                                                selected={selectedSpecificationsFrom.includes(spec)}
+                                                onClick={() => handleSelectItem1(spec)}
+                                            >
+                                                <ListItemText primary={spec || 'No value'} />
+                                            </ListItemButton>
+                                        ))}
+                                    </List>
+                                </Box>
                             )}
                         </Box>
 
@@ -249,43 +264,41 @@ const RulesPage = () => {
                                 )}
                                 isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
-                            {selectedCategory2 && (
-                                <>
-                                    <Autocomplete
-                                        options={specifications2}
-                                        getOptionLabel={(option) => option.name || ''}
-                                        value={selectedSpecification2}
-                                        onChange={(e, value) => setSelectedSpecification2(value)}
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Select Specification 2" variant="outlined" />
-                                        )}
-                                        isOptionEqualToValue={(option, value) => option.name === value.name}
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={showOnlySpecNames2}
+                                        onChange={(e) => setShowOnlySpecNames2(e.target.checked)}
                                     />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={isWeirdName2}
-                                                onChange={(e) => setIsWeirdName2(e.target.checked)}
-                                            />
-                                        }
-                                        label="Is weird name"
-                                    />
-                                    {!isWeirdName2 && selectedSpecification2 && (
-                                        <Box className="list-box">
-                                            <List>
-                                                {SpecificationsTo.map((spec, index) => (
-                                                    <ListItemButton
-                                                        key={index}
-                                                        selected={selectedSpecificationsTo.includes(spec)}
-                                                        onClick={() => handleSelectItem2(spec)}
-                                                    >
-                                                        <ListItemText primary={spec || 'No value'} />
-                                                    </ListItemButton>
-                                                ))}
-                                            </List>
-                                        </Box>
+                                }
+                                label="Show only Specification Names"
+                            />
+                            {selectedCategory2 && !showOnlySpecNames2 && (
+                                <Autocomplete
+                                    options={specifications2}
+                                    getOptionLabel={(option) => option.name || ''}
+                                    value={selectedSpecification2}
+                                    onChange={(e, value) => setSelectedSpecification2(value)}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Select Specification 2" variant="outlined" />
                                     )}
-                                </>
+                                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                                />
+                            )}
+                            {selectedCategory2 && (
+                                <Box className="list-box">
+                                    <List>
+                                        {SpecificationsTo.map((spec, index) => (
+                                            <ListItemButton
+                                                key={index}
+                                                selected={selectedSpecificationsTo.includes(spec)}
+                                                onClick={() => handleSelectItem2(spec)}
+                                            >
+                                                <ListItemText primary={spec || 'No value'} />
+                                            </ListItemButton>
+                                        ))}
+                                    </List>
+                                </Box>
                             )}
                         </Box>
                     </Box>
