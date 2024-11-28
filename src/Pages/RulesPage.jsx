@@ -127,24 +127,32 @@ const RulesPage = () => {
     useEffect(() => {
         if (selectedCategory1 && selectedCategory1.id) {
             fetchSpecifications(selectedCategory1, setSpecifications1);
+            setSelectedSpecificationsFrom([]);
+            setSearchValue1('');
         }
     }, [selectedCategory1]);
 
     useEffect(() => {
         if (selectedCategory2 && selectedCategory2.id) {
             fetchSpecifications(selectedCategory2, setSpecifications2);
+            setSelectedSpecificationsTo([]);
+            setSearchValue2('');
         }
     }, [selectedCategory2]);
 
     useEffect(() => {
         if (selectedSpecification1) {
             fetchSpecValues(selectedSpecification1.name, selectedCategory1.id, setSpecificationsFrom);
+            setSelectedSpecificationsFrom([]);
+            setSearchValue1('');
         }
     }, [selectedSpecification1]);
 
     useEffect(() => {
         if (selectedSpecification2) {
             fetchSpecValues(selectedSpecification2.name, selectedCategory2.id, setSpecificationsTo);
+            setSelectedSpecificationsTo([]);
+            setSearchValue2('');
         }
     }, [selectedSpecification2]);
 
