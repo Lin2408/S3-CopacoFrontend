@@ -14,7 +14,7 @@ import {
     Checkbox,
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
-import {getSpecificationsFromCategory,getSpecificationsValuesFromCategory} from '../Apis/get-specifications-from-categories.service.js';
+import { getSpecificationsFromCategory, getSpecificationsValuesFromCategory } from '../Apis/get-specifications-from-categories.service.js';
 import createRule from '../Apis/create-rule.service.js';
 import './RulesPage.css';
 
@@ -52,7 +52,6 @@ const RulesPage = () => {
     const [showOnlySpecNames1, setShowOnlySpecNames1] = useState(false);
     const [showOnlySpecNames2, setShowOnlySpecNames2] = useState(false);
 
-
     const fetchCategoriesData = async (query, setCategories) => {
         const { data, error } = await fetchCategories();
         if (data) {
@@ -79,18 +78,19 @@ const RulesPage = () => {
             console.error('Error fetching specifications:', error);
         }
     };
-    const fetchSpecValues = async (specName, categoryId,setSpec) => {
-        if (!specName || !categoryId){
+
+    const fetchSpecValues = async (specName, categoryId, setSpec) => {
+        if (!specName || !categoryId) {
             return;
         }
         try {
-            const { specifications} = await getSpecificationsValuesFromCategory(specName,categoryId);
-            console.log(`test ${specifications}`)
+            const { specifications } = await getSpecificationsValuesFromCategory(specName, categoryId);
+            console.log(`test ${specifications}`);
             setSpec(Array.isArray(specifications) ? specifications : []);
-        }catch (error){
-            console.error(error)
+        } catch (error) {
+            console.error(error);
         }
-    }
+    };
 
     useEffect(() => {
         if (inputValue1.length >= 2) {
@@ -130,15 +130,19 @@ const RulesPage = () => {
 
     useEffect(() => {
         if (showOnlySpecNames1 && selectedCategory1) {
-            setSpecificationsFrom(specifications1.map(spec => spec.name));
+            setSpecificationsFrom(specifications1.map((spec) => spec.name));
+        } else if (selectedSpecification1) {
+            fetchSpecValues(selectedSpecification1.name, selectedCategory1.id, setSpecificationsFrom);
         }
-    }, [showOnlySpecNames1, specifications1]);
+    }, [showOnlySpecNames1, specifications1, selectedSpecification1]);
 
     useEffect(() => {
         if (showOnlySpecNames2 && selectedCategory2) {
-            setSpecificationsTo(specifications2.map(spec => spec.name));
+            setSpecificationsTo(specifications2.map((spec) => spec.name));
+        } else if (selectedSpecification2) {
+            fetchSpecValues(selectedSpecification2.name, selectedCategory2.id, setSpecificationsTo);
         }
-    }, [showOnlySpecNames2, specifications2]);
+    }, [showOnlySpecNames2, specifications2, selectedSpecification2]);
 
     const handleSelectItem1 = (item) => {
         setSelectedSpecificationsFrom((prevSelectedItems) =>
@@ -164,7 +168,7 @@ const RulesPage = () => {
             categoryTo: selectedCategory2,
             nameTo: selectedSpecification2?.name,
             valuesTo: selectedSpecificationsTo,
-            unit: 'unit' // Replace with the actual unit if needed
+            unit: 'unit', // Replace with the actual unit if needed
         };
 
         try {
@@ -197,8 +201,7 @@ const RulesPage = () => {
                         <Box className="category-box">
                             <Autocomplete
                                 options={categories1.filter(
-                                    (category) =>
-                                        !selectedCategory2 || category.id !== selectedCategory2.id
+                                    (category) => !selectedCategory2 || category.id !== selectedCategory2.id
                                 )}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory1}
@@ -251,8 +254,7 @@ const RulesPage = () => {
                         <Box className="category-box">
                             <Autocomplete
                                 options={categories2.filter(
-                                    (category) =>
-                                        !selectedCategory1 || category.id !== selectedCategory1.id
+                                    (category) => !selectedCategory1 || category.id !== selectedCategory1.id
                                 )}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory2}
