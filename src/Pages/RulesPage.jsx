@@ -14,7 +14,7 @@ import {
     Checkbox,
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
-import {getSpecificationsFromCategory,getSpecificationsValuesFromCategory} from '../Apis/get-specifications-from-categories.service.js';
+import { getSpecificationsFromCategory, getSpecificationsValuesFromCategory } from '../Apis/get-specifications-from-categories.service.js';
 import createRule from '../Apis/create-rule.service.js';
 import './RulesPage.css';
 
@@ -38,10 +38,10 @@ const RulesPage = () => {
     const [selectedCategory2, setSelectedCategory2] = useState(null);
     const [selectedSpecification1, setSelectedSpecification1] = useState(null);
     const [selectedSpecification2, setSelectedSpecification2] = useState(null);
-    const [SpecificationsFrom, setSpecificationsFrom] = useState([])
-    const [SpecificationsTo, setSpecificationsTo] = useState([])
-    const [selectedSpecificationsFrom, setSelectedSpecificationsFrom] = useState([])
-    const [selectedSpecificationsTo, setSelectedSpecificationsTo] = useState([])
+    const [SpecificationsFrom, setSpecificationsFrom] = useState([]);
+    const [SpecificationsTo, setSpecificationsTo] = useState([]);
+    const [selectedSpecificationsFrom, setSelectedSpecificationsFrom] = useState([]);
+    const [selectedSpecificationsTo, setSelectedSpecificationsTo] = useState([]);
     const [inputValue1, setInputValue1] = useState('');
     const [inputValue2, setInputValue2] = useState('');
     const [isWeirdName1, setIsWeirdName1] = useState(false);
@@ -49,6 +49,10 @@ const RulesPage = () => {
     const [selectedItems1, setSelectedItems1] = useState([]);
     const [selectedItems2, setSelectedItems2] = useState([]);
     const [resultMessage, setResultMessage] = useState('');
+    const [showOnlySpecNames1, setShowOnlySpecNames1] = useState(false);
+    const [showOnlySpecNames2, setShowOnlySpecNames2] = useState(false);
+    const [searchValue1, setSearchValue1] = useState('');
+    const [searchValue2, setSearchValue2] = useState('');
 
     const fetchCategoriesData = async (query, setCategories) => {
         const { data, error } = await fetchCategories();
@@ -76,18 +80,37 @@ const RulesPage = () => {
             console.error('Error fetching specifications:', error);
         }
     };
-    const fetchSpecValues = async (specName, categoryId,setSpec) => {
-        if (!specName || !categoryId){
+
+    const fetchSpecValues = async (specName, categoryId, setSpec) => {
+        if (!specName || !categoryId) {
             return;
         }
         try {
-            const { specifications} = await getSpecificationsValuesFromCategory(specName,categoryId);
-            console.log(`test ${specifications}`)
+            const { specifications } = await getSpecificationsValuesFromCategory(specName, categoryId);
+            console.log(`test ${specifications}`);
             setSpec(Array.isArray(specifications) ? specifications : []);
-        }catch (error){
-            console.error(error)
+        } catch (error) {
+            console.error(error);
         }
-    }
+    };
+
+    const handleSelectItem1 = (item) => {
+        setSelectedSpecificationsFrom((prevSelectedItems) =>
+            prevSelectedItems.includes(item)
+                ? prevSelectedItems.filter((i) => i !== item)
+                : [...prevSelectedItems, item]
+        );
+        setSearchValue1(item);
+    };
+
+    const handleSelectItem2 = (item) => {
+        setSelectedSpecificationsTo((prevSelectedItems) =>
+            prevSelectedItems.includes(item)
+                ? prevSelectedItems.filter((i) => i !== item)
+                : [...prevSelectedItems, item]
+        );
+        setSearchValue2(item);
+    };
 
     useEffect(() => {
         if (inputValue1.length >= 2) {
@@ -104,40 +127,50 @@ const RulesPage = () => {
     useEffect(() => {
         if (selectedCategory1 && selectedCategory1.id) {
             fetchSpecifications(selectedCategory1, setSpecifications1);
+            setSelectedSpecificationsFrom([]);
+            setSearchValue1('');
         }
     }, [selectedCategory1]);
 
     useEffect(() => {
         if (selectedCategory2 && selectedCategory2.id) {
             fetchSpecifications(selectedCategory2, setSpecifications2);
+            setSelectedSpecificationsTo([]);
+            setSearchValue2('');
         }
     }, [selectedCategory2]);
+
     useEffect(() => {
-        if (selectedSpecification1){
-            fetchSpecValues(selectedSpecification1.name,selectedCategory1.id,setSpecificationsFrom)
+        if (selectedSpecification1) {
+            fetchSpecValues(selectedSpecification1.name, selectedCategory1.id, setSpecificationsFrom);
+            setSelectedSpecificationsFrom([]);
+            setSearchValue1('');
         }
     }, [selectedSpecification1]);
+
     useEffect(() => {
-        if (selectedSpecification2){
-            fetchSpecValues(selectedSpecification2.name,selectedCategory2.id,setSpecificationsTo)
+        if (selectedSpecification2) {
+            fetchSpecValues(selectedSpecification2.name, selectedCategory2.id, setSpecificationsTo);
+            setSelectedSpecificationsTo([]);
+            setSearchValue2('');
         }
     }, [selectedSpecification2]);
 
-    const handleSelectItem1 = (item) => {
-        setSelectedSpecificationsFrom((prevSelectedItems) =>
-            prevSelectedItems.includes(item)
-                ? prevSelectedItems.filter((i) => i !== item)
-                : [...prevSelectedItems, item]
-        );
-    };
+    useEffect(() => {
+        if (showOnlySpecNames1 && selectedCategory1) {
+            setSpecificationsFrom(specifications1.map((spec) => spec.name));
+        } else if (selectedSpecification1) {
+            fetchSpecValues(selectedSpecification1.name, selectedCategory1.id, setSpecificationsFrom);
+        }
+    }, [showOnlySpecNames1, specifications1, selectedSpecification1]);
 
-    const handleSelectItem2 = (item) => {
-        setSelectedSpecificationsTo((prevSelectedItems) =>
-            prevSelectedItems.includes(item)
-                ? prevSelectedItems.filter((i) => i !== item)
-                : [...prevSelectedItems, item]
-        );
-    };
+    useEffect(() => {
+        if (showOnlySpecNames2 && selectedCategory2) {
+            setSpecificationsTo(specifications2.map((spec) => spec.name));
+        } else if (selectedSpecification2) {
+            fetchSpecValues(selectedSpecification2.name, selectedCategory2.id, setSpecificationsTo);
+        }
+    }, [showOnlySpecNames2, specifications2, selectedSpecification2]);
 
     const handleSubmit = async () => {
         const ruleData = {
@@ -147,7 +180,7 @@ const RulesPage = () => {
             categoryTo: selectedCategory2,
             nameTo: selectedSpecification2?.name,
             valuesTo: selectedSpecificationsTo,
-            unit: 'unit' // Replace with the actual unit if needed
+            unit: 'unit', // Replace with the actual unit if needed
         };
 
         try {
@@ -180,8 +213,7 @@ const RulesPage = () => {
                         <Box className="category-box">
                             <Autocomplete
                                 options={categories1.filter(
-                                    (category) =>
-                                        !selectedCategory2 || category.id !== selectedCategory2.id
+                                    (category) => !selectedCategory2 || category.id !== selectedCategory2.id
                                 )}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory1}
@@ -193,42 +225,54 @@ const RulesPage = () => {
                                 )}
                                 isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={showOnlySpecNames1}
+                                        onChange={(e) => setShowOnlySpecNames1(e.target.checked)}
+                                    />
+                                }
+                                label="Show only Specification Names"
+                            />
+                            {selectedCategory1 && !showOnlySpecNames1 && (
+                                <Autocomplete
+                                    options={specifications1}
+                                    getOptionLabel={(option) => option.name || ''}
+                                    value={selectedSpecification1}
+                                    onChange={(e, value) => setSelectedSpecification1(value)}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Select Specification 1" variant="outlined" />
+                                    )}
+                                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                                />
+                            )}
                             {selectedCategory1 && (
                                 <>
                                     <Autocomplete
-                                        options={specifications1}
-                                        getOptionLabel={(option) => option.name || ''}
-                                        value={selectedSpecification1}
-                                        onChange={(e, value) => setSelectedSpecification1(value)}
+                                        options={SpecificationsFrom}
+                                        getOptionLabel={(option) => option || ''}
+                                        inputValue={searchValue1}
+                                        onInputChange={(e, value) => setSearchValue1(value)}
+                                        onChange={(e, value) => handleSelectItem1(value)}
                                         renderInput={(params) => (
-                                            <TextField {...params} label="Select Specification 1" variant="outlined" />
+                                            <TextField {...params} label="Search Specifications" variant="outlined" />
                                         )}
-                                        isOptionEqualToValue={(option, value) => option.name === value.name}
                                     />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={isWeirdName1}
-                                                onChange={(e) => setIsWeirdName1(e.target.checked)}
-                                            />
-                                        }
-                                        label="Is weird name"
-                                    />
-                                    {!isWeirdName1 && selectedSpecification1 && (
-                                        <Box className="list-box">
-                                            <List>
-                                                {SpecificationsFrom.map((spec, index) => (
-                                                    <ListItemButton
-                                                        key={index}
-                                                        selected={selectedSpecificationsFrom.includes(spec)}
-                                                        onClick={() => handleSelectItem1(spec)}
-                                                    >
-                                                        <ListItemText primary={spec || 'No value'} />
-                                                    </ListItemButton>
-                                                ))}
-                                            </List>
-                                        </Box>
-                                    )}
+                                    <Box className="list-box">
+                                        <List>
+                                            {SpecificationsFrom.filter((spec) =>
+                                                spec && spec.includes(searchValue1)
+                                            ).map((spec, index) => (
+                                                <ListItemButton
+                                                    key={index}
+                                                    selected={selectedSpecificationsFrom.includes(spec)}
+                                                    onClick={() => handleSelectItem1(spec)}
+                                                >
+                                                    <ListItemText primary={spec || 'No value'} />
+                                                </ListItemButton>
+                                            ))}
+                                        </List>
+                                    </Box>
                                 </>
                             )}
                         </Box>
@@ -236,8 +280,7 @@ const RulesPage = () => {
                         <Box className="category-box">
                             <Autocomplete
                                 options={categories2.filter(
-                                    (category) =>
-                                        !selectedCategory1 || category.id !== selectedCategory1.id
+                                    (category) => !selectedCategory1 || category.id !== selectedCategory1.id
                                 )}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={selectedCategory2}
@@ -249,31 +292,45 @@ const RulesPage = () => {
                                 )}
                                 isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={showOnlySpecNames2}
+                                        onChange={(e) => setShowOnlySpecNames2(e.target.checked)}
+                                    />
+                                }
+                                label="Show only Specification Names"
+                            />
+                            {selectedCategory2 && !showOnlySpecNames2 && (
+                                <Autocomplete
+                                    options={specifications2}
+                                    getOptionLabel={(option) => option.name || ''}
+                                    value={selectedSpecification2}
+                                    onChange={(e, value) => setSelectedSpecification2(value)}
+                                    renderInput={(params) => (
+                                        <TextField {...params} label="Select Specification 2" variant="outlined" />
+                                    )}
+                                    isOptionEqualToValue={(option, value) => option.name === value.name}
+                                />
+                            )}
                             {selectedCategory2 && (
                                 <>
                                     <Autocomplete
-                                        options={specifications2}
-                                        getOptionLabel={(option) => option.name || ''}
-                                        value={selectedSpecification2}
-                                        onChange={(e, value) => setSelectedSpecification2(value)}
+                                        options={SpecificationsTo}
+                                        getOptionLabel={(option) => option || ''}
+                                        inputValue={searchValue2}
+                                        onInputChange={(e, value) => setSearchValue2(value)}
+                                        onChange={(e, value) => handleSelectItem2(value)}
                                         renderInput={(params) => (
-                                            <TextField {...params} label="Select Specification 2" variant="outlined" />
+                                            <TextField {...params} label="Search Specifications" variant="outlined" />
                                         )}
-                                        isOptionEqualToValue={(option, value) => option.name === value.name}
                                     />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={isWeirdName2}
-                                                onChange={(e) => setIsWeirdName2(e.target.checked)}
-                                            />
-                                        }
-                                        label="Is weird name"
-                                    />
-                                    {!isWeirdName2 && selectedSpecification2 && (
-                                        <Box className="list-box">
-                                            <List>
-                                                {SpecificationsTo.map((spec, index) => (
+                                    <Box className="list-box">
+                                        <List>
+                                            {
+                                                SpecificationsTo.filter((spec) =>
+                                                    spec && spec.includes(searchValue2)
+                                                ).map((spec, index) => (
                                                     <ListItemButton
                                                         key={index}
                                                         selected={selectedSpecificationsTo.includes(spec)}
@@ -282,9 +339,8 @@ const RulesPage = () => {
                                                         <ListItemText primary={spec || 'No value'} />
                                                     </ListItemButton>
                                                 ))}
-                                            </List>
-                                        </Box>
-                                    )}
+                                        </List>
+                                    </Box>
                                 </>
                             )}
                         </Box>
