@@ -253,7 +253,7 @@ const RulesPage = () => {
                                     <Box className="list-box">
                                         <List>
                                             {SpecificationsFrom.filter((spec) =>
-                                                spec && spec.toLowerCase().includes(searchValue1.toLowerCase())
+                                                spec && spec.includes(searchValue1)
                                             ).map((spec, index) => (
                                                 <ListItemButton
                                                     key={index}
@@ -321,16 +321,16 @@ const RulesPage = () => {
                                         <List>
                                             {
                                                 SpecificationsTo.filter((spec) =>
-                                                spec && spec.toLowerCase().includes(searchValue2.toLowerCase())
-                                            ).map((spec, index) => (
-                                                <ListItemButton
-                                                    key={index}
-                                                    selected={selectedSpecificationsTo.includes(spec)}
-                                                    onClick={() => handleSelectItem2(spec)}
-                                                >
-                                                    <ListItemText primary={spec || 'No value'} />
-                                                </ListItemButton>
-                                            ))}
+                                                    spec && spec.includes(searchValue2)
+                                                ).map((spec, index) => (
+                                                    <ListItemButton
+                                                        key={index}
+                                                        selected={selectedSpecificationsTo.includes(spec)}
+                                                        onClick={() => handleSelectItem2(spec)}
+                                                    >
+                                                        <ListItemText primary={spec || 'No value'} />
+                                                    </ListItemButton>
+                                                ))}
                                         </List>
                                     </Box>
                                 </>
