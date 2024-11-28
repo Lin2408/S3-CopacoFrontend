@@ -4,8 +4,8 @@ import "../../Pages/CSS/ItemOverView.css";
 import {fetchItemsByCategory} from "../../Apis/get-items-from-category.service.js";
 import ItemPaginationButtons from "../ItemPaginationButtons.jsx";
 import * as React from "react";
-import {Alert, Box, CircularProgress, Typography} from "@mui/material";
-import SearchOffIcon from "@mui/icons-material/SearchOff";
+import {Alert, Box, CircularProgress} from "@mui/material";
+import NoSearchResults from "../NoSearchResults.jsx";
 
 function ListOfItemSelections({onSelect, category, search}) {
     const [items, setItems] = useState([]);
@@ -82,25 +82,7 @@ function ListOfItemSelections({onSelect, category, search}) {
                     <ItemPaginationButtons page={page} pageCount={pageCount} handlePageChange={handlePageChange}/>
                 </>
             ) : (
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: '50vh',
-                        textAlign: 'center',
-                        padding: 2,
-                    }}
-                >
-                    <SearchOffIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
-                    <Typography variant="h5" sx={{ mb: 1 }}>
-                        No Items Found
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                        Sorry, we couldn't find any items matching your search. Try again with different keywords.
-                    </Typography>
-                </Box>
+                <NoSearchResults/>
             ))))}
         </>
     );

@@ -51,9 +51,7 @@ function ConfiguratorItem({category, index, items, setItems, loading}) {
               ) : (
                   <>
                       <TableCell><span className="tableName">
-                         {item.part.image ?
-                            <img src={item.part.image && !item.part.image.includes('https://inishop.com') ? item.part.image : placeholder} alt="part"/> : null
-                         }
+                          <img src={item.part.image && !item.part.image.includes('https://inishop.com') ? item.part.image : placeholder} alt="part"/>
                           <p>{item.part.name}</p>
                       </span></TableCell>
                       <TableCell >€{parseFloat(item.part.price).toFixed(2)}</TableCell>
