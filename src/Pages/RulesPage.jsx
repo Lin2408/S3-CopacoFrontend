@@ -51,6 +51,8 @@ const RulesPage = () => {
     const [resultMessage, setResultMessage] = useState('');
     const [showOnlySpecNames1, setShowOnlySpecNames1] = useState(false);
     const [showOnlySpecNames2, setShowOnlySpecNames2] = useState(false);
+    const [searchValue1, setSearchValue1] = useState('');
+    const [searchValue2, setSearchValue2] = useState('');
 
     const fetchCategoriesData = async (query, setCategories) => {
         const { data, error } = await fetchCategories();
@@ -90,6 +92,24 @@ const RulesPage = () => {
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const handleSelectItem1 = (item) => {
+        setSelectedSpecificationsFrom((prevSelectedItems) =>
+            prevSelectedItems.includes(item)
+                ? prevSelectedItems.filter((i) => i !== item)
+                : [...prevSelectedItems, item]
+        );
+        setSearchValue1(item);
+    };
+
+    const handleSelectItem2 = (item) => {
+        setSelectedSpecificationsTo((prevSelectedItems) =>
+            prevSelectedItems.includes(item)
+                ? prevSelectedItems.filter((i) => i !== item)
+                : [...prevSelectedItems, item]
+        );
+        setSearchValue2(item);
     };
 
     useEffect(() => {
@@ -143,22 +163,6 @@ const RulesPage = () => {
             fetchSpecValues(selectedSpecification2.name, selectedCategory2.id, setSpecificationsTo);
         }
     }, [showOnlySpecNames2, specifications2, selectedSpecification2]);
-
-    const handleSelectItem1 = (item) => {
-        setSelectedSpecificationsFrom((prevSelectedItems) =>
-            prevSelectedItems.includes(item)
-                ? prevSelectedItems.filter((i) => i !== item)
-                : [...prevSelectedItems, item]
-        );
-    };
-
-    const handleSelectItem2 = (item) => {
-        setSelectedSpecificationsTo((prevSelectedItems) =>
-            prevSelectedItems.includes(item)
-                ? prevSelectedItems.filter((i) => i !== item)
-                : [...prevSelectedItems, item]
-        );
-    };
 
     const handleSubmit = async () => {
         const ruleData = {
@@ -235,19 +239,33 @@ const RulesPage = () => {
                                 />
                             )}
                             {selectedCategory1 && (
-                                <Box className="list-box">
-                                    <List>
-                                        {SpecificationsFrom.map((spec, index) => (
-                                            <ListItemButton
-                                                key={index}
-                                                selected={selectedSpecificationsFrom.includes(spec)}
-                                                onClick={() => handleSelectItem1(spec)}
-                                            >
-                                                <ListItemText primary={spec || 'No value'} />
-                                            </ListItemButton>
-                                        ))}
-                                    </List>
-                                </Box>
+                                <>
+                                    <Autocomplete
+                                        options={SpecificationsFrom}
+                                        getOptionLabel={(option) => option || ''}
+                                        inputValue={searchValue1}
+                                        onInputChange={(e, value) => setSearchValue1(value)}
+                                        onChange={(e, value) => handleSelectItem1(value)}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Search Specifications" variant="outlined" />
+                                        )}
+                                    />
+                                    <Box className="list-box">
+                                        <List>
+                                            {SpecificationsFrom.filter((spec) =>
+                                                spec && spec.toLowerCase().includes(searchValue1.toLowerCase())
+                                            ).map((spec, index) => (
+                                                <ListItemButton
+                                                    key={index}
+                                                    selected={selectedSpecificationsFrom.includes(spec)}
+                                                    onClick={() => handleSelectItem1(spec)}
+                                                >
+                                                    <ListItemText primary={spec || 'No value'} />
+                                                </ListItemButton>
+                                            ))}
+                                        </List>
+                                    </Box>
+                                </>
                             )}
                         </Box>
 
@@ -288,19 +306,34 @@ const RulesPage = () => {
                                 />
                             )}
                             {selectedCategory2 && (
-                                <Box className="list-box">
-                                    <List>
-                                        {SpecificationsTo.map((spec, index) => (
-                                            <ListItemButton
-                                                key={index}
-                                                selected={selectedSpecificationsTo.includes(spec)}
-                                                onClick={() => handleSelectItem2(spec)}
-                                            >
-                                                <ListItemText primary={spec || 'No value'} />
-                                            </ListItemButton>
-                                        ))}
-                                    </List>
-                                </Box>
+                                <>
+                                    <Autocomplete
+                                        options={SpecificationsTo}
+                                        getOptionLabel={(option) => option || ''}
+                                        inputValue={searchValue2}
+                                        onInputChange={(e, value) => setSearchValue2(value)}
+                                        onChange={(e, value) => handleSelectItem2(value)}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Search Specifications" variant="outlined" />
+                                        )}
+                                    />
+                                    <Box className="list-box">
+                                        <List>
+                                            {
+                                                SpecificationsTo.filter((spec) =>
+                                                spec && spec.toLowerCase().includes(searchValue2.toLowerCase())
+                                            ).map((spec, index) => (
+                                                <ListItemButton
+                                                    key={index}
+                                                    selected={selectedSpecificationsTo.includes(spec)}
+                                                    onClick={() => handleSelectItem2(spec)}
+                                                >
+                                                    <ListItemText primary={spec || 'No value'} />
+                                                </ListItemButton>
+                                            ))}
+                                        </List>
+                                    </Box>
+                                </>
                             )}
                         </Box>
                     </Box>
