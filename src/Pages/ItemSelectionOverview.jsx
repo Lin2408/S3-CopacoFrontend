@@ -28,7 +28,7 @@ function ItemSelectionOverview() {
     const { state } = useLocation();
     const [search, setSearch] = useState('');
     const category = state?.category || '';
-
+    console.log('Category:', category);
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
         setSearch(searchTerm);
@@ -44,15 +44,16 @@ function ItemSelectionOverview() {
         const newItem = {part};
         const updatedItems = {
             ...items,
-            [category]: newItem
+            [category.value]: newItem
         };
+        console.log(updatedItems)
         sessionStorage.setItem('items', JSON.stringify(updatedItems));
         navigate('/Configurator');
     };
 
     return (
         <div>
-            <h1>Choose {category}</h1>{/*{ /^[aeiou]/i.test(category) ? 'an' : 'a' }*/}
+            <h1>Choose {category.value}</h1>{/*{ /^[aeiou]/i.test(category) ? 'an' : 'a' }*/}
             <div className="item-overview">
                 <Grid container spacing={5}>
                     <Grid size={3} className="filter-bar">

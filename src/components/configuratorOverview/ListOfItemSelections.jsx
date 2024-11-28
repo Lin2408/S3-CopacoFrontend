@@ -6,6 +6,7 @@ import ItemPaginationButtons from "../ItemPaginationButtons.jsx";
 import * as React from "react";
 import {Alert, Box, CircularProgress} from "@mui/material";
 import NoSearchResults from "../NoSearchResults.jsx";
+import {getItemsByCompatibilty} from "../../Apis/get-items-by-compatibilty.js";
 
 function ListOfItemSelections({onSelect, category, search}) {
     const [items, setItems] = useState([]);
@@ -19,16 +20,41 @@ function ListOfItemSelections({onSelect, category, search}) {
         setPage(1);
     }, [category, search]);
 
+
     useEffect(() => {
         if (category === null) {
             return;
         }
+
+        const itemSelection = JSON.parse(sessionStorage.getItem('items'));
+        const partsList = [];
+        for (const value of Object.values(itemSelection)) {
+            if (value.part) {
+                partsList.push(value.part);
+            }
+        }
+        console.log('ItemSelection:', itemSelection);
+        console.log(partsList);
+
+        if(partsList.length > 0) {
+
+            console.log('ItemSelection:', {category: category, items: partsList});
+            getItemsByCompatibilty({category: category, items: partsList}).then(data => {
+                setItems(data.data.items);
+                setPageCount(Math.ceil(data.data.itemCount / itemPerPage));
+            }).catch(error => {
+                console.error("Error fetching categories:", error);
+                setError("Something went wrong while trying to get items");
+            });
+            return;
+        }
+
         const getItems = async () => {
 
             try {
                 setLoading(true);
                 setError(null);
-                const data = await fetchItemsByCategory({category: category, itemPerPage: itemPerPage, page: page, searchString: search});
+                const data = await fetchItemsByCategory({category: category.value, itemPerPage: itemPerPage, page: page, searchString: search});
 
                 setItems(data.data.items);
                 setPageCount(Math.ceil(data.data.itemCount / itemPerPage));
@@ -41,6 +67,10 @@ function ListOfItemSelections({onSelect, category, search}) {
         };
         getItems();
     }, [page, category, search]);
+    /*useEffect(() => {
+
+
+    }, []);*/
 
     function handlePageChange(event, value) {
         setPage(value);

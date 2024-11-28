@@ -8,10 +8,15 @@ export async function fetchTemplates() {
             error: null,
         };
     } catch (error) {
+
         console.error('Error fetching templates:', error);
+
+
+        const errorMessage = error.response?.data?.message || error.message || 'An error occurred while fetching templates.';
+
         return {
             data: [],
-            error: error.message || 'An error occurred while fetching categories.',
+            error: errorMessage,
         };
     }
 }

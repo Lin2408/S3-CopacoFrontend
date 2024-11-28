@@ -45,9 +45,10 @@ function ConfigurationPage() {
         if (data.error) {
             console.error('Error fetching templates:', data.error);
         }
+        console.log('Templates:', data);
         const initialTemplates = data.data.templates;
         setTemplates(initialTemplates);
-
+        initialTemplates.sort((a, b) => a.name.localeCompare(b.name));
         const initialTemplate = JSON.parse(sessionStorage.getItem('template')) || initialTemplates[0];
         setTemplate(initialTemplate);
 
@@ -56,7 +57,7 @@ function ConfigurationPage() {
     function load(categories) {
         if (!categories) return;
         const itemFromStorage = sessionStorage.getItem('items');
-        setItems(itemFromStorage != null ? JSON.parse(itemFromStorage) : Object.fromEntries(categories.map(category => [category.value, {}])));
+        setItems(itemFromStorage != null ? JSON.parse(itemFromStorage) : Object.fromEntries(categories.sort((a, b) => a.value.localeCompare(b.value)).map(category => [category.value, {}])));
     }
 
     useEffect(() => {
@@ -80,7 +81,7 @@ function ConfigurationPage() {
             setItems({});
             return;
         }
-        setItems(Object.fromEntries(newValue.categories.map(category => [category.value, {}])));
+        setItems(Object.fromEntries(newValue.categories.sort(((a,b) => a.value.localeCompare(b.value))).map(category => [category.value, {}])));
         sessionStorage.setItem('template', JSON.stringify(newValue));
 
     }
@@ -119,7 +120,7 @@ function ConfigurationPage() {
                         {template ?(
 
                             template.categories.map((category, index) => (
-                                <ConfiguratorItem key={category.id} index={index} category={category.value} items={items}
+                                <ConfiguratorItem key={category.id} index={index} category={category} items={items}
                                                   setItems={setItems}
                                                   loading={loading}/>
                             ))
