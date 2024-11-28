@@ -14,7 +14,7 @@ import {
     Checkbox,
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
-import getSpecificationsFromCategory from '../Apis/get-specifications-from-categories.service.js';
+import {getSpecificationsFromCategory,getSpecificationsValuesFromCategory} from '../Apis/get-specifications-from-categories.service.js';
 import createRule from '../Apis/create-rule.service.js';
 import './RulesPage.css';
 
@@ -38,6 +38,10 @@ const RulesPage = () => {
     const [selectedCategory2, setSelectedCategory2] = useState(null);
     const [selectedSpecification1, setSelectedSpecification1] = useState(null);
     const [selectedSpecification2, setSelectedSpecification2] = useState(null);
+    const [SpecificationsFrom, setSpecificationsFrom] = useState([])
+    const [SpecificationsTo, setSpecificationsTo] = useState([])
+    const [selectedSpecificationsFrom, setSelectedSpecificationsFrom] = useState([])
+    const [selectedSpecificationsTo, setSelectedSpecificationsTo] = useState([])
     const [inputValue1, setInputValue1] = useState('');
     const [inputValue2, setInputValue2] = useState('');
     const [isWeirdName1, setIsWeirdName1] = useState(false);
@@ -72,6 +76,18 @@ const RulesPage = () => {
             console.error('Error fetching specifications:', error);
         }
     };
+    const fetchSpecValues = async (specName, categoryId,setSpec) => {
+        if (!specName || !categoryId){
+            return;
+        }
+        try {
+            const { specifications} = await getSpecificationsValuesFromCategory(specName,categoryId);
+            console.log(`test ${specifications}`)
+            setSpec(Array.isArray(specifications) ? specifications : []);
+        }catch (error){
+            console.error(error)
+        }
+    }
 
     useEffect(() => {
         if (inputValue1.length >= 2) {
@@ -96,9 +112,19 @@ const RulesPage = () => {
             fetchSpecifications(selectedCategory2, setSpecifications2);
         }
     }, [selectedCategory2]);
+    useEffect(() => {
+        if (selectedSpecification1){
+            fetchSpecValues(selectedSpecification1.name,selectedCategory1.id,setSpecificationsFrom)
+        }
+    }, [selectedSpecification1]);
+    useEffect(() => {
+        if (selectedSpecification2){
+            fetchSpecValues(selectedSpecification2.name,selectedCategory2.id,setSpecificationsTo)
+        }
+    }, [selectedSpecification2]);
 
     const handleSelectItem1 = (item) => {
-        setSelectedItems1((prevSelectedItems) =>
+        setSelectedSpecificationsFrom((prevSelectedItems) =>
             prevSelectedItems.includes(item)
                 ? prevSelectedItems.filter((i) => i !== item)
                 : [...prevSelectedItems, item]
@@ -106,7 +132,7 @@ const RulesPage = () => {
     };
 
     const handleSelectItem2 = (item) => {
-        setSelectedItems2((prevSelectedItems) =>
+        setSelectedSpecificationsTo((prevSelectedItems) =>
             prevSelectedItems.includes(item)
                 ? prevSelectedItems.filter((i) => i !== item)
                 : [...prevSelectedItems, item]
@@ -117,10 +143,10 @@ const RulesPage = () => {
         const ruleData = {
             categoryFrom: selectedCategory1,
             nameFrom: selectedSpecification1?.name,
-            valuesFrom: selectedItems1.map(item => item.value),
+            valuesFrom: selectedSpecificationsFrom,
             categoryTo: selectedCategory2,
             nameTo: selectedSpecification2?.name,
-            valuesTo: selectedItems2.map(item => item.value),
+            valuesTo: selectedSpecificationsTo,
             unit: 'unit' // Replace with the actual unit if needed
         };
 
@@ -191,13 +217,13 @@ const RulesPage = () => {
                                     {!isWeirdName1 && selectedSpecification1 && (
                                         <Box className="list-box">
                                             <List>
-                                                {specifications1.map((spec, index) => (
+                                                {SpecificationsFrom.map((spec, index) => (
                                                     <ListItemButton
                                                         key={index}
-                                                        selected={selectedItems1.includes(spec)}
+                                                        selected={selectedSpecificationsFrom.includes(spec)}
                                                         onClick={() => handleSelectItem1(spec)}
                                                     >
-                                                        <ListItemText primary={spec.value || 'No value'} />
+                                                        <ListItemText primary={spec || 'No value'} />
                                                     </ListItemButton>
                                                 ))}
                                             </List>
@@ -247,13 +273,13 @@ const RulesPage = () => {
                                     {!isWeirdName2 && selectedSpecification2 && (
                                         <Box className="list-box">
                                             <List>
-                                                {specifications2.map((spec, index) => (
+                                                {SpecificationsTo.map((spec, index) => (
                                                     <ListItemButton
                                                         key={index}
-                                                        selected={selectedItems2.includes(spec)}
+                                                        selected={selectedSpecificationsTo.includes(spec)}
                                                         onClick={() => handleSelectItem2(spec)}
                                                     >
-                                                        <ListItemText primary={spec.value || 'No value'} />
+                                                        <ListItemText primary={spec || 'No value'} />
                                                     </ListItemButton>
                                                 ))}
                                             </List>
