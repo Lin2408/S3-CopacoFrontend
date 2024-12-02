@@ -1,23 +1,30 @@
 .item-list {
     margin: 0px auto;
-    width: 80%;
+    width: 70%;
 }
 
 .item{
     display: flex;
     justify-content: flex-start;
-    margin: 20px 0px;
+    margint-top: 10px;
 }
-
+.item-top{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
 .item img{
-    width: 105px;
-    height: 105px;
-    padding:0px 20px;
+    width: 100px;
+    height: 50px;
+    margin-top: 5px;
+    margin-right: 5px;
+    object-fit: contain;
 }
 .item-details{
     color: grey;
     font-size: 14px;
-    margin: 10px 0px!important;
+    margin: 0px;
     font-weight: 450;
 }
 .item-content{
@@ -28,7 +35,7 @@
 }
 .item-content h3{
     color: black;
-    font-size: 18px;
+    font-size: 17px;
     margin: 0px;
 }
 .item-code{
@@ -41,9 +48,15 @@
 
 .item-price{
     margin: 0px;
+    margin-right: 10px;
     font-size: 15px;
 }
-
+.item-divider{
+    padding: 0px 10px;
+}
+.detail-title{
+    font-weight: bold;
+}
 @media (max-width: 1300px){
     .item-list{
         width: 95%;

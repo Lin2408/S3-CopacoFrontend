@@ -1,6 +1,7 @@
 import {TableCell, TableRow} from "@mui/material";
 import {useEffect, useState} from "react";
 import { useNavigate } from 'react-router-dom';
+import placeholder from "../../assets/placeholder.png";
 
 function ConfiguratorItem({category, index, items, setItems, loading}) {
     const[item, setItem] = useState({});
@@ -21,15 +22,17 @@ function ConfiguratorItem({category, index, items, setItems, loading}) {
         });
     };
     useEffect(() => {
+
         if (!loading) {
             const currentItem = items[category] || {};
             setItem(currentItem);
         }
     }, [loading, items]);
+
   return (
       <>
           <TableRow
-              key={item.id}
+              key={item.part ? item.part.id : 0}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               style={{
                   backgroundColor: index % 2 === 0 ? '#F5FBFD' : 'white',
@@ -39,7 +42,7 @@ function ConfiguratorItem({category, index, items, setItems, loading}) {
                   {category}
               </TableCell>
 
-              {!item.name ? (
+              {!item.part ? (
                   <>
                   <TableCell ><button onClick={onClick}>Select {category}</button></TableCell>
                     <TableCell></TableCell>
@@ -47,8 +50,13 @@ function ConfiguratorItem({category, index, items, setItems, loading}) {
                   </>
               ) : (
                   <>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell >€{item.price.toFixed(2)}</TableCell>
+                      <TableCell><span className="tableName">
+                         {item.part.image ?
+                            <img src={item.part.image && !item.part.image.includes('https://inishop.com') ? item.part.image : placeholder} alt="part"/> : null
+                         }
+                          <p>{item.part.name}</p>
+                      </span></TableCell>
+                      <TableCell >€{parseFloat(item.part.price).toFixed(2)}</TableCell>
                       <TableCell align="right"><button onClick={onClickRemove}>Remove</button></TableCell>
                   </>
               )}

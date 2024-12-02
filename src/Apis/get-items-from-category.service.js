@@ -1,33 +1,25 @@
 const BASE_URL = 'http://localhost:6060/items';
-import {callExternalApi} from "./external-api.service.js";
-const fetchItemsByCategory = async (category) => {
+import { callExternalApi } from "./external-api.service.js";
 
-        const config = {
-            url: `http://localhost:6060/categories?category=${category}`,
-            method: "GET",
-            headers: {
-                "content-type": "application/json",
-            },
-        }
-        const { data, error } = await callExternalApi({ config });
-        console.log(data)
-        return {
-            data: data || null,
-            error,
-        };
+const fetchItemsByCategory = async (request) => {
+    const queryString = new URLSearchParams({
+        category: request.category,
+        page: request.page,
+        itemPerPage: request.itemPerPage,
+        searchString: request.searchString,
+    }).toString();
+
+    const config = {
+        url: `http://localhost:6060/items/category?${queryString}`,
+        method: "GET",
+        headers: {
+            "content-type": "application/json",
+        },
     }
-
-const getItemsFromCategories = async () => {
-    const categories = ['cpu', 'gpu', 'motherboard', 'ram'];
-    const promises = categories.map(category => fetchItemsByCategory(category));
-    const results = await Promise.all(promises);
-
+    const {data, error} = await callExternalApi({config});
     return {
-        CPU: results[0],
-        GPU: results[1],
-        Motherboard: results[2],
-        RAM: results[3],
+        data: data || null,
+        error,
     };
-};
-
-export { getItemsFromCategories };
+}
+export {fetchItemsByCategory};

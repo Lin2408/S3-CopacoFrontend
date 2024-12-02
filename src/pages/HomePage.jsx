@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid2';
 import './HomePage.css';
 import prebuiltImage from '../assets/prebuilt.jpg';
 import configureImage from '../assets/configure.webp';
+import {NavLink} from "react-router-dom";
 function HomePage() {
   return (
     <div className="home">
@@ -13,9 +14,9 @@ function HomePage() {
         <Container maxWidth="md">
             <Grid container justifyContent="center"   spacing={2}>
                 <Grid size={3}>
+                    <NavLink to={"Configurator"}>
                     <Button
                         variant="contained"
-                        href="/Configurator"
                         sx={{
                             position: 'relative',
                             overflow: 'hidden',
@@ -36,12 +37,12 @@ function HomePage() {
 
                             },
                         }}
-                    >Configure PC</Button>
+                    >Configure PC</Button></NavLink>
                 </Grid>
                 <Grid size={3}>
+                    <NavLink to={"PrebuildTemplatesPage"}>
                     <Button
                         variant="contained"
-                        href="/PrebuildTemplatesPage"
                         sx={{
                             position: 'relative',
                             overflow: 'hidden',
@@ -62,7 +63,7 @@ function HomePage() {
                             },
                         }}
                     >Pre Built PC&#39;s
-                 </Button>
+                    </Button></NavLink>
                 </Grid>
 
 

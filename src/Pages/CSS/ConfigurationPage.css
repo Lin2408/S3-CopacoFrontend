@@ -10,7 +10,14 @@
   gap: 30px;
   margin: 20px;
 }
-
+.configuratorTable img{
+  object-fit: contain;
+  width: 50px;
+}
+.tableName{
+  display: flex;
+  gap: 1rem ;
+}
 @media (max-width: 1300px) {
   .configuratorTable {
     width: 75%;

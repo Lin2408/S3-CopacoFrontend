@@ -1,0 +1,93 @@
+.categories-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.outer-card {
+    width: 1000px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    background-color: white;
+    padding: 40px;
+}
+
+.card-title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.category-spec-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.category-box {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 48%;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.12);
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.autocomplete {
+    width: 100%;
+}
+
+.specification-input {
+    width: 100%;
+}
+
+.list-box {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fafafa;
+    padding: 10px;
+}
+
+.list-box .MuiListItemButton-root {
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.list-box .MuiListItemButton-root:hover {
+    background-color: #1976d2;
+    color: white;
+}
+
+.list-box .MuiListItem-root.Mui-selected {
+    background-color: #1976d2;
+    color: white;
+}
+
+.check-button {
+    margin: 20px auto 10px auto;
+    display: block;
+    width: 250px;
+    padding: 12px;
+    font-size: 1rem;
+}
+
+.result-message {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #1976d2;
+}
