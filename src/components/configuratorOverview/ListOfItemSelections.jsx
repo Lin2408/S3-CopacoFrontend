@@ -39,7 +39,7 @@ function ListOfItemSelections({onSelect, category, search}) {
         if(partsList.length > 0) {
 
             console.log('ItemSelection:', {category: category, items: partsList});
-            getItemsByCompatibilty({category: category, items: partsList}).then(data => {
+            getItemsByCompatibilty({items: partsList, category: category}).then(data => {
                 setItems(data.data.items);
                 setPageCount(Math.ceil(data.data.itemCount / itemPerPage));
             }).catch(error => {

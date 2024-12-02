@@ -8,8 +8,9 @@ export async function getItemsByCompatibilty(request) {
         headers: {
             "content-type": "application/json",
         },
-        body: JSON.stringify(request),
+        data: request,
     }
+    console.log("config", config);
     const { data, error } = await callExternalApi({ config });
     return {
         data: data || null,

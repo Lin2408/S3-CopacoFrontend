@@ -51,7 +51,6 @@ function ConfigurationPage() {
         initialTemplates.sort((a, b) => a.name.localeCompare(b.name));
         const initialTemplate = JSON.parse(sessionStorage.getItem('template')) || initialTemplates[0];
         setTemplate(initialTemplate);
-
         load(initialTemplate.categories);
     }
     function load(categories) {
