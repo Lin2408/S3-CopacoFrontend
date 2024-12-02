@@ -1,27 +1,30 @@
 import ConfiguratorItem from "../components/configuratorOverview/ConfiguratorItem.jsx";
 import {useEffect, useState} from "react";
-import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {
+    Autocomplete,
+    Button,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow, TextField, Typography
+} from "@mui/material";
 import "./CSS/ConfigurationPage.css";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-
-function load(key, categories) {
-    const items = sessionStorage.getItem(key);
-    return items != null ? JSON.parse(items) : Object.fromEntries(categories.map(category => [category, {}]));
-}
-
-function loadCategories() {
-    const categories = ['Processoren', 'VideoKaarten', 'Moederborden', 'Geheugenmodules'];
-    return categories;
-}
-
+import {fetchTemplates} from "../Apis/get-templates.service.js";
 
 function ConfigurationPage() {
-    const categories = loadCategories();
+    const [templates, setTemplates] = useState([]);
+    const [template, setTemplate] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [items, setItems] = useState(() => load('items', categories));
+    const [items, setItems] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
+        setLoading(true);
+        loadTemplates();
         const storedItems = sessionStorage.getItem('items');
         if (storedItems) {
             setItems(JSON.parse(storedItems));
@@ -29,11 +32,38 @@ function ConfigurationPage() {
             sessionStorage.setItem('items', JSON.stringify(items));
         }
         setLoading(false);
-        console.log('Items:', items);
     }, []);
 
     useEffect(() => {
-        const price = Object.values(items).reduce((total, item) => total + (item.part && item.part.price ? parseFloat(item.part.price) : 0), 0);
+        if (template?.categories) {
+            load(template.categories);
+        }
+    }, [template]);
+
+    async function loadTemplates() {
+        const data = await fetchTemplates();
+        if (data.error) {
+            console.error('Error fetching templates:', data.error);
+        }
+        console.log('Templates:', data);
+        const initialTemplates = data.data.templates;
+        setTemplates(initialTemplates);
+        initialTemplates.sort((a, b) => a.name.localeCompare(b.name));
+        const initialTemplate = JSON.parse(sessionStorage.getItem('template')) || initialTemplates[0];
+        setTemplate(initialTemplate);
+        load(initialTemplate.categories);
+    }
+    function load(categories) {
+        if (!categories) return;
+        const itemFromStorage = sessionStorage.getItem('items');
+        setItems(itemFromStorage != null ? JSON.parse(itemFromStorage) : Object.fromEntries(categories.sort((a, b) => a.value.localeCompare(b.value)).map(category => [category.value, {}])));
+    }
+
+    useEffect(() => {
+        const price = Object.values(items || {}).reduce(
+            (total, item) => total + (item.part?.price ? parseFloat(item.part.price) : 0),
+            0
+        );
         setTotalPrice(price);
     }, [items]);
 
@@ -41,10 +71,40 @@ function ConfigurationPage() {
         console.log('Saving configuration:', items);
     }
 
+    function handleTemplateChange(event, newValue) {
+        setTemplate(newValue);
+        console.log(newValue);
+        sessionStorage.removeItem('items');
+        if(!newValue){
+            sessionStorage.removeItem('template');
+            setItems({});
+            return;
+        }
+        setItems(Object.fromEntries(newValue.categories.sort(((a,b) => a.value.localeCompare(b.value))).map(category => [category.value, {}])));
+        sessionStorage.setItem('template', JSON.stringify(newValue));
+
+    }
     return (
         <div>
-            <h1>Configuration Page</h1>
+            <h1>Configuration</h1>
+            {
+                loading ? (
+                    <div className="loading">
+                        <p>Loading...</p>
+                    </div>
+                ) : (
+
+
             <div className="configuratorTable">
+                <Autocomplete
+                    disablePortal
+                    options={templates}
+                    value={template}
+                    sx={{ width: 300, mb: 3}}
+                    getOptionLabel={(option) => option.name}
+                    onChange={handleTemplateChange}
+                    renderInput={(params) => <TextField {...params} label="Templates" />}
+                />
                 <TableContainer component={Paper}>
                     <Table sx={{minWidth: 550}} aria-label="simple table">
                         <TableHead>
@@ -56,11 +116,22 @@ function ConfigurationPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {categories.map((category, index) => (
-                                <ConfiguratorItem key={category} index={index} category={category} items={items}
+                        {template ?(
+
+                            template.categories.map((category, index) => (
+                                <ConfiguratorItem key={category.id} index={index} category={category} items={items}
                                                   setItems={setItems}
                                                   loading={loading}/>
-                            ))}
+                            ))
+                        ):(
+                            <TableRow>
+                                <TableCell colSpan={4} align="center" sx={{backgroundColor: "lightgrey"}}>
+                                    <Typography variant="subtitle1" color="black">
+                                        Please select a template
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>)
+                        }
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -72,7 +143,7 @@ function ConfigurationPage() {
                         '&:hover': {backgroundColor: '#278f5f',},
                     }} onClick={handleSubmit}>Save Configuration</Button>
                 </div>
-            </div>
+            </div>)}
 
 
         </div>

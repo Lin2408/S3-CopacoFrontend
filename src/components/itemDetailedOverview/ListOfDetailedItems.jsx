@@ -5,13 +5,14 @@ import {fetchItemsByCategory} from "../../Apis/get-items-from-category.service.j
 import {Alert, Box, CircularProgress, Typography} from "@mui/material";
 import ItemPaginationButtons from "../ItemPaginationButtons.jsx";
 import SearchOffIcon from '@mui/icons-material/SearchOff';
+import NoSearchResults from "../NoSearchResults.jsx";
 
 
 const ListOfDetailedItems = ({selectedCategory, search}) => {
     const [items, setItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [itemPerPage] = useState(15);
     const [error, setError] = useState(null);
 
@@ -89,26 +90,8 @@ const ListOfDetailedItems = ({selectedCategory, search}) => {
                         ))}
                     </div>
                     <ItemPaginationButtons page={page} pageCount={pageCount} handlePageChange={handlePageChange}/>
-                </div>) :(
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            height: '50vh',
-                            textAlign: 'center',
-                            padding: 2,
-                        }}
-                    >
-                        <SearchOffIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
-                        <Typography variant="h5" sx={{ mb: 1 }}>
-                            No Items Found
-                        </Typography>
-                        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                            Sorry, we couldn't find any items matching your search. Try again with different keywords.
-                        </Typography>
-                    </Box>)
+                </div>) :(<NoSearchResults/>
+                   )
             )
 
         )

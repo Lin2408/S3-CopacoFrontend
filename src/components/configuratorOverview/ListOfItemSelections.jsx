@@ -4,14 +4,15 @@ import "../../Pages/CSS/ItemOverView.css";
 import {fetchItemsByCategory} from "../../Apis/get-items-from-category.service.js";
 import ItemPaginationButtons from "../ItemPaginationButtons.jsx";
 import * as React from "react";
-import {Alert, Box, CircularProgress, Typography} from "@mui/material";
-import SearchOffIcon from "@mui/icons-material/SearchOff";
+import {Alert, Box, CircularProgress} from "@mui/material";
+import NoSearchResults from "../NoSearchResults.jsx";
+import {getItemsByCompatibilty} from "../../Apis/get-items-by-compatibilty.js";
 
 function ListOfItemSelections({onSelect, category, search}) {
     const [items, setItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [itemPerPage] = useState(20);
     const [error, setError] = useState(null);
 
@@ -19,16 +20,44 @@ function ListOfItemSelections({onSelect, category, search}) {
         setPage(1);
     }, [category, search]);
 
+
     useEffect(() => {
+        setLoading(true);
         if (category === null) {
             return;
         }
+
+        const itemSelection = JSON.parse(sessionStorage.getItem('items'));
+        const partsList = [];
+        for (const value of Object.values(itemSelection)) {
+            if (value.part) {
+                partsList.push(value.part);
+            }
+        }
+        console.log('ItemSelection:', itemSelection);
+        console.log(partsList);
+
+        if(partsList.length > 0) {
+
+            console.log('ItemSelection:', {category: category, items: partsList});
+            getItemsByCompatibilty({items: partsList, category: category}).then(data => {
+                setItems(data.data.items);
+                setPageCount(Math.ceil(data.data.itemCount / itemPerPage));
+            }).catch(error => {
+                console.error("Error fetching categories:", error);
+                setError("Something went wrong while trying to get items");
+            }).finally(() => {
+                setLoading(false);
+            });
+            return;
+        }
+
         const getItems = async () => {
 
             try {
                 setLoading(true);
                 setError(null);
-                const data = await fetchItemsByCategory({category: category, itemPerPage: itemPerPage, page: page, searchString: search});
+                const data = await fetchItemsByCategory({category: category.value, itemPerPage: itemPerPage, page: page, searchString: search});
 
                 setItems(data.data.items);
                 setPageCount(Math.ceil(data.data.itemCount / itemPerPage));
@@ -41,6 +70,10 @@ function ListOfItemSelections({onSelect, category, search}) {
         };
         getItems();
     }, [page, category, search]);
+    /*useEffect(() => {
+
+
+    }, []);*/
 
     function handlePageChange(event, value) {
         setPage(value);
@@ -82,25 +115,7 @@ function ListOfItemSelections({onSelect, category, search}) {
                     <ItemPaginationButtons page={page} pageCount={pageCount} handlePageChange={handlePageChange}/>
                 </>
             ) : (
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: '50vh',
-                        textAlign: 'center',
-                        padding: 2,
-                    }}
-                >
-                    <SearchOffIcon sx={{ fontSize: 80, color: 'text.secondary', mb: 2 }} />
-                    <Typography variant="h5" sx={{ mb: 1 }}>
-                        No Items Found
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                        Sorry, we couldn't find any items matching your search. Try again with different keywords.
-                    </Typography>
-                </Box>
+                <NoSearchResults/>
             ))))}
         </>
     );

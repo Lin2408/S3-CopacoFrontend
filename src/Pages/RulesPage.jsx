@@ -177,9 +177,11 @@ const RulesPage = () => {
             categoryFrom: selectedCategory1,
             nameFrom: selectedSpecification1?.name,
             valuesFrom: selectedSpecificationsFrom,
+            isNameFrom: showOnlySpecNames1,
             categoryTo: selectedCategory2,
             nameTo: selectedSpecification2?.name,
             valuesTo: selectedSpecificationsTo,
+            isNameTo: showOnlySpecNames2,
             unit: 'unit', // Replace with the actual unit if needed
         };
 
@@ -246,7 +248,7 @@ const RulesPage = () => {
                                     isOptionEqualToValue={(option, value) => option.name === value.name}
                                 />
                             )}
-                            {selectedCategory1 && (
+                            {selectedCategory1 &&(
                                 <>
                                     <Autocomplete
                                         options={SpecificationsFrom}
@@ -301,7 +303,7 @@ const RulesPage = () => {
                                 }
                                 label="Show only Specification Names"
                             />
-                            {selectedCategory2 && !showOnlySpecNames2 && (
+                            {selectedCategory2 && !showOnlySpecNames2&&(
                                 <Autocomplete
                                     options={specifications2}
                                     getOptionLabel={(option) => option.name || ''}

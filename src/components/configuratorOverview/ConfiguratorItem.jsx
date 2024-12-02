@@ -15,7 +15,7 @@ function ConfiguratorItem({category, index, items, setItems, loading}) {
         setItems(prevItems => {
             const updatedItems = {
                 ...prevItems,
-                [category]: {}
+                [category.value]: {}
             };
             sessionStorage.setItem('items', JSON.stringify(updatedItems));
             return updatedItems;
@@ -24,7 +24,7 @@ function ConfiguratorItem({category, index, items, setItems, loading}) {
     useEffect(() => {
 
         if (!loading) {
-            const currentItem = items[category] || {};
+            const currentItem = items[category.value] || {};
             setItem(currentItem);
         }
     }, [loading, items]);
@@ -39,21 +39,19 @@ function ConfiguratorItem({category, index, items, setItems, loading}) {
               }}
           >
               <TableCell component="th" scope="row">
-                  {category}
+                  {category.value}
               </TableCell>
 
               {!item.part ? (
                   <>
-                  <TableCell ><button onClick={onClick}>Select {category}</button></TableCell>
+                  <TableCell ><button onClick={onClick}>Select {category.value}</button></TableCell>
                     <TableCell></TableCell>
                     <TableCell align="right"></TableCell>
                   </>
               ) : (
                   <>
                       <TableCell><span className="tableName">
-                         {item.part.image ?
-                            <img src={item.part.image && !item.part.image.includes('https://inishop.com') ? item.part.image : placeholder} alt="part"/> : null
-                         }
+                          <img src={item.part.image && !item.part.image.includes('https://inishop.com') ? item.part.image : placeholder} alt="part"/>
                           <p>{item.part.name}</p>
                       </span></TableCell>
                       <TableCell >€{parseFloat(item.part.price).toFixed(2)}</TableCell>
