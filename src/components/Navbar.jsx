@@ -57,6 +57,9 @@ const Navbar = () => {
                     {user && isAdmin && (
                         <>
                             <li>
+                                <NavLink to="/Rules">Rules</NavLink>
+                            </li>
+                            <li>
                                 <NavLink to="/adminConfig">Configure products</NavLink>
                             </li>
                             <li>

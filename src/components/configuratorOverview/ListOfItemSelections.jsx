@@ -12,7 +12,7 @@ function ListOfItemSelections({onSelect, category, search}) {
     const [items, setItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [itemPerPage] = useState(20);
     const [error, setError] = useState(null);
 
@@ -22,6 +22,7 @@ function ListOfItemSelections({onSelect, category, search}) {
 
 
     useEffect(() => {
+        setLoading(true);
         if (category === null) {
             return;
         }
@@ -45,6 +46,8 @@ function ListOfItemSelections({onSelect, category, search}) {
             }).catch(error => {
                 console.error("Error fetching categories:", error);
                 setError("Something went wrong while trying to get items");
+            }).finally(() => {
+                setLoading(false);
             });
             return;
         }
