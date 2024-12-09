@@ -28,7 +28,7 @@ function App() {
                 <Route path="/Admin" element={<AdminPage/>}/>
                 <Route path="/Homepage" element={<HomePage/>}/>
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/Item" element={<ItemDetailsPage/>}/>
+                <Route path="/Item/:id" element={<ItemDetailsPage/>}/>
                 <Route path="/AdminTemplate" element={<AdminTemplatePage/>}/>
                 <Route path="/ItemsDetailed" element={<DetailedItemsOverview/>}/>
                 <Route path="/PrebuildTemplatesPage" element={<PrebuildTemplatesPage/>}/>

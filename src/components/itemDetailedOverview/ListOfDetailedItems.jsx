@@ -8,11 +8,11 @@ import SearchOffIcon from '@mui/icons-material/SearchOff';
 import NoSearchResults from "../NoSearchResults.jsx";
 
 
-const ListOfDetailedItems = ({selectedCategory, search}) => {
+const ListOfDetailedItems = ({selectedCategory, search, loading, setLoading}) => {
     const [items, setItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(true);
+   /* const [loading, setLoading] = useState(true);*/
     const [itemPerPage] = useState(15);
     const [error, setError] = useState(null);
 
@@ -36,11 +36,10 @@ const ListOfDetailedItems = ({selectedCategory, search}) => {
                     page: page,
                     searchString: search
                 }
-                console.log("request", request)
-
                 const data = await fetchItemsByCategory(request);
                 setItems(data.data.items);
                 setPageCount(Math.ceil(data.data.itemCount / itemPerPage));
+                console.log("data", data);
             } catch (error) {
                 console.error("Error fetching categories:", error);
                 setError("Something went wrong while trying to get items");
@@ -84,7 +83,7 @@ const ListOfDetailedItems = ({selectedCategory, search}) => {
                             <Fragment key={part.id}>
                                 <DetailedItem key={part.id} image={part.image} name={part.name}
                                               manufacturer={part.manufacturer} price={part.price}
-                                              specifications={part.specifications}/>
+                                              specifications={part.specifications} id={part.id}/>
                                 {index < items.length - 1 && <hr/>}
                             </Fragment>
                         ))}

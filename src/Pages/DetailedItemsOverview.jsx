@@ -27,6 +27,7 @@ function DetailedItemsOverview() {
     const [inputValue, setInputValue] = useState('');
     const [categorySelection, setCategorySelection] = useState(null);
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const getCategories = async () => {
             try {
@@ -60,6 +61,9 @@ function DetailedItemsOverview() {
         if(!value){
             return;
         }
+        if(loading){
+            return;
+        }
         setCategorySelection(value);
         setSearchTerm('');
         setSearch('');
@@ -77,6 +81,7 @@ function DetailedItemsOverview() {
                                    value={searchTerm}
                                    onChange={(e) => setSearchTerm(e.target.value)}
                                    onKeyDown={handleKeyPress}
+                                   disabled={loading}
                                    slotProps={{
                                        input: {
                                            endAdornment: (
@@ -110,6 +115,7 @@ function DetailedItemsOverview() {
                                     inputValue={inputValue}
                                     onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
                                     value={categorySelection ? categorySelection : null}
+                                    disabled={loading}
                                     renderInput={(params) => (
                                         <TextField {...params} variant="outlined"  placeholder="Select category" />
                                     )}
@@ -148,7 +154,7 @@ function DetailedItemsOverview() {
                     ))}
                 </Grid>
                 <Grid size={8}>
-                    <ListOfDetailedItems selectedCategory={categorySelection} search={search}/>
+                    <ListOfDetailedItems selectedCategory={categorySelection} search={search} loading={loading} setLoading={setLoading}/>
                 </Grid>
             </Grid>
         </div>
