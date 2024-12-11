@@ -9,7 +9,7 @@ const createRule = async (ruleData) => {
         const response = await axiosInstance.post('/rules', ruleData);
         return response.data;
     } catch (error) {
-        console.error('Error creating rule:', error);
+        console.error('Error creating rule:', error.response ? error.response.data : error.message);
         throw error;
     }
 };

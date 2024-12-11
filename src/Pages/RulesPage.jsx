@@ -77,6 +77,7 @@ const RulesPage = () => {
             const result = await createRule(ruleData);
             setResultMessage(result ? 'Rule created successfully!' : 'Failed to create rule.');
         } catch (error) {
+            console.error('Error creating rule:', error.response ? error.response.data : error.message);
             setResultMessage('Error creating rule.');
         }
     };
