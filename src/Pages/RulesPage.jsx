@@ -174,7 +174,7 @@ const RulesPage = () => {
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, specification1: value }))}
                                 renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                             />
-                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.specification1 && (
@@ -213,7 +213,7 @@ const RulesPage = () => {
                                     ))}
                                 </List>
                             </Box>
-                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.valuesTo.length > 0 && (
@@ -238,7 +238,7 @@ const RulesPage = () => {
                                 onInputChange={(e, value) => setInputValue(value)}
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
-                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.category2 && (
@@ -261,7 +261,7 @@ const RulesPage = () => {
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, specification2: value }))}
                                 renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                             />
-                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.specification2 && (
@@ -300,7 +300,7 @@ const RulesPage = () => {
                                     ))}
                                 </List>
                             </Box>
-                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.valuesToCategory2.length > 0 && (
@@ -327,7 +327,7 @@ const RulesPage = () => {
                             </Typography>
                             <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 2: {selected.valuesToCategory2.join(', ')}</Typography>
 
-                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2, }} onClick={handleBack}>
                                 Back
                             </Button>
                             <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
