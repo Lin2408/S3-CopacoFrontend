@@ -121,7 +121,13 @@ const RulesPage = () => {
     }, [selected.specification2]);
 
     const handleNext = () => setStep((prev) => prev + 1);
-    const handleBack = () => setStep((prev) => prev - 1);
+    const handleBack = () => {
+        setStep((prev) => {
+            if (prev === 4 && showOnlySpecNames1) return 2;
+            if (prev === 6 && showOnlySpecNames2) return 4;
+            return prev - 1;
+        });
+    };
     return (
         <Box className="categories-container">
             <Card className="outer-card">
@@ -174,16 +180,33 @@ const RulesPage = () => {
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, specification1: value }))}
                                 renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                             />
-                            <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+                                <input
+                                    type="checkbox"
+                                    id="weirdNameCheckbox1"
+                                    checked={showOnlySpecNames1}
+                                    onChange={(e) => setShowOnlySpecNames1(e.target.checked)}
+                                />
+                                <label htmlFor="weirdNameCheckbox1" style={{ marginLeft: '8px' }}>
+                                    Has weird name
+                                </label>
+                            </Box>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.specification1 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
-                                    Next
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{ mt: 2 }}
+                                    onClick={() => (showOnlySpecNames1 ? setStep(4) : handleNext())}
+                                >
+                                    {showOnlySpecNames1 ? 'Skip to Category 2' : 'Next'}
                                 </Button>
                             )}
                         </Box>
                     )}
+
 
                     {step === 3 && (
                         <Box>
@@ -261,12 +284,28 @@ const RulesPage = () => {
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, specification2: value }))}
                                 renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                             />
+                            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+                                <input
+                                    type="checkbox"
+                                    id="weirdNameCheckbox2"
+                                    checked={showOnlySpecNames2}
+                                    onChange={(e) => setShowOnlySpecNames2(e.target.checked)}
+                                />
+                                <label htmlFor="weirdNameCheckbox2" style={{ marginLeft: '8px' }}>
+                                    Has weird name
+                                </label>
+                            </Box>
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.specification2 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
-                                    Next
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{ mt: 2 }}
+                                    onClick={() => (showOnlySpecNames2 ? setStep(7) : handleNext())}
+                                >
+                                    {showOnlySpecNames2 ? 'Skip to Submit' : 'Next'}
                                 </Button>
                             )}
                         </Box>
