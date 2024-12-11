@@ -1,18 +1,23 @@
 .categories-container {
     display: flex;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
     padding: 20px;
     background-color: #f5f5f5;
     min-height: 100vh;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .outer-card {
-    width: 1000px;
+    overflow-x: hidden;
+    width: 800px;
     border-radius: 12px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     background-color: white;
     padding: 40px;
+    margin-top: -150px;
 }
 
 .card-title {
@@ -22,25 +27,12 @@
     margin-bottom: 30px;
 }
 
-.category-spec-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 40px;
-    margin-bottom: 30px;
-}
-
-.category-box {
+.step-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 30px;
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    width: 48%;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.12);
-    max-height: 400px;
-    overflow-y: auto;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
 }
 
 .autocomplete {
@@ -58,6 +50,7 @@
     border-radius: 4px;
     background-color: #fafafa;
     padding: 10px;
+    width: 100%;
 }
 
 .list-box .MuiListItemButton-root {
@@ -77,9 +70,22 @@
     color: white;
 }
 
-.check-button {
-    margin: 20px auto 10px auto;
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.nav-button {
+    width: 150px;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+.submit-button {
     display: block;
+    margin: 30px auto;
     width: 250px;
     padding: 12px;
     font-size: 1rem;
@@ -89,5 +95,6 @@
     text-align: center;
     font-weight: bold;
     margin-top: 10px;
-    color: #1976d2;
+    color: black;
+    font-size: 1.2rem; 
 }

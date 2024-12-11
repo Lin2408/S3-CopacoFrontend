@@ -10,189 +10,118 @@ import {
     List,
     ListItemButton,
     ListItemText,
-    FormControlLabel,
-    Checkbox,
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
 import { getSpecificationsFromCategory, getSpecificationsValuesFromCategory } from '../Apis/get-specifications-from-categories.service.js';
 import createRule from '../Apis/create-rule.service.js';
 import './RulesPage.css';
 
-const removeDuplicatesById = (categories) => {
-    const seen = new Set();
-    return categories.filter((category) => {
-        if (seen.has(category.id)) {
-            return false;
-        }
-        seen.add(category.id);
-        return true;
-    });
-};
-
 const RulesPage = () => {
-    const [categories1, setCategories1] = useState([]);
-    const [categories2, setCategories2] = useState([]);
-    const [specifications1, setSpecifications1] = useState([]);
-    const [specifications2, setSpecifications2] = useState([]);
-    const [selectedCategory1, setSelectedCategory1] = useState(null);
-    const [selectedCategory2, setSelectedCategory2] = useState(null);
-    const [selectedSpecification1, setSelectedSpecification1] = useState(null);
-    const [selectedSpecification2, setSelectedSpecification2] = useState(null);
-    const [SpecificationsFrom, setSpecificationsFrom] = useState([]);
-    const [SpecificationsTo, setSpecificationsTo] = useState([]);
-    const [selectedSpecificationsFrom, setSelectedSpecificationsFrom] = useState([]);
-    const [selectedSpecificationsTo, setSelectedSpecificationsTo] = useState([]);
-    const [inputValue1, setInputValue1] = useState('');
-    const [inputValue2, setInputValue2] = useState('');
-    const [isWeirdName1, setIsWeirdName1] = useState(false);
-    const [isWeirdName2, setIsWeirdName2] = useState(false);
-    const [selectedItems1, setSelectedItems1] = useState([]);
-    const [selectedItems2, setSelectedItems2] = useState([]);
+    const [step, setStep] = useState(1);
+    const [categories, setCategories] = useState([]);
+    const [specifications, setSpecifications] = useState([]);
+    const [selected, setSelected] = useState({
+        category1: null,
+        category2: null,
+        specification1: null,
+        specification2: null,
+        valuesFrom: [],
+        valuesTo: [],
+        valuesFromCategory2: [],
+        valuesToCategory2: [],
+    });
+    const [inputValue, setInputValue] = useState('');
     const [resultMessage, setResultMessage] = useState('');
     const [showOnlySpecNames1, setShowOnlySpecNames1] = useState(false);
     const [showOnlySpecNames2, setShowOnlySpecNames2] = useState(false);
     const [searchValue1, setSearchValue1] = useState('');
     const [searchValue2, setSearchValue2] = useState('');
 
-    const fetchCategoriesData = async (query, setCategories) => {
+    const fetchCategoriesData = async (query) => {
         const { data, error } = await fetchCategories();
         if (data) {
-            const filteredCategories = data.categories.filter(
-                (category) => category.value && category.value.toLowerCase().includes(query.toLowerCase())
-            );
-            setCategories(removeDuplicatesById(filteredCategories));
+            setCategories(data.categories.filter((cat) => cat.value?.toLowerCase().includes(query.toLowerCase())));
         } else {
             console.error('Error fetching categories:', error);
         }
     };
 
-    const fetchSpecifications = async (category, setSpecifications) => {
-        if (!category || !category.id) {
-            console.error('Invalid category:', category);
-            return;
-        }
-
+    const fetchSpecifications = async (categoryId) => {
+        if (!categoryId) return;
         try {
-            const { specifications } = await getSpecificationsFromCategory(category.id);
-            console.log(`Specifications for category ${category.id}:`, specifications);
-            setSpecifications(Array.isArray(specifications) ? specifications : []);
+            const { specifications } = await getSpecificationsFromCategory(categoryId);
+            setSpecifications(specifications || []);
         } catch (error) {
             console.error('Error fetching specifications:', error);
         }
     };
 
-    const fetchSpecValues = async (specName, categoryId, setSpec) => {
-        if (!specName || !categoryId) {
-            return;
-        }
+    const fetchSpecValues = async (specName, categoryId) => {
+        if (!specName || !categoryId) return;
         try {
             const { specifications } = await getSpecificationsValuesFromCategory(specName, categoryId);
-            console.log(`test ${specifications}`);
-            setSpec(Array.isArray(specifications) ? specifications : []);
+            return specifications || [];
         } catch (error) {
             console.error(error);
         }
     };
-
-    const handleSelectItem1 = (item) => {
-        setSelectedSpecificationsFrom((prevSelectedItems) =>
-            prevSelectedItems.includes(item)
-                ? prevSelectedItems.filter((i) => i !== item)
-                : [...prevSelectedItems, item]
-        );
-        setSearchValue1(item);
-    };
-
-    const handleSelectItem2 = (item) => {
-        setSelectedSpecificationsTo((prevSelectedItems) =>
-            prevSelectedItems.includes(item)
-                ? prevSelectedItems.filter((i) => i !== item)
-                : [...prevSelectedItems, item]
-        );
-        setSearchValue2(item);
-    };
-
-    useEffect(() => {
-        if (inputValue1.length >= 2) {
-            fetchCategoriesData(inputValue1, setCategories1);
-        }
-    }, [inputValue1]);
-
-    useEffect(() => {
-        if (inputValue2.length >= 2) {
-            fetchCategoriesData(inputValue2, setCategories2);
-        }
-    }, [inputValue2]);
-
-    useEffect(() => {
-        if (selectedCategory1 && selectedCategory1.id) {
-            fetchSpecifications(selectedCategory1, setSpecifications1);
-            setSelectedSpecificationsFrom([]);
-            setSearchValue1('');
-        }
-    }, [selectedCategory1]);
-
-    useEffect(() => {
-        if (selectedCategory2 && selectedCategory2.id) {
-            fetchSpecifications(selectedCategory2, setSpecifications2);
-            setSelectedSpecificationsTo([]);
-            setSearchValue2('');
-        }
-    }, [selectedCategory2]);
-
-    useEffect(() => {
-        if (selectedSpecification1) {
-            fetchSpecValues(selectedSpecification1.name, selectedCategory1.id, setSpecificationsFrom);
-            setSelectedSpecificationsFrom([]);
-            setSearchValue1('');
-        }
-    }, [selectedSpecification1]);
-
-    useEffect(() => {
-        if (selectedSpecification2) {
-            fetchSpecValues(selectedSpecification2.name, selectedCategory2.id, setSpecificationsTo);
-            setSelectedSpecificationsTo([]);
-            setSearchValue2('');
-        }
-    }, [selectedSpecification2]);
-
-    useEffect(() => {
-        if (showOnlySpecNames1 && selectedCategory1) {
-            setSpecificationsFrom(specifications1.map((spec) => spec.name));
-        } else if (selectedSpecification1) {
-            fetchSpecValues(selectedSpecification1.name, selectedCategory1.id, setSpecificationsFrom);
-        }
-    }, [showOnlySpecNames1, specifications1, selectedSpecification1]);
-
-    useEffect(() => {
-        if (showOnlySpecNames2 && selectedCategory2) {
-            setSpecificationsTo(specifications2.map((spec) => spec.name));
-        } else if (selectedSpecification2) {
-            fetchSpecValues(selectedSpecification2.name, selectedCategory2.id, setSpecificationsTo);
-        }
-    }, [showOnlySpecNames2, specifications2, selectedSpecification2]);
-
+  
     const handleSubmit = async () => {
         const ruleData = {
-            categoryFrom: selectedCategory1,
-            nameFrom: selectedSpecification1?.name,
-            valuesFrom: selectedSpecificationsFrom,
-            isNameFrom: showOnlySpecNames1,
-            categoryTo: selectedCategory2,
-            nameTo: selectedSpecification2?.name,
-            valuesTo: selectedSpecificationsTo,
-            isNameTo: showOnlySpecNames2,
-            unit: 'unit', // Replace with the actual unit if needed
+            categoryFrom: selected.category1,
+            nameFrom: selected.specification1?.name,
+            valuesFrom: selected.valuesFrom,
+            isNameFrom: true,
+            categoryTo: selected.category2,
+            nameTo: selected.specification2?.name,
+            valuesTo: selected.valuesToCategory2,
+            isNameTo: true,
+            unit: 'unit',
         };
 
         try {
             const result = await createRule(ruleData);
             setResultMessage(result ? 'Rule created successfully!' : 'Failed to create rule.');
         } catch (error) {
+            console.error('Error creating rule:', error.response ? error.response.data : error.message);
             setResultMessage('Error creating rule.');
         }
     };
 
+    useEffect(() => {
+        if (inputValue.length >= 2) fetchCategoriesData(inputValue);
+    }, [inputValue]);
+
+    useEffect(() => {
+        if (selected.category1?.id) {
+            fetchSpecifications(selected.category1.id);
+        }
+    }, [selected.category1]);
+
+    useEffect(() => {
+        if (selected.specification1?.name && selected.category1?.id) {
+            fetchSpecValues(selected.specification1.name, selected.category1.id).then((values) =>
+                setSelected((prev) => ({ ...prev, valuesFrom: values }))
+            );
+        }
+    }, [selected.specification1]);
+
+    useEffect(() => {
+        if (selected.category2?.id) {
+            fetchSpecifications(selected.category2.id);
+        }
+    }, [selected.category2]);
+
+    useEffect(() => {
+        if (selected.specification2?.name && selected.category2?.id) {
+            fetchSpecValues(selected.specification2.name, selected.category2.id).then((values) =>
+                setSelected((prev) => ({ ...prev, valuesFromCategory2: values }))
+            );
+        }
+    }, [selected.specification2]);
+
+    const handleNext = () => setStep((prev) => prev + 1);
+    const handleBack = () => setStep((prev) => prev - 1);
     return (
         <Box className="categories-container">
             <Card className="outer-card">
@@ -208,150 +137,205 @@ const RulesPage = () => {
                             color: 'black',
                         }}
                     >
-                        Categories Page
+                        Rule Creation Page
                     </Typography>
 
-                    <Box className="category-spec-container">
-                        <Box className="category-box">
+                    {step === 1 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Step 1: Select the First Category
+                            </Typography>
                             <Autocomplete
-                                options={categories1.filter(
-                                    (category) => !selectedCategory2 || category.id !== selectedCategory2.id
-                                )}
+                                options={categories}
                                 getOptionLabel={(option) => option.value || ''}
-                                value={selectedCategory1}
-                                onChange={(e, value) => setSelectedCategory1(value)}
-                                inputValue={inputValue1}
-                                onInputChange={(e, value) => setInputValue1(value)}
-                                renderInput={(params) => (
-                                    <TextField {...params} label="Select Category 1" variant="outlined" />
-                                )}
-                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                value={selected.category1}
+                                onChange={(e, value) => setSelected((prev) => ({ ...prev, category1: value }))}
+                                inputValue={inputValue}
+                                onInputChange={(e, value) => setInputValue(value)}
+                                renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={showOnlySpecNames1}
-                                        onChange={(e) => setShowOnlySpecNames1(e.target.checked)}
-                                    />
-                                }
-                                label="Show only Specification Names"
-                            />
-                            {selectedCategory1 && !showOnlySpecNames1 && (
-                                <Autocomplete
-                                    options={specifications1}
-                                    getOptionLabel={(option) => option.name || ''}
-                                    value={selectedSpecification1}
-                                    onChange={(e, value) => setSelectedSpecification1(value)}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Select Specification 1" variant="outlined" />
-                                    )}
-                                    isOptionEqualToValue={(option, value) => option.name === value.name}
-                                />
-                            )}
-                            {selectedCategory1 &&(
-                                <>
-                                    <Autocomplete
-                                        options={SpecificationsFrom}
-                                        getOptionLabel={(option) => option || ''}
-                                        inputValue={searchValue1}
-                                        onInputChange={(e, value) => setSearchValue1(value)}
-                                        onChange={(e, value) => handleSelectItem1(value)}
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Search Specifications" variant="outlined" />
-                                        )}
-                                    />
-                                    <Box className="list-box">
-                                        <List>
-                                            {SpecificationsFrom.filter((spec) =>
-                                                spec && spec.includes(searchValue1)
-                                            ).map((spec, index) => (
-                                                <ListItemButton
-                                                    key={index}
-                                                    selected={selectedSpecificationsFrom.includes(spec)}
-                                                    onClick={() => handleSelectItem1(spec)}
-                                                >
-                                                    <ListItemText primary={spec || 'No value'} />
-                                                </ListItemButton>
-                                            ))}
-                                        </List>
-                                    </Box>
-                                </>
+                            {selected.category1 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
                             )}
                         </Box>
+                    )}
 
-                        <Box className="category-box">
+                    {step === 2 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Step 2: Select a Specification
+                            </Typography>
                             <Autocomplete
-                                options={categories2.filter(
-                                    (category) => !selectedCategory1 || category.id !== selectedCategory1.id
-                                )}
-                                getOptionLabel={(option) => option.value || ''}
-                                value={selectedCategory2}
-                                onChange={(e, value) => setSelectedCategory2(value)}
-                                inputValue={inputValue2}
-                                onInputChange={(e, value) => setInputValue2(value)}
-                                renderInput={(params) => (
-                                    <TextField {...params} label="Select Category 2" variant="outlined" />
-                                )}
-                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                options={specifications}
+                                getOptionLabel={(option) => option.name || ''}
+                                value={selected.specification1}
+                                onChange={(e, value) => setSelected((prev) => ({ ...prev, specification1: value }))}
+                                renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                             />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={showOnlySpecNames2}
-                                        onChange={(e) => setShowOnlySpecNames2(e.target.checked)}
-                                    />
-                                }
-                                label="Show only Specification Names"
-                            />
-                            {selectedCategory2 && !showOnlySpecNames2&&(
-                                <Autocomplete
-                                    options={specifications2}
-                                    getOptionLabel={(option) => option.name || ''}
-                                    value={selectedSpecification2}
-                                    onChange={(e, value) => setSelectedSpecification2(value)}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Select Specification 2" variant="outlined" />
-                                    )}
-                                    isOptionEqualToValue={(option, value) => option.name === value.name}
-                                />
-                            )}
-                            {selectedCategory2 && (
-                                <>
-                                    <Autocomplete
-                                        options={SpecificationsTo}
-                                        getOptionLabel={(option) => option || ''}
-                                        inputValue={searchValue2}
-                                        onInputChange={(e, value) => setSearchValue2(value)}
-                                        onChange={(e, value) => handleSelectItem2(value)}
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Search Specifications" variant="outlined" />
-                                        )}
-                                    />
-                                    <Box className="list-box">
-                                        <List>
-                                            {
-                                                SpecificationsTo.filter((spec) =>
-                                                    spec && spec.includes(searchValue2)
-                                                ).map((spec, index) => (
-                                                    <ListItemButton
-                                                        key={index}
-                                                        selected={selectedSpecificationsTo.includes(spec)}
-                                                        onClick={() => handleSelectItem2(spec)}
-                                                    >
-                                                        <ListItemText primary={spec || 'No value'} />
-                                                    </ListItemButton>
-                                                ))}
-                                        </List>
-                                    </Box>
-                                </>
+                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                                Back
+                            </Button>
+                            {selected.specification1 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
                             )}
                         </Box>
-                    </Box>
+                    )}
 
-                    <Button variant="contained" color="primary" className="check-button" onClick={handleSubmit}>
-                        Submit Rule
-                    </Button>
-                    {resultMessage && <Typography className="result-message">{resultMessage}</Typography>}
+                    {step === 3 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Step 3: Select Values for the First Category
+                            </Typography>
+                            <Box className="list-box">
+                                <Typography variant="body2" sx={{ mb: 1 }}>
+                                    Specification Values:
+                                </Typography>
+                                <List>
+                                    {selected.valuesFrom.map((value, index) => (
+                                        <ListItemButton
+                                            key={index}
+                                            selected={selected.valuesTo.includes(value)}
+                                            onClick={() =>
+                                                setSelected((prev) => ({
+                                                    ...prev,
+                                                    valuesTo: prev.valuesTo.includes(value)
+                                                        ? prev.valuesTo.filter((v) => v !== value)
+                                                        : [...prev.valuesTo, value],
+                                                }))
+                                            }
+                                        >
+                                            <ListItemText primary={value} />
+                                        </ListItemButton>
+                                    ))}
+                                </List>
+                            </Box>
+                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                                Back
+                            </Button>
+                            {selected.valuesTo.length > 0 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
+                            )}
+                        </Box>
+                    )}
+
+                    {step === 4 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Step 4: Select the Second Category
+                            </Typography>
+                            <Autocomplete
+                                options={categories.filter((cat) => cat.id !== selected.category1?.id)}
+                                getOptionLabel={(option) => option.value || ''}
+                                value={selected.category2}
+                                onChange={(e, value) => setSelected((prev) => ({ ...prev, category2: value }))}
+                                inputValue={inputValue}
+                                onInputChange={(e, value) => setInputValue(value)}
+                                renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
+                            />
+                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                                Back
+                            </Button>
+                            {selected.category2 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
+                            )}
+                        </Box>
+                    )}
+
+                    {step === 5 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Step 5: Select a Specification for Second Category
+                            </Typography>
+                            <Autocomplete
+                                options={specifications}
+                                getOptionLabel={(option) => option.name || ''}
+                                value={selected.specification2}
+                                onChange={(e, value) => setSelected((prev) => ({ ...prev, specification2: value }))}
+                                renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
+                            />
+                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                                Back
+                            </Button>
+                            {selected.specification2 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
+                            )}
+                        </Box>
+                    )}
+
+                    {step === 6 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Step 6: Select Values for the Second Category
+                            </Typography>
+                            <Box className="list-box">
+                                <Typography variant="body2" sx={{ mb: 1 }}>
+                                    Specification Values:
+                                </Typography>
+                                <List>
+                                    {selected.valuesFromCategory2.map((value, index) => (
+                                        <ListItemButton
+                                            key={index}
+                                            selected={selected.valuesToCategory2.includes(value)}
+                                            onClick={() =>
+                                                setSelected((prev) => ({
+                                                    ...prev,
+                                                    valuesToCategory2: prev.valuesToCategory2.includes(value)
+                                                        ? prev.valuesToCategory2.filter((v) => v !== value)
+                                                        : [...prev.valuesToCategory2, value],
+                                                }))
+                                            }
+                                        >
+                                            <ListItemText primary={value} />
+                                        </ListItemButton>
+                                    ))}
+                                </List>
+                            </Box>
+                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                                Back
+                            </Button>
+                            {selected.valuesToCategory2.length > 0 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
+                            )}
+                        </Box>
+                    )}
+
+                    {step === 7 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Step 7: Review and Submit Rule
+                            </Typography>
+                            <Typography variant="body1">Selected Category 1: {selected.category1?.value}</Typography>
+                            <Typography variant="body1">
+                                Selected Specification 1: {selected.specification1?.name}
+                            </Typography>
+                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 1: {selected.valuesTo.join(', ')}</Typography>
+                            <Typography variant="body1">Selected Category 2: {selected.category2?.value}</Typography>
+                            <Typography variant="body1">
+                                Selected Specification 2: {selected.specification2?.name}
+                            </Typography>
+                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 2: {selected.valuesToCategory2.join(', ')}</Typography>
+
+                            <Button variant="contained" color="secondary" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                                Back
+                            </Button>
+                            <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
+                                Submit Rule
+                            </Button>
+                            {resultMessage && <Typography className="result-message" sx={{ mt: 2}}>{resultMessage}</Typography>}
+                        </Box>
+                    )}
                 </CardContent>
             </Card>
         </Box>
