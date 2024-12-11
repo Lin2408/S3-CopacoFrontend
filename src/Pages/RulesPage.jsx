@@ -67,9 +67,11 @@ const RulesPage = () => {
             categoryFrom: selected.category1,
             nameFrom: selected.specification1?.name,
             valuesFrom: selected.valuesFrom,
+            isNameFrom: true,
             categoryTo: selected.category2,
             nameTo: selected.specification2?.name,
             valuesTo: selected.valuesToCategory2,
+            isNameTo: true,
             unit: 'unit',
         };
 
@@ -328,7 +330,7 @@ const RulesPage = () => {
                             <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
                                 Submit Rule
                             </Button>
-                            {resultMessage && <Typography className="result-message">{resultMessage}</Typography>}
+                            {resultMessage && <Typography className="result-message" sx={{ mt: 2}}>{resultMessage}</Typography>}
                         </Box>
                     )}
                 </CardContent>
