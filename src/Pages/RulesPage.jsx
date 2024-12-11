@@ -32,6 +32,10 @@ const RulesPage = () => {
     });
     const [inputValue, setInputValue] = useState('');
     const [resultMessage, setResultMessage] = useState('');
+    const [showOnlySpecNames1, setShowOnlySpecNames1] = useState(false);
+    const [showOnlySpecNames2, setShowOnlySpecNames2] = useState(false);
+    const [searchValue1, setSearchValue1] = useState('');
+    const [searchValue2, setSearchValue2] = useState('');
 
     const fetchCategoriesData = async (query) => {
         const { data, error } = await fetchCategories();
@@ -61,7 +65,7 @@ const RulesPage = () => {
             console.error(error);
         }
     };
-
+  
     const handleSubmit = async () => {
         const ruleData = {
             categoryFrom: selected.category1,
@@ -118,7 +122,6 @@ const RulesPage = () => {
 
     const handleNext = () => setStep((prev) => prev + 1);
     const handleBack = () => setStep((prev) => prev - 1);
-
     return (
         <Box className="categories-container">
             <Card className="outer-card">
@@ -227,7 +230,7 @@ const RulesPage = () => {
                                 Step 4: Select the Second Category
                             </Typography>
                             <Autocomplete
-                                options={categories.filter((cat) => cat.id !== selected.category1?.id)} // Exclude the selected category1
+                                options={categories.filter((cat) => cat.id !== selected.category1?.id)}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={selected.category2}
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, category2: value }))}
