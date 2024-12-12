@@ -65,17 +65,17 @@ const RulesPage = () => {
             console.error(error);
         }
     };
-  
+
     const handleSubmit = async () => {
         const ruleData = {
             categoryFrom: selected.category1,
             nameFrom: selected.specification1?.name,
             valuesFrom: selected.valuesFrom,
-            isNameFrom: true,
+            isNameFrom: showOnlySpecNames1,
             categoryTo: selected.category2,
             nameTo: selected.specification2?.name,
             valuesTo: selected.valuesToCategory2,
-            isNameTo: true,
+            isNameTo: showOnlySpecNames2,
             unit: 'unit',
         };
 
@@ -173,13 +173,17 @@ const RulesPage = () => {
                             <Typography variant="h6" sx={{ mb: 2 }}>
                                 Step 2: Select a Specification
                             </Typography>
-                            <Autocomplete
-                                options={specifications}
-                                getOptionLabel={(option) => option.name || ''}
-                                value={selected.specification1}
-                                onChange={(e, value) => setSelected((prev) => ({ ...prev, specification1: value }))}
-                                renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
-                            />
+                            {!showOnlySpecNames1 ? (
+                                <Autocomplete
+                                    options={specifications}
+                                    getOptionLabel={(option) => option.name || ''}
+                                    value={selected.specification1}
+                                    onChange={(e, value) => setSelected((prev) => ({ ...prev, specification1: value }))}
+                                    renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
+                                />
+                            ) : (
+                                <Typography sx={{ mb: 2 }}>You have chosen to view all specification names in the next step.</Typography>
+                            )}
                             <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
                                 <input
                                     type="checkbox"
@@ -194,16 +198,14 @@ const RulesPage = () => {
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
-                            {selected.specification1 && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{ mt: 2 }}
-                                    onClick={() => (showOnlySpecNames1 ? setStep(4) : handleNext())}
-                                >
-                                    {showOnlySpecNames1 ? 'Skip to Category 2' : 'Next'}
-                                </Button>
-                            )}
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{ mt: 2 }}
+                                onClick={() => (showOnlySpecNames1 ? setStep(3) : handleNext())}
+                            >
+                                {showOnlySpecNames1 ? 'Go to List of Names' : 'Next'}
+                            </Button>
                         </Box>
                     )}
 
@@ -211,32 +213,32 @@ const RulesPage = () => {
                     {step === 3 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 3: Select Values for the First Category
+                                Step 3: {showOnlySpecNames1 ? 'Select Specifications' : 'Select Values for the First Category'}
                             </Typography>
                             <Box className="list-box">
                                 <Typography variant="body2" sx={{ mb: 1 }}>
-                                    Specification Values:
+                                    {showOnlySpecNames1 ? 'Specification Names:' : 'Specification Values:'}
                                 </Typography>
                                 <List>
-                                    {selected.valuesFrom.map((value, index) => (
+                                    {(showOnlySpecNames1 ? specifications : selected.valuesFrom).map((item, index) => (
                                         <ListItemButton
                                             key={index}
-                                            selected={selected.valuesTo.includes(value)}
+                                            selected={selected.valuesTo.includes(item.name || item)}
                                             onClick={() =>
                                                 setSelected((prev) => ({
                                                     ...prev,
-                                                    valuesTo: prev.valuesTo.includes(value)
-                                                        ? prev.valuesTo.filter((v) => v !== value)
-                                                        : [...prev.valuesTo, value],
+                                                    valuesTo: prev.valuesTo.includes(item.name || item)
+                                                        ? prev.valuesTo.filter((v) => v !== (item.name || item))
+                                                        : [...prev.valuesTo, item.name || item],
                                                 }))
                                             }
                                         >
-                                            <ListItemText primary={value} />
+                                            <ListItemText primary={item.name || item} />
                                         </ListItemButton>
                                     ))}
                                 </List>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.valuesTo.length > 0 && (
@@ -277,13 +279,17 @@ const RulesPage = () => {
                             <Typography variant="h6" sx={{ mb: 2 }}>
                                 Step 5: Select a Specification for Second Category
                             </Typography>
-                            <Autocomplete
-                                options={specifications}
-                                getOptionLabel={(option) => option.name || ''}
-                                value={selected.specification2}
-                                onChange={(e, value) => setSelected((prev) => ({ ...prev, specification2: value }))}
-                                renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
-                            />
+                            {!showOnlySpecNames2 ? (
+                                <Autocomplete
+                                    options={specifications}
+                                    getOptionLabel={(option) => option.name || ''}
+                                    value={selected.specification2}
+                                    onChange={(e, value) => setSelected((prev) => ({ ...prev, specification2: value }))}
+                                    renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
+                                />
+                            ) : (
+                                <Typography sx={{ mb: 2 }}>You have chosen to view all specification names in the next step.</Typography>
+                            )}
                             <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
                                 <input
                                     type="checkbox"
@@ -298,43 +304,41 @@ const RulesPage = () => {
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
-                            {selected.specification2 && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{ mt: 2 }}
-                                    onClick={() => (showOnlySpecNames2 ? setStep(7) : handleNext())}
-                                >
-                                    {showOnlySpecNames2 ? 'Skip to Submit' : 'Next'}
-                                </Button>
-                            )}
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{ mt: 2 }}
+                                onClick={() => (showOnlySpecNames2 ? setStep(6) : handleNext())}
+                            >
+                                {showOnlySpecNames2 ? 'Go to List of Names' : 'Next'}
+                            </Button>
                         </Box>
                     )}
 
                     {step === 6 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 6: Select Values for the Second Category
+                                Step 6: {showOnlySpecNames2 ? 'Select Specifications' : 'Select Values for the Second Category'}
                             </Typography>
                             <Box className="list-box">
                                 <Typography variant="body2" sx={{ mb: 1 }}>
-                                    Specification Values:
+                                    {showOnlySpecNames2 ? 'Specification Names:' : 'Specification Values:'}
                                 </Typography>
                                 <List>
-                                    {selected.valuesFromCategory2.map((value, index) => (
+                                    {(showOnlySpecNames2 ? specifications : selected.valuesFromCategory2).map((item, index) => (
                                         <ListItemButton
                                             key={index}
-                                            selected={selected.valuesToCategory2.includes(value)}
+                                            selected={selected.valuesToCategory2.includes(item.name || item)}
                                             onClick={() =>
                                                 setSelected((prev) => ({
                                                     ...prev,
-                                                    valuesToCategory2: prev.valuesToCategory2.includes(value)
-                                                        ? prev.valuesToCategory2.filter((v) => v !== value)
-                                                        : [...prev.valuesToCategory2, value],
+                                                    valuesToCategory2: prev.valuesToCategory2.includes(item.name || item)
+                                                        ? prev.valuesToCategory2.filter((v) => v !== (item.name || item))
+                                                        : [...prev.valuesToCategory2, item.name || item],
                                                 }))
                                             }
                                         >
-                                            <ListItemText primary={value} />
+                                            <ListItemText primary={item.name || item} />
                                         </ListItemButton>
                                     ))}
                                 </List>
