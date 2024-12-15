@@ -103,7 +103,8 @@ function ConfigurationPage() {
                     sx={{ width: 300, mb: 3}}
                     getOptionLabel={(option) => option.name}
                     onChange={handleTemplateChange}
-                    renderInput={(params) => <TextField {...params} label="Templates" />}
+                    disabled={!templates}
+                    renderInput={(params) => <TextField {...params} label={templates  ? "Templates" : "No templates available"} />}
                 />
                 <TableContainer component={Paper}>
                     <Table sx={{minWidth: 550}} aria-label="simple table">
