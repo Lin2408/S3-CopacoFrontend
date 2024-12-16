@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
     Box,
     Button,
-    IconButton,
     Typography,
     Table,
     TableBody,
@@ -10,7 +9,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Paper, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+    Paper,
 } from "@mui/material";
 import RulesTableRow from "../components/RulesTableRow.jsx";
 import ConfirmDeleteDialog from "../components/ConfirmDeleteDialog.jsx";
@@ -36,8 +35,12 @@ function RulesOverviewPage(){
     const handleEdit = (id) => {
         alert(`Edit rule with ID: ${id}`);
     };
-    const [dialogOpen, setDialogOpen] = useState(false); // Dialog open state
-    const [selectedRuleId, setSelectedRuleId] = useState(null); // Rule to delete
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [selectedRuleId, setSelectedRuleId] = useState(null);
+
+    function GetRules(){
+
+    }
 
     const handleDeleteClick = (id) => {
         setSelectedRuleId(id);
