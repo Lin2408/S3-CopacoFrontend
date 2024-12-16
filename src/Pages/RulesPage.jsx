@@ -368,6 +368,7 @@ const RulesPage = () => {
                         </Box>
                     )}
 
+
                     {step === 7 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
