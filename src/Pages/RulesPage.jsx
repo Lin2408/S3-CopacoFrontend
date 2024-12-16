@@ -66,6 +66,20 @@ const RulesPage = () => {
         }
     };
 
+    const handleCheckboxChange1 = (e) => {
+        setShowOnlySpecNames1(e.target.checked);
+        if (e.target.checked) {
+            setSelected((prev) => ({ ...prev, specification1: null }));
+        }
+    };
+
+    const handleCheckboxChange2 = (e) => {
+        setShowOnlySpecNames2(e.target.checked);
+        if (e.target.checked) {
+            setSelected((prev) => ({ ...prev, specification2: null }));
+        }
+    };
+
     const handleSubmit = async () => {
         const ruleData = {
             categoryFrom: selected.category1,
@@ -189,7 +203,7 @@ const RulesPage = () => {
                                     type="checkbox"
                                     id="weirdNameCheckbox1"
                                     checked={showOnlySpecNames1}
-                                    onChange={(e) => setShowOnlySpecNames1(e.target.checked)}
+                                    onChange={handleCheckboxChange1}
                                 />
                                 <label htmlFor="weirdNameCheckbox1" style={{ marginLeft: '8px' }}>
                                     Has weird name
@@ -295,9 +309,9 @@ const RulesPage = () => {
                                     type="checkbox"
                                     id="weirdNameCheckbox2"
                                     checked={showOnlySpecNames2}
-                                    onChange={(e) => setShowOnlySpecNames2(e.target.checked)}
+                                    onChange={handleCheckboxChange2}
                                 />
-                                <label htmlFor="weirdNameCheckbox2" style={{ marginLeft: '8px' }}>
+                                <label htmlFor="weirdNameCheckbox2" style={{marginLeft: '8px'}}>
                                     Has weird name
                                 </label>
                             </Box>
