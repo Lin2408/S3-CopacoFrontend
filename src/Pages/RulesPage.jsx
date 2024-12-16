@@ -157,7 +157,7 @@ const RulesPage = () => {
                             color: 'black',
                         }}
                     >
-                        Rule Creation Page
+                        Rule Creation
                     </Typography>
 
                     {step === 1 && (

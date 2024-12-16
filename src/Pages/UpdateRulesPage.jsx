@@ -79,11 +79,11 @@ const UpdateRulesPage = () => {
                 specification2: rule.nameTo,
                 valuesToCategory2: rule.valuesTo,
             });
-            console.log(rule);
         } catch (error) {
             console.error('Error fetching rule:', error);
         }
     };
+
 
     const handleCheckboxChange1 = (e) => {
         setShowOnlySpecNames1(e.target.checked);
@@ -180,7 +180,7 @@ const UpdateRulesPage = () => {
                             color: 'black',
                         }}
                     >
-                        Update Rule Page
+                        Update Rule
                     </Typography>
 
                     {step === 1 && (
@@ -191,7 +191,7 @@ const UpdateRulesPage = () => {
                             <Autocomplete
                                 options={categories}
                                 getOptionLabel={(option) => option.value || ''}
-                                value={selected.category1 || null}
+                                value={selected.category1 || null} // Prefill with the fetched rule's category
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, category1: value }))}
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
@@ -293,7 +293,7 @@ const UpdateRulesPage = () => {
                             <Autocomplete
                                 options={categories.filter((cat) => cat.id !== selected.category1?.id)}
                                 getOptionLabel={(option) => option.value || ''}
-                                value={selected.category2 || null}
+                                value={selected.category2 || null} // Prefill with the fetched rule's second category
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, category2: value }))}
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
