@@ -12,6 +12,7 @@ import PrebuildTemplatesPage from './Pages/PrebuildTemplatesPage.jsx';
 import ConfigurationPage from "./Pages/ConfigurationPage.jsx";
 import RulesPage from "./Pages/RulesPage.jsx";
 import DetailedItemsOverview from "./Pages/DetailedItemsOverview.jsx";
+import UpdateRulesPage from "./Pages/UpdateRulesPage.jsx";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/PrebuildTemplatesPage" element={<PrebuildTemplatesPage/>}/>
                 <Route path="/adminConfig" element={<AdminPage/>}/>
                 <Route path="/rules" element={<RulesPage/>}/>
+                <Route path="/updaterules/:ruleId" element={<UpdateRulesPage/>}/>
             </Routes>
         </Router>
     </AuthProviderWithHistory>
