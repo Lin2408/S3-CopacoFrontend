@@ -13,10 +13,12 @@ import {
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
 import { getSpecificationsFromCategory, getSpecificationsValuesFromCategory } from '../Apis/get-specifications-from-categories.service.js';
-import { getRule } from '../Apis/get-rule.service.js'; // Assuming you have a function to fetch the rule by its ID
+import { getRule } from '/src/Apis/get-rule.service.js';
+import { useParams } from 'react-router-dom';
 import './UpdateRulesPage.css';
 
 const UpdateRulesPage = () => {
+    const { ruleId } = useParams();
     const [step, setStep] = useState(1);
     const [categories, setCategories] = useState([]);
     const [specifications, setSpecifications] = useState([]);
@@ -67,7 +69,7 @@ const UpdateRulesPage = () => {
 
     const fetchRule = async (ruleId) => {
         try {
-            const rule = await getRule(ruleId); // Assuming ruleId is available
+            const rule = await getRule(ruleId);
             setRuleData(rule);
             setSelected({
                 category1: rule.categoryFrom,
@@ -77,16 +79,29 @@ const UpdateRulesPage = () => {
                 specification2: rule.nameTo,
                 valuesToCategory2: rule.valuesTo,
             });
+            console.log(rule);
         } catch (error) {
             console.error('Error fetching rule:', error);
         }
     };
 
+    const handleCheckboxChange1 = (e) => {
+        setShowOnlySpecNames1(e.target.checked);
+        if (e.target.checked) {
+            setSelected((prev) => ({ ...prev, specification1: null }));
+        }
+    };
+
+    const handleCheckboxChange2 = (e) => {
+        setShowOnlySpecNames2(e.target.checked);
+        if (e.target.checked) {
+            setSelected((prev) => ({ ...prev, specification2: null }));
+        }
+    };
+
     useEffect(() => {
-        // Assuming you pass ruleId in URL params
-        const ruleId = 'some-rule-id'; // Replace with actual rule ID logic
         fetchRule(ruleId);
-    }, []);
+    }, [ruleId]);
 
     useEffect(() => {
         if (inputValue.length >= 2) fetchCategoriesData(inputValue);
@@ -130,11 +145,10 @@ const UpdateRulesPage = () => {
             nameTo: selected.specification2?.name,
             valuesTo: selected.valuesToCategory2,
             isNameTo: showOnlySpecNames2,
-            unit: 'unit', // Assuming unit is static for now
+            unit: 'unit',
         };
 
         try {
-            // Send the update request here
             setResultMessage('Rule updated successfully!');
         } catch (error) {
             console.error('Error updating rule:', error.response ? error.response.data : error.message);
@@ -177,7 +191,7 @@ const UpdateRulesPage = () => {
                             <Autocomplete
                                 options={categories}
                                 getOptionLabel={(option) => option.value || ''}
-                                value={selected.category1}
+                                value={selected.category1 || null}
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, category1: value }))}
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
@@ -200,7 +214,7 @@ const UpdateRulesPage = () => {
                                 <Autocomplete
                                     options={specifications}
                                     getOptionLabel={(option) => option.name || ''}
-                                    value={selected.specification1}
+                                    value={selected.specification1 || null}
                                     onChange={(e, value) => setSelected((prev) => ({ ...prev, specification1: value }))}
                                     renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                                 />
@@ -279,15 +293,12 @@ const UpdateRulesPage = () => {
                             <Autocomplete
                                 options={categories.filter((cat) => cat.id !== selected.category1?.id)}
                                 getOptionLabel={(option) => option.value || ''}
-                                value={selected.category2}
+                                value={selected.category2 || null}
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, category2: value }))}
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
-                            <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
-                                Back
-                            </Button>
                             {selected.category2 && (
                                 <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
                                     Next
@@ -299,13 +310,13 @@ const UpdateRulesPage = () => {
                     {step === 5 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 5: Select a Specification for Second Category
+                                Step 5: Select a Specification for the Second Category
                             </Typography>
                             {!showOnlySpecNames2 ? (
                                 <Autocomplete
                                     options={specifications}
                                     getOptionLabel={(option) => option.name || ''}
-                                    value={selected.specification2}
+                                    value={selected.specification2 || null}
                                     onChange={(e, value) => setSelected((prev) => ({ ...prev, specification2: value }))}
                                     renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                                 />
@@ -340,7 +351,7 @@ const UpdateRulesPage = () => {
                     {step === 6 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 6: {showOnlySpecNames2 ? 'Select Specifications' : 'Select Values for the Second Category'}
+                                Step 6: Select Values for the Second Category
                             </Typography>
                             <Box className="list-box">
                                 <Typography variant="body2" sx={{ mb: 1 }}>
@@ -369,37 +380,17 @@ const UpdateRulesPage = () => {
                                 Back
                             </Button>
                             {selected.valuesToCategory2.length > 0 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
-                                    Next
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
+                                    Submit
                                 </Button>
                             )}
                         </Box>
                     )}
 
-                    {step === 7 && (
-                        <Box>
-                            <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 7: Review and Submit Rule
-                            </Typography>
-                            <Typography variant="body1">Selected Category 1: {selected.category1?.value}</Typography>
-                            <Typography variant="body1">Selected Specification 1: {selected.specification1?.name}</Typography>
-                            <Typography variant="body1" sx={{ mb: 2 }}>
-                                Selected Values for Category 1: {selected.valuesTo.join(', ')}
-                            </Typography>
-                            <Typography variant="body1">Selected Category 2: {selected.category2?.value}</Typography>
-                            <Typography variant="body1">Selected Specification 2: {selected.specification2?.name}</Typography>
-                            <Typography variant="body1" sx={{ mb: 2 }}>
-                                Selected Values for Category 2: {selected.valuesToCategory2.join(', ')}
-                            </Typography>
-
-                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
-                                Back
-                            </Button>
-                            <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
-                                Submit Rule
-                            </Button>
-                            {resultMessage && <Typography className="result-message" sx={{ mt: 2 }}>{resultMessage}</Typography>}
-                        </Box>
+                    {resultMessage && (
+                        <Typography variant="body1" sx={{ mt: 3, textAlign: 'center' }}>
+                            {resultMessage}
+                        </Typography>
                     )}
                 </CardContent>
             </Card>
