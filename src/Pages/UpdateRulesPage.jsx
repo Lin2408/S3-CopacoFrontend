@@ -51,21 +51,21 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                 const ruleData = await getRule(ruleId);
 
                 setSelected({
-                    category1: { id: ruleData.categoryFrom?.id, value: ruleData.categoryFrom?.value },
-                    category2: { id: ruleData.categoryTo?.id, value: ruleData.categoryTo?.value },
-                    specification1: { name: ruleData.nameFrom },
-                    specification2: { name: ruleData.nameTo },
-                    valuesFrom: ruleData.valuesFrom || [],
-                    valuesTo: ruleData.valuesTo || [],
-                    valuesFromCategory2: ruleData.valuesFromCategory2 || [],
-                    valuesToCategory2: ruleData.valuesToCategory2 || [],
-                    unit: ruleData.unit || '',
+                    category1: { id: ruleData.rule.categoryFrom?.id, value: ruleData.rule.categoryFrom?.value },
+                    category2: { id: ruleData.rule.categoryTo?.id, value: ruleData.rule.categoryTo?.value },
+                    specification1: { name: ruleData.rule.nameFrom },
+                    specification2: { name: ruleData.rule.nameTo },
+                    valuesFrom: ruleData.rule.aluesFrom || [],
+                    valuesTo: ruleData.rule.valuesTo || [],
+                    valuesFromCategory2: ruleData.rule.valuesFromCategory2 || [],
+                    valuesToCategory2: ruleData.rule.valuesToCategory2 || [],
+                    unit: ruleData.rule.unit || '',
                 });
 
-                setIsUnitBasedRule(!!ruleData.unit);
+                setIsUnitBasedRule(!!ruleData.rule.unit);
 
-                setShowOnlySpecNames1(ruleData.isNameFrom);
-                setShowOnlySpecNames2(ruleData.isNameTo);
+                setShowOnlySpecNames1(ruleData.rule.isNameFrom);
+                setShowOnlySpecNames2(ruleData.rule.isNameTo);
 
                 setIsLoading(false);
             } catch (error) {
