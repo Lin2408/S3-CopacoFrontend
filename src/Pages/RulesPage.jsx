@@ -7,6 +7,8 @@ import {
     Autocomplete,
     Card,
     CardContent,
+    Checkbox,
+    FormControlLabel,
     List,
     ListItemButton,
     ListItemText,
@@ -29,6 +31,7 @@ const RulesPage = () => {
         valuesTo: [],
         valuesFromCategory2: [],
         valuesToCategory2: [],
+        unit: '',
     });
     const [inputValue, setInputValue] = useState('');
     const [resultMessage, setResultMessage] = useState('');
@@ -36,6 +39,8 @@ const RulesPage = () => {
     const [showOnlySpecNames2, setShowOnlySpecNames2] = useState(false);
     const [searchValue1, setSearchValue1] = useState('');
     const [searchValue2, setSearchValue2] = useState('');
+    const [isUnitBasedRule, setIsUnitBasedRule] = useState(false);
+    const [newAutocompleteValue, setNewAutocompleteValue] = useState(null);
 
     const fetchCategoriesData = async (query) => {
         const { data, error } = await fetchCategories();
@@ -90,7 +95,7 @@ const RulesPage = () => {
             nameTo: selected.specification2?.name,
             valuesTo: selected.valuesToCategory2,
             isNameTo: showOnlySpecNames2,
-            unit: 'unit',
+            unit: isUnitBasedRule ? selected.unit : null,
         };
 
         try {
@@ -174,6 +179,37 @@ const RulesPage = () => {
                                 onInputChange={(e, value) => setInputValue(value)}
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={isUnitBasedRule}
+                                        onChange={(e) => setIsUnitBasedRule(e.target.checked)}
+                                    />
+                                }
+                                label="Is Unit Based Rule"
+                                sx={{ mt: 2 }}
+                            />
+                            <br/>
+                            {isUnitBasedRule && (
+                                <Box sx={{ mt: 2 }}>
+                                    <TextField
+                                        label="Unit"
+                                        variant="outlined"
+                                        fullWidth
+                                        value={selected.unit}
+                                        onChange={(e) => setSelected((prev) => ({ ...prev, unit: e.target.value }))}
+                                    />
+                                    <Autocomplete
+                                        options={[]}
+                                        getOptionLabel={(option) => option || ''}
+                                        value={newAutocompleteValue}
+                                        onChange={(e, value) => setNewAutocompleteValue(value)}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Additional Input" variant="outlined" sx={{ mt: 2 }} />
+                                        )}
+                                    />
+                                </Box>
+                            )}
                             {selected.category1 && (
                                 <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
                                     Next
@@ -398,7 +434,9 @@ const RulesPage = () => {
                                 Selected Specification 2: {selected.specification2?.name}
                             </Typography>
                             <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 2: {selected.valuesToCategory2.join(', ')}</Typography>
-
+                            {isUnitBasedRule && (
+                                <Typography variant="body1">Unit: {selected.unit}</Typography>
+                            )}
                             <Button variant="contained" sx={{ mt: 2, mr: 2, }} onClick={handleBack}>
                                 Back
                             </Button>
