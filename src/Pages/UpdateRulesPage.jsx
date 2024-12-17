@@ -152,11 +152,6 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
         }
     };
 
-    const handleChange = () => setStep(1);
-    const handleBack = () => {
-        setStep(1)
-    };
-
     useEffect(() => {
         if (inputValue.length >= 2) fetchCategoriesData(inputValue);
     }, [inputValue]);
@@ -184,10 +179,32 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
     useEffect(() => {
         if (selected.specification2?.name && selected.category2?.id) {
             fetchSpecValues(selected.specification2.name, selected.category2.id).then((values) =>
-                setSelected((prev) => ({ ...prev, valuesFromCategory2: values }))
+                setSelected((prev) => ({ ...prev, valuesTo: values }))
             );
         }
     }, [selected.specification2]);
+
+    useEffect(() => {
+        if (selected.specification1?.name && selected.category1?.id) {
+            fetchSpecValues(selected.specification1.name, selected.category1.id).then((values) =>
+                setSelected((prev) => ({
+                    ...prev,
+                    valuesFrom: values || []
+                }))
+            );
+        }
+    }, [selected.specification1, selected.category1]);
+
+    useEffect(() => {
+        if (selected.specification2?.name && selected.category2?.id) {
+            fetchSpecValues(selected.specification2.name, selected.category2.id).then((values) =>
+                setSelected((prev) => ({
+                    ...prev,
+                    valuesTo: values || []
+                }))
+            );
+        }
+    }, [selected.specification2, selected.category2]);
 
     if (isLoading) {
         return (
@@ -301,7 +318,13 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     color="primary"
                                     size="small"
                                     sx={{ mt: 1 }}
-                                    onClick={() => setStep(6)}
+                                    onClick={() => {
+                                        setTempSelected((prev) => ({
+                                            ...prev,
+                                            valuesTo: [],
+                                        }));
+                                        setStep(6);
+                                    }}
                                 >
                                     Change Second Specification
                                 </Button>
@@ -319,7 +342,9 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     color="primary"
                                     size="small"
                                     sx={{ mt: 1 }}
-                                    onClick={() => setStep(7)}
+                                    onClick={() =>
+                                        setStep(7)
+                                    }
                                 >
                                     Change Second Specification Values
                                 </Button>
@@ -469,7 +494,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     {showOnlySpecNames1 ? 'Specification Names:' : 'Specification Values:'}
                                 </Typography>
                                 <List>
-                                    {(showOnlySpecNames1 ? specifications : selected.valuesFrom).map((item, index) => (
+                                    {(showOnlySpecNames1 ? specifications : selected.valuesFrom || []).map((item, index) => (
                                         <ListItemButton
                                             key={index}
                                             selected={tempSelected.valuesFrom.includes(item.name || item)}
@@ -526,23 +551,38 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Autocomplete
                                 options={categories.filter((cat) => cat.id !== selected.category1?.id)}
                                 getOptionLabel={(option) => option.value || ''}
-                                value={selected.category2}
-                                onChange={(e, value) => setSelected((prev) => ({ ...prev, category2: value }))}
+                                value={tempSelected.category2}
+                                onChange={(e, value) =>
+                                    setTempSelected((prev) => ({ ...prev, category2: value }))
+                                }
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
-                                renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Select Category" variant="outlined" />
+                                )}
                             />
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
                                     sx={{ mt: 2, mr: 2 }}
                                     onClick={() => {
-                                        setSelected(tempSelected);
-                                        setStep(6);
+                                        setStep(1);
                                     }}
                                 >
-                                    Update Second Category
+                                    Back
                                 </Button>
+                                {selected.category2 && (
+                                    <Button
+                                        variant="contained"
+                                        sx={{ mt: 2, mr: 2 }}
+                                        onClick={() => {
+                                            setSelected(tempSelected);
+                                            setStep(6);
+                                        }}
+                                    >
+                                        Update Second Category
+                                    </Button>
+                                )}
                             </Box>
                         </Box>
                     )}
@@ -556,8 +596,15 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 <Autocomplete
                                     options={specifications}
                                     getOptionLabel={(option) => option.name || ''}
-                                    value={selected.specification2}
-                                    onChange={(e, value) => setSelected((prev) => ({ ...prev, specification2: value }))}
+                                    value={tempSelected.specification2}
+                                    onChange={(e, value) => {
+                                        setTempSelected((prev) => ({ ...prev, specification2: value }));
+                                        setSelected((prev) => ({
+                                            ...prev,
+                                            specification2: value,
+                                            valuesTo: [],
+                                        }));
+                                    }}
                                     renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                                 />
                             ) : (
@@ -574,33 +621,36 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     Has weird name
                                 </label>
                             </Box>
-                            {!showOnlySpecNames2 && selected.specification2 && (
-                                <Box sx={{ mb: 2 }}>
+                            <Box sx={{ mb: 2 }}>
+                                <Button
+                                    variant="contained"
+                                    sx={{ mt: 2, mr: 2 }}
+                                    onClick={() => {
+                                        setStep(1);
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                                {selected.category2 && (
                                     <Button
                                         variant="contained"
                                         sx={{ mt: 2, mr: 2 }}
                                         onClick={() => {
-                                            setSelected(tempSelected);
+                                            setSelected((prev) => ({
+                                                ...prev,
+                                                specification2: tempSelected.specification2,
+                                                valuesTo: [],
+                                                category2: { ...prev.category2, value: selected.category2.value }
+                                            }));
                                             setStep(7);
                                         }}
                                     >
                                         Update Second Specification
                                     </Button>
-                                </Box>
-                            )}
-                            {showOnlySpecNames2 && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{ mt: 2 }}
-                                    onClick={() => setStep(6)}
-                                >
-                                    Go to List of Names
-                                </Button>
-                            )}
+                                )}
+                            </Box>
                         </Box>
                     )}
-
 
                     {step === 7 && (
                         <Box>
@@ -612,18 +662,20 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     {showOnlySpecNames2 ? 'Specification Names:' : 'Specification Values:'}
                                 </Typography>
                                 <List>
-                                    {(showOnlySpecNames2 ? specifications : selected.valuesFromCategory2).map((item, index) => (
+                                    {(showOnlySpecNames2 ? specifications : selected.valuesTo || []).map((item, index) => (
                                         <ListItemButton
                                             key={index}
-                                            selected={selected.valuesTo.includes(item.name || item)}
-                                            onClick={() =>
-                                                setSelected((prev) => ({
+                                            selected={tempSelected.valuesTo.includes(item.name || item)}
+                                            onClick={() => {
+                                                const value = item.name || item;
+                                                const updatedValuesTo = tempSelected.valuesTo.includes(value)
+                                                    ? tempSelected.valuesTo.filter((v) => v !== value)
+                                                    : [...tempSelected.valuesTo, value];
+                                                setTempSelected((prev) => ({
                                                     ...prev,
-                                                    valuesTo: prev.valuesTo.includes(item.name || item)
-                                                        ? prev.valuesTo.filter((v) => v !== (item.name || item))
-                                                        : [...prev.valuesTo, item.name || item],
-                                                }))
-                                            }
+                                                    valuesTo: updatedValuesTo,
+                                                }));
+                                            }}
                                         >
                                             <ListItemText primary={item.name || item} />
                                         </ListItemButton>
@@ -638,8 +690,23 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                         setStep(1);
                                     }}
                                 >
-                                    Update Second Specification Values
+                                    Back
                                 </Button>
+                                {selected.category2 && tempSelected.valuesTo.length > 0 && (
+                                    <Button
+                                        variant="contained"
+                                        sx={{ mt: 2, mr: 2 }}
+                                        onClick={() => {
+                                            setSelected((prev) => ({
+                                                ...prev,
+                                                valuesTo: tempSelected.valuesTo,
+                                            }));
+                                            setStep(1);
+                                        }}
+                                    >
+                                        Update Second Specification Values
+                                    </Button>
+                                )}
                             </Box>
                         </Box>
                     )}
