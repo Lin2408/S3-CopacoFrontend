@@ -239,21 +239,6 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body1">
-                                    <strong>Second Category:</strong> {selected.category2?.value || 'Not selected'}
-                                </Typography>
-                                <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    size="small"
-                                    sx={{ mt: 1 }}
-                                    onClick={() => setStep(3)}
-                                >
-                                    Change Second Category
-                                </Button>
-                            </Box>
-
-                            <Box sx={{ mb: 2 }}>
-                                <Typography variant="body1">
                                     <strong>First Specification:</strong> {selected.specification1?.name || 'Not selected'}
                                 </Typography>
                                 <Button
@@ -264,6 +249,29 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     onClick={() => setStep(4)}
                                 >
                                     Change First Specification
+                                </Button>
+                            </Box>
+
+                            {selected.specification1?.values && selected.specification1.values.length > 0 && (
+                                <Box sx={{ mb: 2 }}>
+                                    <Typography variant="body1">
+                                        <strong>First Specification Values:</strong> {selected.specification1.values.join(', ') || 'No values selected'}
+                                    </Typography>
+                                </Box>
+                            )}
+
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body1">
+                                    <strong>Second Category:</strong> {selected.category2?.value || 'Not selected'}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                    onClick={() => setStep(3)}
+                                >
+                                    Change Second Category
                                 </Button>
                             </Box>
 
@@ -281,6 +289,14 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     Change Second Specification
                                 </Button>
                             </Box>
+
+                            {selected.specification2?.values && selected.specification2.values.length > 0 && (
+                                <Box sx={{ mb: 2 }}>
+                                    <Typography variant="body1">
+                                        <strong>Second Specification Values:</strong> {selected.specification2.values.join(', ') || 'No values selected'}
+                                    </Typography>
+                                </Box>
+                            )}
 
                             {isUnitBasedRule && (
                                 <Box sx={{ mb: 2 }}>
