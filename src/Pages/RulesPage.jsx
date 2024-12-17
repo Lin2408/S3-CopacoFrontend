@@ -212,14 +212,21 @@ const RulesPage = () => {
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{ mt: 2 }}
-                                onClick={() => (showOnlySpecNames1 ? setStep(3) : handleNext())}
-                            >
-                                {showOnlySpecNames1 ? 'Go to List of Names' : 'Next'}
-                            </Button>
+                            {!showOnlySpecNames1 && selected.specification1 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
+                            )}
+                            {showOnlySpecNames1 && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{ mt: 2 }}
+                                    onClick={() => setStep(3)}
+                                >
+                                    Go to List of Names
+                                </Button>
+                            )}
                         </Box>
                     )}
 
@@ -311,23 +318,31 @@ const RulesPage = () => {
                                     checked={showOnlySpecNames2}
                                     onChange={handleCheckboxChange2}
                                 />
-                                <label htmlFor="weirdNameCheckbox2" style={{marginLeft: '8px'}}>
+                                <label htmlFor="weirdNameCheckbox2" style={{ marginLeft: '8px' }}>
                                     Has weird name
                                 </label>
                             </Box>
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{ mt: 2 }}
-                                onClick={() => (showOnlySpecNames2 ? setStep(6) : handleNext())}
-                            >
-                                {showOnlySpecNames2 ? 'Go to List of Names' : 'Next'}
-                            </Button>
+                            {!showOnlySpecNames2 && selected.specification2 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
+                            )}
+                            {showOnlySpecNames2 && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{ mt: 2 }}
+                                    onClick={() => setStep(6)}
+                                >
+                                    Go to List of Names
+                                </Button>
+                            )}
                         </Box>
                     )}
+
 
                     {step === 6 && (
                         <Box>
@@ -367,7 +382,6 @@ const RulesPage = () => {
                             )}
                         </Box>
                     )}
-
 
                     {step === 7 && (
                         <Box>
