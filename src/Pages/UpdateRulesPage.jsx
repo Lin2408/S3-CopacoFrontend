@@ -126,7 +126,27 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
         }
     };
 
+    const validateForm = () => {
+        if (!selected.category1 || !selected.specification1 || !selected.valuesFrom.length) {
+            setResultMessage('First category, specification, and values are required.');
+            return false;
+        }
+        if (!selected.category2 || !selected.specification2 || !selected.valuesTo.length) {
+            setResultMessage('Second category, specification, and values are required.');
+            return false;
+        }
+        if (isUnitBasedRule && !selected.unit) {
+            setResultMessage('Unit is required for unit-based rules.');
+            return false;
+        }
+        return true;
+    };
+
     const handleSubmit = async () => {
+        if (!validateForm()) {
+            return;
+        }
+
         setIsSubmitting(true);
         const ruleData = {
             categoryFrom: selected.category1,
