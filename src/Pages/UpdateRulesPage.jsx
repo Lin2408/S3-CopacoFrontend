@@ -19,7 +19,7 @@ import { fetchCategories } from '/src/Apis/get-categories.service.js';
 import { getSpecificationsFromCategory, getSpecificationsValuesFromCategory } from '../Apis/get-specifications-from-categories.service.js';
 import { updateRule } from '../Apis/update-rule.service.js';
 import { getRule } from '../Apis/get-rule.service.js';
-import './RulesPage.css';
+import './UpdateRulesPage.css';
 
 const UpdateRulesPage = ({ onUpdateComplete }) => {
     const { ruleId } = useParams();
@@ -55,7 +55,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                     category2: { id: ruleData.rule.categoryTo?.id, value: ruleData.rule.categoryTo?.value },
                     specification1: { name: ruleData.rule.nameFrom },
                     specification2: { name: ruleData.rule.nameTo },
-                    valuesFrom: ruleData.rule.aluesFrom || [],
+                    valuesFrom: ruleData.rule.valuesFrom || [],
                     valuesTo: ruleData.rule.valuesTo || [],
                     valuesFromCategory2: ruleData.rule.valuesFromCategory2 || [],
                     valuesToCategory2: ruleData.rule.valuesToCategory2 || [],
@@ -66,6 +66,8 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
                 setShowOnlySpecNames1(ruleData.rule.isNameFrom);
                 setShowOnlySpecNames2(ruleData.rule.isNameTo);
+
+                console.log(ruleData);
 
                 setIsLoading(false);
             } catch (error) {
@@ -199,7 +201,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
     }
 
     return (
-        <Box className="categories-container">
+        <Box className="update-categories-container">
             <Card className="outer-card">
                 <CardContent>
                     <Typography
@@ -252,6 +254,21 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 </Button>
                             </Box>
 
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body1">
+                                    <strong>First Specification Values:</strong> {selected.valuesFrom || 'Not selected'}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                    onClick={() => setStep(4)}
+                                >
+                                    Change First Specification Values
+                                </Button>
+                            </Box>
+
                             {selected.specification1?.values && selected.specification1.values.length > 0 && (
                                 <Box sx={{ mb: 2 }}>
                                     <Typography variant="body1">
@@ -287,6 +304,21 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     onClick={() => setStep(5)}
                                 >
                                     Change Second Specification
+                                </Button>
+                            </Box>
+
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body1">
+                                    <strong>First Specification Values:</strong> {selected.valuesTo || 'Not selected'}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                    onClick={() => setStep(4)}
+                                >
+                                    Change Second Specification Values
                                 </Button>
                             </Box>
 
