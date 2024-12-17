@@ -410,9 +410,15 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     Has weird name
                                 </label>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
-                                Change Specification
-                            </Button>
+                            <Box sx={{ mb: 2 }}>
+                                <Button variant="contained" sx={{ mt: 2, mr: 2 }}
+                                        onClick={() => {
+                                            setStep(4);
+                                        }}
+                                >
+                                    Change First Specification
+                                </Button>
+                            </Box>
                         </Box>
                     )}
 
@@ -445,9 +451,15 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     ))}
                                 </List>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
-                                Back
-                            </Button>
+                            <Box sx={{ mb: 2 }}>
+                                <Button variant="contained" sx={{ mt: 2, mr: 2 }}
+                                        onClick={() => {
+                                            setStep(1);
+                                        }}
+                                >
+                                    Change First Specification Values
+                                </Button>
+                            </Box>
                         </Box>
                     )}
 
@@ -504,9 +516,6 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     Has weird name
                                 </label>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
-                                Back
-                            </Button>
                             {!showOnlySpecNames2 && selected.specification2 && (
                                 <Box sx={{ mb: 2 }}>
                                     <Button variant="contained" sx={{ mt: 2, mr: 2 }}
@@ -560,69 +569,15 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     ))}
                                 </List>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
-                                Back
-                            </Button>
-                            {selected.valuesToCategory2.length > 0 && (
-                                <Box sx={{ mb: 2 }}>
-                                    <Button variant="contained" sx={{ mt: 2, mr: 2 }}
-                                            onClick={() => {
-                                                setStep(1);
-                                            }}
-                                    >
-                                        Change Second Specification Values
-                                    </Button>
-                                </Box>
-                            )}
-                        </Box>
-                    )}
-
-                    {step === 8 && (
-                        <Box>
-                            <Typography variant="h6" sx={{ mb: 2 }}>
-                                Review and Update Rule
-                            </Typography>
-                            <Typography variant="body1">Selected Category 1: {selected.category1?.value}</Typography>
-                            <Typography variant="body1">
-                                Selected Specification 1: {selected.specification1?.name}
-                            </Typography>
-                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 1: {selected.valuesTo.join(', ')}</Typography>
-                            <Typography variant="body1">Selected Category 2: {selected.category2?.value}</Typography>
-                            <Typography variant="body1">
-                                Selected Specification 2: {selected.specification2?.name}
-                            </Typography>
-                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 2: {selected.valuesToCategory2.join(', ')}</Typography>
-                            {isUnitBasedRule && (
-                                <Typography variant="body1">Unit: {selected.unit}</Typography>
-                            )}
-                            <Button
-                                variant="contained"
-                                sx={{ mt: 2, mr: 2 }}
-                                onClick={handleBack}
-                                disabled={isSubmitting}
-                            >
-                                Back
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{ mt: 2 }}
-                                onClick={handleSubmit}
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? <CircularProgress size={24} /> : 'Update Rule'}
-                            </Button>
-                            {resultMessage && (
-                                <Typography
-                                    className="result-message"
-                                    sx={{
-                                        mt: 2,
-                                        color: resultMessage.includes('successfully') ? 'green' : 'red'
-                                    }}
+                            <Box sx={{ mb: 2 }}>
+                                <Button variant="contained" sx={{ mt: 2, mr: 2 }}
+                                        onClick={() => {
+                                            setStep(1);
+                                        }}
                                 >
-                                    {resultMessage}
-                                </Typography>
-                            )}
+                                    Change Second Specification Values
+                                </Button>
+                            </Box>
                         </Box>
                     )}
                 </CardContent>
