@@ -151,7 +151,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
         }
     };
 
-    const handleNext = () => setStep((prev) => prev + 1);
+    const handleChange = () => setStep(1);
     const handleBack = () => {
         setStep(1)
     };
@@ -244,7 +244,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     color="primary"
                                     size="small"
                                     sx={{ mt: 1 }}
-                                    onClick={() => setStep(4)}
+                                    onClick={() => setStep(3)}
                                 >
                                     Change First Specification
                                 </Button>
@@ -285,7 +285,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     color="primary"
                                     size="small"
                                     sx={{ mt: 1 }}
-                                    onClick={() => setStep(3)}
+                                    onClick={() => setStep(5)}
                                 >
                                     Change Second Category
                                 </Button>
@@ -300,7 +300,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     color="primary"
                                     size="small"
                                     sx={{ mt: 1 }}
-                                    onClick={() => setStep(5)}
+                                    onClick={() => setStep(6)}
                                 >
                                     Change Second Specification
                                 </Button>
@@ -318,7 +318,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     color="primary"
                                     size="small"
                                     sx={{ mt: 1 }}
-                                    onClick={() => setStep(4)}
+                                    onClick={() => setStep(7)}
                                 >
                                     Change Second Specification Values
                                 </Button>
@@ -342,7 +342,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                         color="primary"
                                         size="small"
                                         sx={{ mt: 1 }}
-                                        onClick={() => setStep(6)}
+                                        onClick={() => setStep(8)}
                                     >
                                         Change Unit
                                     </Button>
@@ -372,13 +372,8 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
-                                Back
+                                Change Category
                             </Button>
-                            {selected.category1 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleChange}>
-                                    Change Category
-                                </Button>
-                            )}
                         </Box>
                     )}
 
@@ -410,23 +405,8 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 </label>
                             </Box>
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
-                                Back
+                                Change Specification
                             </Button>
-                            {!showOnlySpecNames1 && selected.specification1 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
-                                    Next
-                                </Button>
-                            )}
-                            {showOnlySpecNames1 && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{ mt: 2 }}
-                                    onClick={() => setStep(3)}
-                                >
-                                    Go to List of Names
-                                </Button>
-                            )}
                         </Box>
                     )}
 
@@ -462,11 +442,6 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
-                            {selected.valuesTo.length > 0 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
-                                    Next
-                                </Button>
-                            )}
                         </Box>
                     )}
 
@@ -487,11 +462,6 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
                                 Back
                             </Button>
-                            {selected.category2 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
-                                    Next
-                                </Button>
-                            )}
                         </Box>
                     )}
 
