@@ -44,6 +44,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
     const [isUnitBasedRule, setIsUnitBasedRule] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [tempSelected, setTempSelected] = useState(selected);
 
     useEffect(() => {
         const loadRuleDetails = async () => {
@@ -365,20 +366,38 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Autocomplete
                                 options={categories}
                                 getOptionLabel={(option) => option.value || ''}
-                                value={selected.category1}
-                                onChange={(e, value) => setSelected((prev) => ({ ...prev, category1: value }))}
+                                value={tempSelected.category1}
+                                onChange={(e, value) =>
+                                    setTempSelected((prev) => ({ ...prev, category1: value }))
+                                }
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
-                                renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Select Category" variant="outlined" />
+                                )}
                             />
                             <Box sx={{ mb: 2 }}>
-                                <Button variant="contained" sx={{ mt: 2, mr: 2 }}
+                                <Button
+                                    variant="contained"
+                                    sx={{ mt: 2, mr: 2 }}
                                     onClick={() => {
-                                        setStep(3);
+                                        setStep(1);
                                     }}
                                 >
-                                    Change First Category
+                                    Back
                                 </Button>
+                                {selected.category1 && (
+                                    <Button
+                                        variant="contained"
+                                        sx={{ mt: 2, mr: 2 }}
+                                        onClick={() => {
+                                            setSelected(tempSelected);
+                                            setStep(3);
+                                        }}
+                                    >
+                                        Update First Category
+                                    </Button>
+                                )}
                             </Box>
                         </Box>
                     )}
@@ -411,13 +430,27 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 </label>
                             </Box>
                             <Box sx={{ mb: 2 }}>
-                                <Button variant="contained" sx={{ mt: 2, mr: 2 }}
+                                <Button
+                                    variant="contained"
+                                    sx={{ mt: 2, mr: 2 }}
+                                    onClick={() => {
+                                        setStep(1);
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                                {selected.category1 && (
+                                    <Button
+                                        variant="contained"
+                                        sx={{ mt: 2, mr: 2 }}
                                         onClick={() => {
+                                            setSelected(tempSelected);
                                             setStep(4);
                                         }}
-                                >
-                                    Change First Specification
-                                </Button>
+                                    >
+                                        Update First Specification
+                                    </Button>
+                                )}
                             </Box>
                         </Box>
                     )}
@@ -452,13 +485,29 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 </List>
                             </Box>
                             <Box sx={{ mb: 2 }}>
-                                <Button variant="contained" sx={{ mt: 2, mr: 2 }}
+                                <Box sx={{ mb: 2 }}>
+                                    <Button
+                                        variant="contained"
+                                        sx={{ mt: 2, mr: 2 }}
                                         onClick={() => {
                                             setStep(1);
                                         }}
-                                >
-                                    Change First Specification Values
-                                </Button>
+                                    >
+                                        Back
+                                    </Button>
+                                    {selected.category1 && (
+                                        <Button
+                                            variant="contained"
+                                            sx={{ mt: 2, mr: 2 }}
+                                            onClick={() => {
+                                                setSelected(tempSelected);
+                                                setStep(1);
+                                            }}
+                                        >
+                                            Update First Specification Values
+                                        </Button>
+                                    )}
+                                </Box>
                             </Box>
                         </Box>
                     )}
@@ -478,12 +527,15 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
                             <Box sx={{ mb: 2 }}>
-                                <Button variant="contained" sx={{ mt: 2, mr: 2 }}
-                                        onClick={() => {
-                                            setStep(6);
-                                        }}
+                                <Button
+                                    variant="contained"
+                                    sx={{ mt: 2, mr: 2 }}
+                                    onClick={() => {
+                                        setSelected(tempSelected);
+                                        setStep(6);
+                                    }}
                                 >
-                                    Change Second Category
+                                    Update Second Category
                                 </Button>
                             </Box>
                         </Box>
@@ -518,12 +570,15 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             </Box>
                             {!showOnlySpecNames2 && selected.specification2 && (
                                 <Box sx={{ mb: 2 }}>
-                                    <Button variant="contained" sx={{ mt: 2, mr: 2 }}
-                                            onClick={() => {
-                                                setStep(7);
-                                            }}
+                                    <Button
+                                        variant="contained"
+                                        sx={{ mt: 2, mr: 2 }}
+                                        onClick={() => {
+                                            setSelected(tempSelected);
+                                            setStep(7);
+                                        }}
                                     >
-                                        Change Second Specification
+                                        Update Second Specification
                                     </Button>
                                 </Box>
                             )}
@@ -570,12 +625,15 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 </List>
                             </Box>
                             <Box sx={{ mb: 2 }}>
-                                <Button variant="contained" sx={{ mt: 2, mr: 2 }}
-                                        onClick={() => {
-                                            setStep(1);
-                                        }}
+                                <Button
+                                    variant="contained"
+                                    sx={{ mt: 2, mr: 2 }}
+                                    onClick={() => {
+                                        setSelected(tempSelected);
+                                        setStep(1);
+                                    }}
                                 >
-                                    Change Second Specification Values
+                                    Update Second Specification Values
                                 </Button>
                             </Box>
                         </Box>
