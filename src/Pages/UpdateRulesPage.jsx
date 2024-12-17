@@ -234,10 +234,6 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
                     {step === 1 && (
                         <Box>
-                            <Typography variant="h6" sx={{ mb: 2 }}>
-                                Rule Details
-                            </Typography>
-
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body1">
                                     <strong>First Category:</strong> {selected.category1?.value || 'Not selected'}
@@ -372,6 +368,12 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     Submit Changes
                                 </Button>
                             </Box>
+
+                            {resultMessage && (
+                                <Typography variant="body2" color={resultMessage.includes('successfully')} sx={{ mt: 2, fontSize: '1.25rem' }}>
+                                    {resultMessage}
+                                </Typography>
+                            )}
                         </Box>
                     )}
 
