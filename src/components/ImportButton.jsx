@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
-import {Button, Input} from "@mui/material";
+import {Box, Button, CircularProgress, Input} from "@mui/material";
 import {callExternalApi} from "../Apis/external-api.service.js";
 import {useAuth0} from "@auth0/auth0-react";
 
@@ -8,6 +8,7 @@ function FileImport() {
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState("");
     const {getAccessTokenSilently } = useAuth0();
+    const [loading, setLoading] = useState(false);
 
     // Handle file selection
     const handleFileChange = (event) => {
@@ -21,7 +22,7 @@ function FileImport() {
             setMessage("Please select a file first!");
             return;
         }
-
+        setLoading(true);
         try {
             const fileContent = await file.text();
             const jsonData = JSON.parse(fileContent);
@@ -76,14 +77,22 @@ function FileImport() {
         } catch (error) {
             setMessage("An error occurred while uploading the file.");
             console.error(error);
-        }
+        } finally { setLoading(false);}
     };
 
     return (
         <>
-            <Input type="file" accept=".json" onChange={handleFileChange}/>
-            <Button onClick={handleFileUpload}>Upload</Button>
-            {message && <p>{message}</p>}
+            <Box>
+                <Box >
+                    <Input sx={{mr: 4}} type="file" accept=".json" onChange={handleFileChange}/>
+                    <button disabled={loading} onClick={handleFileUpload}>{loading ? <CircularProgress size={20} sx={{color: 'white', m: 'auto'}}/> : 'Upload'}</button>
+
+
+                </Box>
+
+                {message && <p>{message}</p>}
+            </Box>
+
         </>
     );
 

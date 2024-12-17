@@ -12,6 +12,7 @@ import PrebuildTemplatesPage from './Pages/PrebuildTemplatesPage.jsx';
 import ConfigurationPage from "./Pages/ConfigurationPage.jsx";
 import RulesPage from "./Pages/RulesPage.jsx";
 import DetailedItemsOverview from "./Pages/DetailedItemsOverview.jsx";
+import RulesOverviewPage from "./Pages/RulesOverviewPage.jsx";
 
 
 function App() {
@@ -28,12 +29,13 @@ function App() {
                 <Route path="/Admin" element={<AdminPage/>}/>
                 <Route path="/Homepage" element={<HomePage/>}/>
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/Item" element={<ItemDetailsPage/>}/>
+                <Route path="/Item/:id" element={<ItemDetailsPage/>}/>
                 <Route path="/AdminTemplate" element={<AdminTemplatePage/>}/>
                 <Route path="/ItemsDetailed" element={<DetailedItemsOverview/>}/>
                 <Route path="/PrebuildTemplatesPage" element={<PrebuildTemplatesPage/>}/>
                 <Route path="/adminConfig" element={<AdminPage/>}/>
-                <Route path="/rules" element={<RulesPage/>}/>
+                <Route path="/createRules" element={<RulesPage/>}/>
+                <Route path="/rules" element={<RulesOverviewPage/>}/>
             </Routes>
         </Router>
     </AuthProviderWithHistory>

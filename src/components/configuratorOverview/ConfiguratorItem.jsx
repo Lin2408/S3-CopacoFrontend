@@ -35,7 +35,7 @@ function ConfiguratorItem({category, index, items, setItems, loading}) {
               key={item.part ? item.part.id : 0}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               style={{
-                  backgroundColor: index % 2 === 0 ? '#F5FBFD' : 'white',
+                  backgroundColor: index % 2 === 1 ? '#f3faff' : 'white',
               }}
           >
               <TableCell component="th" scope="row">
