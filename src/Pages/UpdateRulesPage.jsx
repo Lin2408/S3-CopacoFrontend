@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
     Box,
     Typography,
@@ -7,17 +8,20 @@ import {
     Autocomplete,
     Card,
     CardContent,
+    Checkbox,
+    FormControlLabel,
     List,
     ListItemButton,
     ListItemText,
+    CircularProgress,
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
 import { getSpecificationsFromCategory, getSpecificationsValuesFromCategory } from '../Apis/get-specifications-from-categories.service.js';
-import { getRule } from '/src/Apis/get-rule.service.js';
-import { useParams } from 'react-router-dom';
-import './UpdateRulesPage.css';
+import { updateRule } from '../Apis/update-rule.service.js';
+import { getRule } from '../Apis/get-rule.service.js';
+import './RulesPage.css';
 
-const UpdateRulesPage = () => {
+const UpdateRulesPage = ({ onUpdateComplete }) => {
     const { ruleId } = useParams();
     const [step, setStep] = useState(1);
     const [categories, setCategories] = useState([]);
@@ -31,12 +35,50 @@ const UpdateRulesPage = () => {
         valuesTo: [],
         valuesFromCategory2: [],
         valuesToCategory2: [],
+        unit: '',
     });
     const [inputValue, setInputValue] = useState('');
     const [resultMessage, setResultMessage] = useState('');
     const [showOnlySpecNames1, setShowOnlySpecNames1] = useState(false);
     const [showOnlySpecNames2, setShowOnlySpecNames2] = useState(false);
-    const [ruleData, setRuleData] = useState(null);
+    const [isUnitBasedRule, setIsUnitBasedRule] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        const loadRuleDetails = async () => {
+            try {
+                const ruleData = await getRule(ruleId);
+
+                setSelected({
+                    category1: { id: ruleData.categoryFrom?.id, value: ruleData.categoryFrom?.value },
+                    category2: { id: ruleData.categoryTo?.id, value: ruleData.categoryTo?.value },
+                    specification1: { name: ruleData.nameFrom },
+                    specification2: { name: ruleData.nameTo },
+                    valuesFrom: ruleData.valuesFrom || [],
+                    valuesTo: ruleData.valuesTo || [],
+                    valuesFromCategory2: ruleData.valuesFromCategory2 || [],
+                    valuesToCategory2: ruleData.valuesToCategory2 || [],
+                    unit: ruleData.unit || '',
+                });
+
+                setIsUnitBasedRule(!!ruleData.unit);
+
+                setShowOnlySpecNames1(ruleData.isNameFrom);
+                setShowOnlySpecNames2(ruleData.isNameTo);
+
+                setIsLoading(false);
+            } catch (error) {
+                console.error('Error fetching rule details:', error);
+                setResultMessage('Error loading rule details');
+                setIsLoading(false);
+            }
+        };
+
+        if (ruleId) {
+            loadRuleDetails();
+        }
+    }, [ruleId]);
 
     const fetchCategoriesData = async (query) => {
         const { data, error } = await fetchCategories();
@@ -67,24 +109,6 @@ const UpdateRulesPage = () => {
         }
     };
 
-    const fetchRule = async (ruleId) => {
-        try {
-            const rule = await getRule(ruleId);
-            setRuleData(rule);
-            setSelected({
-                category1: rule.categoryFrom,
-                specification1: rule.nameFrom,
-                valuesFrom: rule.valuesFrom,
-                category2: rule.categoryTo,
-                specification2: rule.nameTo,
-                valuesToCategory2: rule.valuesTo,
-            });
-        } catch (error) {
-            console.error('Error fetching rule:', error);
-        }
-    };
-
-
     const handleCheckboxChange1 = (e) => {
         setShowOnlySpecNames1(e.target.checked);
         if (e.target.checked) {
@@ -99,9 +123,40 @@ const UpdateRulesPage = () => {
         }
     };
 
-    useEffect(() => {
-        fetchRule(ruleId);
-    }, [ruleId]);
+    const handleSubmit = async () => {
+        setIsSubmitting(true);
+        const ruleData = {
+            categoryFrom: selected.category1,
+            nameFrom: selected.specification1?.name,
+            valuesFrom: selected.valuesTo,
+            isNameFrom: showOnlySpecNames1,
+            categoryTo: selected.category2,
+            nameTo: selected.specification2?.name,
+            valuesTo: selected.valuesToCategory2,
+            isNameTo: showOnlySpecNames2,
+            unit: isUnitBasedRule ? selected.unit : null,
+        };
+
+        try {
+            await updateRule(ruleId, ruleData);
+            setResultMessage('Rule updated successfully!');
+            onUpdateComplete && onUpdateComplete();
+        } catch (error) {
+            console.error('Error updating rule:', error.response ? error.response.data : error.message);
+            setResultMessage('Error updating rule.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleNext = () => setStep((prev) => prev + 1);
+    const handleBack = () => {
+        setStep((prev) => {
+            if (prev === 4 && showOnlySpecNames1) return 2;
+            if (prev === 6 && showOnlySpecNames2) return 4;
+            return prev - 1;
+        });
+    };
 
     useEffect(() => {
         if (inputValue.length >= 2) fetchCategoriesData(inputValue);
@@ -135,35 +190,13 @@ const UpdateRulesPage = () => {
         }
     }, [selected.specification2]);
 
-    const handleSubmit = async () => {
-        const ruleData = {
-            categoryFrom: selected.category1,
-            nameFrom: selected.specification1?.name,
-            valuesFrom: selected.valuesFrom,
-            isNameFrom: showOnlySpecNames1,
-            categoryTo: selected.category2,
-            nameTo: selected.specification2?.name,
-            valuesTo: selected.valuesToCategory2,
-            isNameTo: showOnlySpecNames2,
-            unit: 'unit',
-        };
-
-        try {
-            setResultMessage('Rule updated successfully!');
-        } catch (error) {
-            console.error('Error updating rule:', error.response ? error.response.data : error.message);
-            setResultMessage('Error updating rule.');
-        }
-    };
-
-    const handleNext = () => setStep((prev) => prev + 1);
-    const handleBack = () => {
-        setStep((prev) => {
-            if (prev === 4 && showOnlySpecNames1) return 2;
-            if (prev === 6 && showOnlySpecNames2) return 4;
-            return prev - 1;
-        });
-    };
+    if (isLoading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <Box className="categories-container">
@@ -191,12 +224,43 @@ const UpdateRulesPage = () => {
                             <Autocomplete
                                 options={categories}
                                 getOptionLabel={(option) => option.value || ''}
-                                value={selected.category1 || null} // Prefill with the fetched rule's category
+                                value={selected.category1}
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, category1: value }))}
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={isUnitBasedRule}
+                                        onChange={(e) => setIsUnitBasedRule(e.target.checked)}
+                                    />
+                                }
+                                label="Is Unit Based Rule"
+                                sx={{ mt: 2 }}
+                            />
+                            <br/>
+                            {isUnitBasedRule && (
+                                <Box sx={{ mt: 2 }}>
+                                    <TextField
+                                        label="Unit"
+                                        variant="outlined"
+                                        fullWidth
+                                        value={selected.unit}
+                                        onChange={(e) => setSelected((prev) => ({ ...prev, unit: e.target.value }))}
+                                    />
+                                    <Autocomplete
+                                        options={[]}
+                                        getOptionLabel={(option) => option || ''}
+                                        value={newAutocompleteValue}
+                                        onChange={(e, value) => setNewAutocompleteValue(value)}
+                                        renderInput={(params) => (
+                                            <TextField {...params} label="Additional Input" variant="outlined" sx={{ mt: 2 }} />
+                                        )}
+                                    />
+                                </Box>
+                            )}
                             {selected.category1 && (
                                 <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
                                     Next
@@ -214,7 +278,7 @@ const UpdateRulesPage = () => {
                                 <Autocomplete
                                     options={specifications}
                                     getOptionLabel={(option) => option.name || ''}
-                                    value={selected.specification1 || null}
+                                    value={selected.specification1}
                                     onChange={(e, value) => setSelected((prev) => ({ ...prev, specification1: value }))}
                                     renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                                 />
@@ -226,7 +290,7 @@ const UpdateRulesPage = () => {
                                     type="checkbox"
                                     id="weirdNameCheckbox1"
                                     checked={showOnlySpecNames1}
-                                    onChange={(e) => setShowOnlySpecNames1(e.target.checked)}
+                                    onChange={handleCheckboxChange1}
                                 />
                                 <label htmlFor="weirdNameCheckbox1" style={{ marginLeft: '8px' }}>
                                     Has weird name
@@ -235,16 +299,24 @@ const UpdateRulesPage = () => {
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{ mt: 2 }}
-                                onClick={() => (showOnlySpecNames1 ? setStep(3) : handleNext())}
-                            >
-                                {showOnlySpecNames1 ? 'Go to List of Names' : 'Next'}
-                            </Button>
+                            {!showOnlySpecNames1 && selected.specification1 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
+                            )}
+                            {showOnlySpecNames1 && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{ mt: 2 }}
+                                    onClick={() => setStep(3)}
+                                >
+                                    Go to List of Names
+                                </Button>
+                            )}
                         </Box>
                     )}
+
 
                     {step === 3 && (
                         <Box>
@@ -293,12 +365,15 @@ const UpdateRulesPage = () => {
                             <Autocomplete
                                 options={categories.filter((cat) => cat.id !== selected.category1?.id)}
                                 getOptionLabel={(option) => option.value || ''}
-                                value={selected.category2 || null} // Prefill with the fetched rule's second category
+                                value={selected.category2}
                                 onChange={(e, value) => setSelected((prev) => ({ ...prev, category2: value }))}
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
+                            <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
+                                Back
+                            </Button>
                             {selected.category2 && (
                                 <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
                                     Next
@@ -310,13 +385,13 @@ const UpdateRulesPage = () => {
                     {step === 5 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 5: Select a Specification for the Second Category
+                                Step 5: Select a Specification for Second Category
                             </Typography>
                             {!showOnlySpecNames2 ? (
                                 <Autocomplete
                                     options={specifications}
                                     getOptionLabel={(option) => option.name || ''}
-                                    value={selected.specification2 || null}
+                                    value={selected.specification2}
                                     onChange={(e, value) => setSelected((prev) => ({ ...prev, specification2: value }))}
                                     renderInput={(params) => <TextField {...params} label="Select Specification" variant="outlined" />}
                                 />
@@ -328,7 +403,7 @@ const UpdateRulesPage = () => {
                                     type="checkbox"
                                     id="weirdNameCheckbox2"
                                     checked={showOnlySpecNames2}
-                                    onChange={(e) => setShowOnlySpecNames2(e.target.checked)}
+                                    onChange={handleCheckboxChange2}
                                 />
                                 <label htmlFor="weirdNameCheckbox2" style={{ marginLeft: '8px' }}>
                                     Has weird name
@@ -337,21 +412,29 @@ const UpdateRulesPage = () => {
                             <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                sx={{ mt: 2 }}
-                                onClick={() => (showOnlySpecNames2 ? setStep(6) : handleNext())}
-                            >
-                                {showOnlySpecNames2 ? 'Go to List of Names' : 'Next'}
-                            </Button>
+                            {!showOnlySpecNames2 && selected.specification2 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
+                                </Button>
+                            )}
+                            {showOnlySpecNames2 && (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{ mt: 2 }}
+                                    onClick={() => setStep(6)}
+                                >
+                                    Go to List of Names
+                                </Button>
+                            )}
                         </Box>
                     )}
+
 
                     {step === 6 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 6: Select Values for the Second Category
+                                Step 6: {showOnlySpecNames2 ? 'Select Specifications' : 'Select Values for the Second Category'}
                             </Typography>
                             <Box className="list-box">
                                 <Typography variant="body2" sx={{ mb: 1 }}>
@@ -380,17 +463,60 @@ const UpdateRulesPage = () => {
                                 Back
                             </Button>
                             {selected.valuesToCategory2.length > 0 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
-                                    Submit
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                    Next
                                 </Button>
                             )}
                         </Box>
                     )}
 
-                    {resultMessage && (
-                        <Typography variant="body1" sx={{ mt: 3, textAlign: 'center' }}>
-                            {resultMessage}
-                        </Typography>
+                    {step === 7 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Step 7: Review and Update Rule
+                            </Typography>
+                            <Typography variant="body1">Selected Category 1: {selected.category1?.value}</Typography>
+                            <Typography variant="body1">
+                                Selected Specification 1: {selected.specification1?.name}
+                            </Typography>
+                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 1: {selected.valuesTo.join(', ')}</Typography>
+                            <Typography variant="body1">Selected Category 2: {selected.category2?.value}</Typography>
+                            <Typography variant="body1">
+                                Selected Specification 2: {selected.specification2?.name}
+                            </Typography>
+                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 2: {selected.valuesToCategory2.join(', ')}</Typography>
+                            {isUnitBasedRule && (
+                                <Typography variant="body1">Unit: {selected.unit}</Typography>
+                            )}
+                            <Button
+                                variant="contained"
+                                sx={{ mt: 2, mr: 2 }}
+                                onClick={handleBack}
+                                disabled={isSubmitting}
+                            >
+                                Back
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{ mt: 2 }}
+                                onClick={handleSubmit}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? <CircularProgress size={24} /> : 'Update Rule'}
+                            </Button>
+                            {resultMessage && (
+                                <Typography
+                                    className="result-message"
+                                    sx={{
+                                        mt: 2,
+                                        color: resultMessage.includes('successfully') ? 'green' : 'red'
+                                    }}
+                                >
+                                    {resultMessage}
+                                </Typography>
+                            )}
+                        </Box>
                     )}
                 </CardContent>
             </Card>
