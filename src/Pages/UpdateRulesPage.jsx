@@ -710,6 +710,46 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             </Box>
                         </Box>
                     )}
+
+                    {step === 8 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Select Unit
+                            </Typography>
+                            <TextField
+                                label="Unit"
+                                variant="outlined"
+                                value={tempSelected.unit}
+                                onChange={(e) => setTempSelected((prev) => ({ ...prev, unit: e.target.value }))}
+                                fullWidth
+                            />
+                            <Box sx={{ mb: 2 }}>
+                                <Button
+                                    variant="contained"
+                                    sx={{ mt: 2, mr: 2 }}
+                                    onClick={() => {
+                                        setStep(1);
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    sx={{ mt: 2, mr: 2 }}
+                                    onClick={() => {
+                                        setSelected((prev) => ({
+                                            ...prev,
+                                            unit: tempSelected.unit,
+                                        }));
+                                        setStep(1);
+                                    }}
+                                >
+                                    Update Unit
+                                </Button>
+                            </Box>
+                        </Box>
+                    )}
+
                 </CardContent>
             </Card>
         </Box>
