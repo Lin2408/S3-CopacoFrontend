@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography, Button, List, ListItem, ListItemText, Grid, Divider, CircularProgress } from '@mui/material';
 import { getItemDetails } from '/src/Apis/get-item-details.service';
+import placeholder from '/src/assets/placeholder.png';
 
 const ItemDetailsPage = () => {
     const { id } = useParams();
@@ -12,7 +13,7 @@ const ItemDetailsPage = () => {
         const fetchData = async () => {
             try {
                 const data = await getItemDetails(id);
-
+                setItem(data)
             } catch (error) {
                 console.error("Error:", error);
             } finally {
@@ -33,7 +34,7 @@ const ItemDetailsPage = () => {
                     <Grid item xs={12} sm={6}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                             <img
-                                src={item?.image || "default-image.jpg"}
+                                src={item.image && !item.image.includes('https://inishop.com') ? item.image : placeholder}
                                 alt={item?.name || "Product image"}
                                 style={{ maxWidth: '100%', borderRadius: '8px' }}
                             />

@@ -7,8 +7,8 @@ const AdminPage = () => {
     };
 
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{ p: 2 }}>
-            <Box mt={2} display="flex" justifyContent="space-between">
+        <Box component="form" onSubmit={handleSubmit} sx={{ p: 2, width: "80%", mx: 'auto', mt: 3}}>
+            <Box mt={2}   sx={{ display: 'flex', justifyContent: 'center',}} justifyContent="space-between">
 
                 <ImportButton />
             </Box>
