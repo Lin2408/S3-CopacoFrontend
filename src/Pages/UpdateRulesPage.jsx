@@ -256,7 +256,10 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body1">
-                                    <strong>First Specification Values:</strong> {selected.valuesFrom || 'Not selected'}
+                                    <strong>First Specification Values:</strong>
+                                    {Array.isArray(selected.valuesFrom)
+                                        ? selected.valuesFrom.join(', ')
+                                        : selected.valuesFrom || 'Not selected'}
                                 </Typography>
                                 <Button
                                     variant="outlined"
@@ -272,7 +275,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             {selected.specification1?.values && selected.specification1.values.length > 0 && (
                                 <Box sx={{ mb: 2 }}>
                                     <Typography variant="body1">
-                                        <strong>First Specification Values:</strong> {selected.specification1.values.join(', ') || 'No values selected'}
+                                        <strong>First Specification Values: </strong> {selected.specification1.values.join(', ') || 'No values selected'}
                                     </Typography>
                                 </Box>
                             )}
@@ -309,7 +312,10 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body1">
-                                    <strong>First Specification Values:</strong> {selected.valuesTo || 'Not selected'}
+                                    <strong>First Specification Values: </strong>
+                                    {Array.isArray(selected.valuesTo)
+                                    ? selected.valuesTo.join(', ')
+                                    : selected.valuesTo || 'Not selected'}
                                 </Typography>
                                 <Button
                                     variant="outlined"
