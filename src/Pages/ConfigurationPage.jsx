@@ -56,7 +56,10 @@ function ConfigurationPage() {
     function load(categories) {
         if (!categories) return;
         const itemFromStorage = sessionStorage.getItem('items');
-        setItems(itemFromStorage != null ? JSON.parse(itemFromStorage) : Object.fromEntries(categories.sort((a, b) => a.value.localeCompare(b.value)).map(category => [category.value, {}])));
+        setItems(itemFromStorage != null ? JSON.parse(itemFromStorage) :
+            Object.fromEntries(categories
+                .sort((a, b) => a.value.localeCompare(b.value))
+                .map(category => [category.value, {}])));
     }
 
     useEffect(() => {
@@ -108,7 +111,7 @@ function ConfigurationPage() {
                 />
                 <TableContainer component={Paper}>
                     <Table sx={{minWidth: 550}} aria-label="simple table">
-                        <TableHead>
+                        <TableHead sx={{backgroundColor: '#003f74', color: 'white', '& .MuiTableCell-root': { color: 'white' }}}>
                             <TableRow>{/*style={{backgroundColor: "#F5FBFD"}}*/}
                                 <TableCell>Component</TableCell>
                                 <TableCell>Selection</TableCell>
