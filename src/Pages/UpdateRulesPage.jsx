@@ -219,7 +219,98 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                     {step === 1 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 1: Select the First Category
+                                Rule Details
+                            </Typography>
+
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body1">
+                                    <strong>First Category:</strong> {selected.category1?.value || 'Not selected'}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                    onClick={() => setStep(2)}
+                                >
+                                    Change First Category
+                                </Button>
+                            </Box>
+
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body1">
+                                    <strong>Second Category:</strong> {selected.category2?.value || 'Not selected'}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                    onClick={() => setStep(3)}
+                                >
+                                    Change Second Category
+                                </Button>
+                            </Box>
+
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body1">
+                                    <strong>First Specification:</strong> {selected.specification1?.name || 'Not selected'}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                    onClick={() => setStep(4)}
+                                >
+                                    Change First Specification
+                                </Button>
+                            </Box>
+
+                            <Box sx={{ mb: 2 }}>
+                                <Typography variant="body1">
+                                    <strong>Second Specification:</strong> {selected.specification2?.name || 'Not selected'}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    sx={{ mt: 1 }}
+                                    onClick={() => setStep(5)}
+                                >
+                                    Change Second Specification
+                                </Button>
+                            </Box>
+
+                            {isUnitBasedRule && (
+                                <Box sx={{ mb: 2 }}>
+                                    <Typography variant="body1">
+                                        <strong>Unit:</strong> {selected.unit || 'Not specified'}
+                                    </Typography>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        size="small"
+                                        sx={{ mt: 1 }}
+                                        onClick={() => setStep(6)}
+                                    >
+                                        Change Unit
+                                    </Button>
+                                </Box>
+                            )}
+
+                            <Box>
+                                <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitting}>
+                                    Submit Changes
+                                </Button>
+                            </Box>
+                        </Box>
+                    )}
+
+                    {step === 2 && (
+                        <Box>
+                            <Typography variant="h6" sx={{ mb: 2 }}>
+                                Select the First Category
                             </Typography>
                             <Autocomplete
                                 options={categories}
@@ -269,10 +360,10 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                         </Box>
                     )}
 
-                    {step === 2 && (
+                    {step === 3 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 2: Select a Specification
+                                Select a Specification
                             </Typography>
                             {!showOnlySpecNames1 ? (
                                 <Autocomplete
@@ -318,10 +409,10 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                     )}
 
 
-                    {step === 3 && (
+                    {step === 4 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 3: {showOnlySpecNames1 ? 'Select Specifications' : 'Select Values for the First Category'}
+                                {showOnlySpecNames1 ? 'Select Specifications' : 'Select Values for the First Category'}
                             </Typography>
                             <Box className="list-box">
                                 <Typography variant="body2" sx={{ mb: 1 }}>
@@ -357,10 +448,10 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                         </Box>
                     )}
 
-                    {step === 4 && (
+                    {step === 5 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 4: Select the Second Category
+                                Select the Second Category
                             </Typography>
                             <Autocomplete
                                 options={categories.filter((cat) => cat.id !== selected.category1?.id)}
@@ -382,10 +473,10 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                         </Box>
                     )}
 
-                    {step === 5 && (
+                    {step === 6 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 5: Select a Specification for Second Category
+                                Select a Specification for Second Category
                             </Typography>
                             {!showOnlySpecNames2 ? (
                                 <Autocomplete
@@ -431,10 +522,10 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                     )}
 
 
-                    {step === 6 && (
+                    {step === 7 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 6: {showOnlySpecNames2 ? 'Select Specifications' : 'Select Values for the Second Category'}
+                                {showOnlySpecNames2 ? 'Select Specifications' : 'Select Values for the Second Category'}
                             </Typography>
                             <Box className="list-box">
                                 <Typography variant="body2" sx={{ mb: 1 }}>
@@ -470,10 +561,10 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                         </Box>
                     )}
 
-                    {step === 7 && (
+                    {step === 8 && (
                         <Box>
                             <Typography variant="h6" sx={{ mb: 2 }}>
-                                Step 7: Review and Update Rule
+                                Review and Update Rule
                             </Typography>
                             <Typography variant="body1">Selected Category 1: {selected.category1?.value}</Typography>
                             <Typography variant="body1">
