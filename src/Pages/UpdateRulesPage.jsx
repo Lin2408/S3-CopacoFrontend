@@ -127,11 +127,11 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
     };
 
     const validateForm = () => {
-        if (!selected.category1 || !selected.specification1 || !selected.valuesFrom.length) {
+        if (!selected.category1 || (!showOnlySpecNames1 && !selected.specification1) || (!showOnlySpecNames1 && !selected.valuesFrom.length)) {
             setResultMessage('First category, specification, and values are required.');
             return false;
         }
-        if (!selected.category2 || !selected.specification2 || !selected.valuesTo.length) {
+        if (!selected.category2 || (!showOnlySpecNames2 && !selected.specification2) || (!showOnlySpecNames2 && !selected.valuesTo.length)) {
             setResultMessage('Second category, specification, and values are required.');
             return false;
         }
@@ -271,7 +271,12 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body1">
-                                    <strong>First Specification:</strong> {selected.specification1?.name || 'Not selected'}
+                                    <strong>First Specification: </strong>
+                                    {showOnlySpecNames1
+                                        ? (selected.valuesFrom.length > 0
+                                            ? selected.valuesFrom.join(', ')
+                                            : 'N/A')
+                                        : selected.specification1?.name || 'Not selected'}
                                 </Typography>
                                 <Button
                                     variant="outlined"
@@ -282,6 +287,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                         setTempSelected((prev) => ({
                                             ...prev,
                                             valuesFrom: [],
+
                                         }));
                                         setStep(3);
                                     }}
@@ -293,9 +299,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body1">
                                     <strong>First Specification Values: </strong>
-                                    {showOnlySpecNames1
-                                        ? selected.specification1?.name || 'Not selected'
-                                        : (Array.isArray(selected.valuesFrom) ? selected.valuesFrom.join(', ') : selected.valuesFrom) || 'Not selected'}
+                                    {showOnlySpecNames1 ? 'N/A' : (Array.isArray(selected.valuesFrom) ? selected.valuesFrom.join(', ') : selected.valuesFrom) || 'Not selected'}
                                 </Typography>
                                 <Button
                                     variant="outlined"
@@ -327,7 +331,12 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body1">
-                                    <strong>Second Specification:</strong> {selected.specification2?.name || 'Not selected'}
+                                    <strong>Second Specification Values: </strong>
+                                    {showOnlySpecNames2
+                                        ? (selected.valuesTo.length > 0
+                                            ? selected.valuesTo.join(', ')
+                                            : 'N/A')
+                                        : selected.specification2?.name || 'Not selected'}
                                 </Typography>
                                 <Button
                                     variant="outlined"
@@ -349,9 +358,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body1">
                                     <strong>Second Specification Values: </strong>
-                                    {Array.isArray(selected.valuesTo)
-                                        ? selected.valuesTo.join(', ')
-                                        : selected.valuesTo || 'Not selected'}
+                                    {showOnlySpecNames2 ? 'N/A' : (Array.isArray(selected.valuesTo) ? selected.valuesTo.join(', ') : selected.valuesTo) || 'Not selected'}
                                 </Typography>
                                 <Button
                                     variant="outlined"
@@ -390,7 +397,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             </Box>
 
                             {resultMessage && (
-                                <Typography variant="body2" color={resultMessage.includes('successfully')} sx={{ mt: 2, fontSize: '1.25rem' }}>
+                                <Typography variant="body2" color={resultMessage.includes('successfully') ? 'green' : 'red'} sx={{ mt: 2, fontSize: '1.25rem' }}>
                                     {resultMessage}
                                 </Typography>
                             )}
@@ -611,8 +618,13 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
                     {step === 6 && (
                         <Box>
-                            <Typography variant="h6" sx={{ mb: 2 }}>
-                                Select a Specification for Second Category
+                            <Typography variant="body1">
+                                <strong>Second Specification:</strong>
+                                {showOnlySpecNames2
+                                    ? (selected.valuesTo.length > 0
+                                        ? selected.valuesTo.join(', ')
+                                        : 'N/A')
+                                    : selected.specification2?.name || 'Not selected'}
                             </Typography>
                             {!showOnlySpecNames2 ? (
                                 <Autocomplete
