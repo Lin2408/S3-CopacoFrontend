@@ -153,11 +153,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
     const handleNext = () => setStep((prev) => prev + 1);
     const handleBack = () => {
-        setStep((prev) => {
-            if (prev === 4 && showOnlySpecNames1) return 2;
-            if (prev === 6 && showOnlySpecNames2) return 4;
-            return prev - 1;
-        });
+        setStep(1)
     };
 
     useEffect(() => {
@@ -256,7 +252,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
 
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="body1">
-                                    <strong>First Specification Values:</strong>
+                                    <strong>First Specification Values: </strong>
                                     {Array.isArray(selected.valuesFrom)
                                         ? selected.valuesFrom.join(', ')
                                         : selected.valuesFrom || 'Not selected'}
@@ -275,7 +271,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             {selected.specification1?.values && selected.specification1.values.length > 0 && (
                                 <Box sx={{ mb: 2 }}>
                                     <Typography variant="body1">
-                                        <strong>First Specification Values: </strong> {selected.specification1.values.join(', ') || 'No values selected'}
+                                        <strong>First Specification Values:</strong> {selected.specification1.values.join(', ') || 'No values selected'}
                                     </Typography>
                                 </Box>
                             )}
@@ -375,40 +371,12 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 onInputChange={(e, value) => setInputValue(value)}
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={isUnitBasedRule}
-                                        onChange={(e) => setIsUnitBasedRule(e.target.checked)}
-                                    />
-                                }
-                                label="Is Unit Based Rule"
-                                sx={{ mt: 2 }}
-                            />
-                            <br/>
-                            {isUnitBasedRule && (
-                                <Box sx={{ mt: 2 }}>
-                                    <TextField
-                                        label="Unit"
-                                        variant="outlined"
-                                        fullWidth
-                                        value={selected.unit}
-                                        onChange={(e) => setSelected((prev) => ({ ...prev, unit: e.target.value }))}
-                                    />
-                                    <Autocomplete
-                                        options={[]}
-                                        getOptionLabel={(option) => option || ''}
-                                        value={newAutocompleteValue}
-                                        onChange={(e, value) => setNewAutocompleteValue(value)}
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Additional Input" variant="outlined" sx={{ mt: 2 }} />
-                                        )}
-                                    />
-                                </Box>
-                            )}
+                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                                Back
+                            </Button>
                             {selected.category1 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
-                                    Next
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleChange}>
+                                    Change Category
                                 </Button>
                             )}
                         </Box>
