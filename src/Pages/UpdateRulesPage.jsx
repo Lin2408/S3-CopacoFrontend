@@ -262,7 +262,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     variant="outlined"
                                     color="primary"
                                     size="small"
-                                    sx={{ mt: 1 }}
+                                    sx={{ mt: 1}}
                                     onClick={() => setStep(2)}
                                 >
                                     Change First Category
@@ -391,7 +391,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             )}
 
                             <Box>
-                                <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitting}>
+                                <Button variant="contained" sx={{ backgroundColor:"#003f74" }} onClick={handleSubmit} disabled={isSubmitting}>
                                     Submit Changes
                                 </Button>
                             </Box>
@@ -425,7 +425,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -435,7 +435,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category1 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected(tempSelected);
                                             setStep(3);
@@ -485,7 +485,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -495,7 +495,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category1 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected((prev) => ({
                                                 ...prev,
@@ -546,7 +546,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -556,7 +556,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category1 && tempSelected.valuesFrom.length > 0 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected((prev) => ({
                                                 ...prev,
@@ -593,7 +593,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -603,7 +603,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category2 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected(tempSelected);
                                             setStep(6);
@@ -658,7 +658,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -668,7 +668,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category2 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected((prev) => ({
                                                 ...prev,
@@ -719,7 +719,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -729,7 +729,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category2 && tempSelected.valuesTo.length > 0 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected((prev) => ({
                                                 ...prev,
@@ -760,7 +760,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -769,7 +769,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 </Button>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setSelected((prev) => ({
                                             ...prev,

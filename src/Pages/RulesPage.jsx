@@ -211,7 +211,7 @@ const RulesPage = () => {
                                 </Box>
                             )}
                             {selected.category1 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -245,11 +245,11 @@ const RulesPage = () => {
                                     Has weird name
                                 </label>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }} onClick={handleBack}>
                                 Back
                             </Button>
                             {!showOnlySpecNames1 && selected.specification1 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -295,11 +295,11 @@ const RulesPage = () => {
                                     ))}
                                 </List>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.valuesTo.length > 0 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                <Button variant="contained" color="primary" sx={{ mt: 2 , backgroundColor:"#003f74" }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -320,11 +320,11 @@ const RulesPage = () => {
                                 onInputChange={(e, value) => setInputValue(value)}
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
-                            <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.category2 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -358,11 +358,11 @@ const RulesPage = () => {
                                     Has weird name
                                 </label>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }} onClick={handleBack}>
                                 Back
                             </Button>
                             {!showOnlySpecNames2 && selected.specification2 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -408,11 +408,11 @@ const RulesPage = () => {
                                     ))}
                                 </List>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.valuesToCategory2.length > 0 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
+                                <Button variant="contained" color="primary" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -437,13 +437,13 @@ const RulesPage = () => {
                             {isUnitBasedRule && (
                                 <Typography variant="body1">Unit: {selected.unit}</Typography>
                             )}
-                            <Button variant="contained" sx={{ mt: 2, mr: 2, }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}} onClick={handleBack}>
                                 Back
                             </Button>
-                            <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
+                            <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74"}} onClick={handleSubmit}>
                                 Submit Rule
                             </Button>
-                            {resultMessage && <Typography className="result-message" sx={{ mt: 2}}>{resultMessage}</Typography>}
+                            {resultMessage && <Typography className="result-message" sx={{ mt: 2 }}>{resultMessage}</Typography>}
                         </Box>
                     )}
                 </CardContent>
