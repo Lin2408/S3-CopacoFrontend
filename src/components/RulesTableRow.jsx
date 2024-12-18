@@ -7,7 +7,7 @@ function RulesTableRow({ rule, handleEdit, handleDeleteClick, index }) {
   return (
       <TableRow key={rule.id}
                 style={{
-                    backgroundColor: index % 2 === 1 ? '#F5FBFD' : 'white',
+                    backgroundColor: index % 2 === 1 ? '#f3faff' : 'white',
                 }}>
           <TableCell>{rule.nameFrom}</TableCell>
           <TableCell>{rule.categoryFrom.value}</TableCell>

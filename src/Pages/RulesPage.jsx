@@ -17,6 +17,7 @@ import { fetchCategories } from '/src/Apis/get-categories.service.js';
 import { getSpecificationsFromCategory, getSpecificationsValuesFromCategory } from '../Apis/get-specifications-from-categories.service.js';
 import createRule from '../Apis/create-rule.service.js';
 import './RulesPage.css';
+import {useNavigate} from "react-router-dom";
 
 const RulesPage = () => {
     const [step, setStep] = useState(1);
@@ -41,6 +42,7 @@ const RulesPage = () => {
     const [searchValue2, setSearchValue2] = useState('');
     const [isUnitBasedRule, setIsUnitBasedRule] = useState(false);
     const [newAutocompleteValue, setNewAutocompleteValue] = useState(null);
+    const navigate = useNavigate();
 
     const fetchCategoriesData = async (query) => {
         const { data, error } = await fetchCategories();
@@ -148,7 +150,10 @@ const RulesPage = () => {
         });
     };
     return (
+        <>
+
         <Box className="categories-container">
+
             <Card className="outer-card">
                 <CardContent>
                     <Typography
@@ -448,7 +453,9 @@ const RulesPage = () => {
                     )}
                 </CardContent>
             </Card>
+            <Button variant="contained" sx={{ mt: 2, backgroundColor:"grey"}} onClick={() => navigate(-1)}>Discard and go back</Button>
         </Box>
+        </>
     );
 };
 

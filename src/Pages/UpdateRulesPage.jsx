@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {
     Box,
     Typography,
@@ -45,6 +45,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [tempSelected, setTempSelected] = useState(selected);
+    const navigate = useNavigate()
 
     useEffect(() => {
         const loadRuleDetails = async () => {
@@ -426,9 +427,15 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             )}
 
                             <Box>
+                                <Button variant="contained" sx={{ backgroundColor:"grey", mx: 1 }} onClick={() => navigate(-1)} disabled={isSubmitting}>
+                                    Discard changes
+                                </Button>
                                 <Button variant="contained" sx={{ backgroundColor:"#003f74" }} onClick={handleSubmit} disabled={isSubmitting}>
                                     Submit Changes
                                 </Button>
+                            </Box>
+                            <Box>
+
                             </Box>
 
                             {resultMessage && (

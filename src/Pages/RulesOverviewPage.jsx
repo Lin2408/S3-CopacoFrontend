@@ -41,7 +41,7 @@ function RulesOverviewPage(){
     ]);*/
 
     const handleEdit = (id) => {
-        alert(`Edit rule with ID: ${id}`);
+        navigate(`/updaterules/${id}`);
     };
 
 

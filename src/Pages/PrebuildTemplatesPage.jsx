@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { fetchItemsByCategory } from '../Apis/get-templates.service.js';
+
 import './PrebuildTemplatesPage.css';
+import {fetchItemsByCategory} from "../Apis/get-items-from-category.service.js";
 
 const PrebuildTemplatesPage = () => {
     const [templates, setTemplates] = useState([]);
@@ -20,7 +21,8 @@ const PrebuildTemplatesPage = () => {
             if (error) {
                 console.error('Error fetching items by category:', error);
             } else {
-                setTemplates(data || []);
+                console.log('Templates:', data);
+                setTemplates(data.items || []);
             }
             setLoading(false);
         };
