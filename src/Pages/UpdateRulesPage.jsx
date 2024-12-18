@@ -127,18 +127,53 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
     };
 
     const validateForm = () => {
-        if (!selected.category1 || (!showOnlySpecNames1 && !selected.specification1) || (!showOnlySpecNames1 && !selected.valuesFrom.length)) {
-            setResultMessage('First category, specification, and values are required.');
+        if (!selected.category1) {
+            setResultMessage('First category is required.');
             return false;
         }
-        if (!selected.category2 || (!showOnlySpecNames2 && !selected.specification2) || (!showOnlySpecNames2 && !selected.valuesTo.length)) {
-            setResultMessage('Second category, specification, and values are required.');
+
+        if (showOnlySpecNames1) {
+            if (!selected.valuesFrom || selected.valuesFrom.length === 0) {
+                setResultMessage('At least one specification name must be selected for the first category.');
+                return false;
+            }
+        } else {
+            if (!selected.specification1) {
+                setResultMessage('First specification is required.');
+                return false;
+            }
+            if (!selected.valuesFrom || selected.valuesFrom.length === 0) {
+                setResultMessage('First specification values are required.');
+                return false;
+            }
+        }
+
+        if (!selected.category2) {
+            setResultMessage('Second category is required.');
             return false;
         }
+
+        if (showOnlySpecNames2) {
+            if (!selected.valuesTo || selected.valuesTo.length === 0) {
+                setResultMessage('At least one specification name must be selected for the second category.');
+                return false;
+            }
+        } else {
+            if (!selected.specification2) {
+                setResultMessage('Second specification is required.');
+                return false;
+            }
+            if (!selected.valuesTo || selected.valuesTo.length === 0) {
+                setResultMessage('Second specification values are required.');
+                return false;
+            }
+        }
+
         if (isUnitBasedRule && !selected.unit) {
             setResultMessage('Unit is required for unit-based rules.');
             return false;
         }
+
         return true;
     };
 
@@ -262,7 +297,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                     variant="outlined"
                                     color="primary"
                                     size="small"
-                                    sx={{ mt: 1 }}
+                                    sx={{ mt: 1}}
                                     onClick={() => setStep(2)}
                                 >
                                     Change First Category
@@ -391,7 +426,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             )}
 
                             <Box>
-                                <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitting}>
+                                <Button variant="contained" sx={{ backgroundColor:"#003f74" }} onClick={handleSubmit} disabled={isSubmitting}>
                                     Submit Changes
                                 </Button>
                             </Box>
@@ -413,9 +448,22 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 options={categories}
                                 getOptionLabel={(option) => option.value || ''}
                                 value={tempSelected.category1}
-                                onChange={(e, value) =>
-                                    setTempSelected((prev) => ({ ...prev, category1: value }))
-                                }
+                                onChange={(e, value) => {
+                                    if (value?.id !== selected.category1?.id) {
+
+                                        setTempSelected((prev) => ({
+                                            ...prev,
+                                            category1: value,
+                                            specification1: null,
+                                            valuesFrom: [],
+                                            category2: null,
+                                            specification2: null,
+                                            valuesTo: [],
+                                            unit: ''
+                                        }));
+                                        setSpecifications([]);
+                                    }
+                                }}
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
                                 renderInput={(params) => (
@@ -425,17 +473,17 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}}
                                     onClick={() => {
                                         setStep(1);
                                     }}
                                 >
                                     Back
                                 </Button>
-                                {selected.category1 && (
+                                {tempSelected.category1 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected(tempSelected);
                                             setStep(3);
@@ -485,7 +533,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -495,7 +543,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category1 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected((prev) => ({
                                                 ...prev,
@@ -546,7 +594,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -556,7 +604,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category1 && tempSelected.valuesFrom.length > 0 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected((prev) => ({
                                                 ...prev,
@@ -582,7 +630,12 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 getOptionLabel={(option) => option.value || ''}
                                 value={tempSelected.category2}
                                 onChange={(e, value) =>
-                                    setTempSelected((prev) => ({ ...prev, category2: value }))
+                                    setTempSelected((prev) => ({
+                                        ...prev,
+                                        category2: value,
+                                        specification2: null,
+                                        valuesTo: []
+                                    }))
                                 }
                                 inputValue={inputValue}
                                 onInputChange={(e, value) => setInputValue(value)}
@@ -593,19 +646,24 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}}
                                     onClick={() => {
                                         setStep(1);
                                     }}
                                 >
                                     Back
                                 </Button>
-                                {selected.category2 && (
+                                {tempSelected.category2 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
-                                            setSelected(tempSelected);
+                                            setSelected(prevSelected => ({
+                                                ...prevSelected,
+                                                category2: tempSelected.category2,
+                                                specification2: null,
+                                                valuesTo: []
+                                            }));
                                             setStep(6);
                                         }}
                                     >
@@ -658,7 +716,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -668,7 +726,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category2 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected((prev) => ({
                                                 ...prev,
@@ -719,7 +777,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -729,7 +787,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 {selected.category2 && tempSelected.valuesTo.length > 0 && (
                                     <Button
                                         variant="contained"
-                                        sx={{ mt: 2, mr: 2 }}
+                                        sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                         onClick={() => {
                                             setSelected((prev) => ({
                                                 ...prev,
@@ -760,7 +818,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                             <Box sx={{ mb: 2 }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setStep(1);
                                     }}
@@ -769,7 +827,7 @@ const UpdateRulesPage = ({ onUpdateComplete }) => {
                                 </Button>
                                 <Button
                                     variant="contained"
-                                    sx={{ mt: 2, mr: 2 }}
+                                    sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }}
                                     onClick={() => {
                                         setSelected((prev) => ({
                                             ...prev,
