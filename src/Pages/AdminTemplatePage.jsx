@@ -97,6 +97,7 @@ const AdminTemplatePage = () => {
                 fullWidth
                 size="large"
                 onClick={handleSubmit}
+                sx={{backgroundColor:"#003f74"}}
             >
                 Create Template
             </Button>
