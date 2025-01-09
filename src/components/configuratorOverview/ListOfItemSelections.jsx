@@ -76,6 +76,9 @@ function ListOfItemSelections({onSelect, category, search}) {
     }, []);*/
 
     function handlePageChange(event, value) {
+        if(value === page){
+            return;
+        }
         setPage(value);
         window.scrollTo(0, 0);
     }
