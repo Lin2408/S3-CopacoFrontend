@@ -26,6 +26,9 @@ function ItemSelectionOverview() {
     const [search, setSearch] = useState('');
     const [filterData, setFilterData] = useState([]);
     const category = state?.category || '';
+    const [selectedManufacturers, setSelectedManufacturers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     console.log('Category:', category);
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
@@ -62,7 +65,13 @@ function ItemSelectionOverview() {
         sessionStorage.setItem('items', JSON.stringify(updatedItems));
         navigate('/Configurator');
     };
-
+    const handleCheckboxChange = (event, option) => {
+        if (event.target.checked) {
+            setSelectedManufacturers((prev) => [...prev, option]);
+        } else {
+            setSelectedManufacturers((prev) => prev.filter(manufacturer => manufacturer !== option));
+        }
+    };
     return (
         <div>
             <h1>Choose {category.value}</h1>{/*{ /^[aeiou]/i.test(category) ? 'an' : 'a' }*/}
@@ -105,7 +114,7 @@ function ItemSelectionOverview() {
                                     <AccordionDetails>
                                         <FormGroup>
                                             {filter.options.map((option, index) => (
-                                                <FormControlLabel key={index} control={<Checkbox value="value"/>} label={option}/>
+                                                <FormControlLabel key={index} control={<Checkbox disabled={loading} onChange={(e) => handleCheckboxChange(e, option)} value="value"/>} label={option}/>
                                             ))}
                                         </FormGroup>
 
@@ -116,7 +125,7 @@ function ItemSelectionOverview() {
                         ))}
                     </Grid>
                     <Grid size={8}>
-                        <ListOfItemSelections onSelect={onSelect} category={category} search={search}/>
+                        <ListOfItemSelections onSelect={onSelect} category={category} search={search} selectedManufacturers={selectedManufacturers} loading={loading} setLoading={setLoading}/>
                     </Grid>
                 </Grid>
             </div>
