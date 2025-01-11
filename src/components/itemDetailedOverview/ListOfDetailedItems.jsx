@@ -8,7 +8,7 @@ import SearchOffIcon from '@mui/icons-material/SearchOff';
 import NoSearchResults from "../NoSearchResults.jsx";
 
 
-const ListOfDetailedItems = ({selectedCategory, search, loading, setLoading}) => {
+const ListOfDetailedItems = ({selectedCategory, search, selectedManufacturers, loading, setLoading}) => {
     const [items, setItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(1);
@@ -18,7 +18,7 @@ const ListOfDetailedItems = ({selectedCategory, search, loading, setLoading}) =>
 
     useEffect(() => {
         setPage(1);
-    }, [selectedCategory, search]);
+    }, [selectedCategory, search, selectedManufacturers]);
 
     useEffect(() => {
         if (selectedCategory === null) {
@@ -34,7 +34,8 @@ const ListOfDetailedItems = ({selectedCategory, search, loading, setLoading}) =>
                     category: selectedCategory.value,
                     itemPerPage: itemPerPage,
                     page: page,
-                    searchString: search
+                    searchString: search,
+                    manufacturers: selectedManufacturers
                 }
                 const data = await fetchItemsByCategory(request);
                 setItems(data.data.items);
@@ -48,10 +49,13 @@ const ListOfDetailedItems = ({selectedCategory, search, loading, setLoading}) =>
             }
         };
         getItems();
-    }, [page, selectedCategory, search]);
+    }, [page, selectedCategory, search, selectedManufacturers]);
 
 
     function handlePageChange(event, value) {
+        if(value === page){
+            return;
+        }
         setPage(value);
         window.scrollTo(0, 0);
     }

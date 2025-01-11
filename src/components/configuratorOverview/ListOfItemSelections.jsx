@@ -8,17 +8,17 @@ import {Alert, Box, CircularProgress} from "@mui/material";
 import NoSearchResults from "../NoSearchResults.jsx";
 import {getItemsByCompatibilty} from "../../Apis/get-items-by-compatibilty.js";
 
-function ListOfItemSelections({onSelect, category, search}) {
+function ListOfItemSelections({onSelect, category, search, selectedManufacturers, loading, setLoading}) {
     const [items, setItems] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(true);
+    /*const [loading, setLoading] = useState(true);*/
     const [itemPerPage] = useState(20);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         setPage(1);
-    }, [category, search]);
+    }, [category, search, selectedManufacturers]);
 
 
     useEffect(() => {
@@ -57,7 +57,12 @@ function ListOfItemSelections({onSelect, category, search}) {
             try {
                 setLoading(true);
                 setError(null);
-                const data = await fetchItemsByCategory({category: category.value, itemPerPage: itemPerPage, page: page, searchString: search});
+                const data = await fetchItemsByCategory({category: category.value,
+                    itemPerPage: itemPerPage,
+                    page: page,
+                    searchString: search,
+                    manufacturers: selectedManufacturers
+                });
 
                 setItems(data.data.items);
                 setPageCount(Math.ceil(data.data.itemCount / itemPerPage));
@@ -69,13 +74,16 @@ function ListOfItemSelections({onSelect, category, search}) {
             }
         };
         getItems();
-    }, [page, category, search]);
+    }, [page, category, search, selectedManufacturers]);
     /*useEffect(() => {
 
 
     }, []);*/
 
     function handlePageChange(event, value) {
+        if(value === page){
+            return;
+        }
         setPage(value);
         window.scrollTo(0, 0);
     }

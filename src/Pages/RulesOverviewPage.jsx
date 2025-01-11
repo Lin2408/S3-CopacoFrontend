@@ -94,6 +94,9 @@ function RulesOverviewPage(){
         setSelectedRuleId(null);
     };
     function handlePageChange(event, value) {
+        if(value === page){
+            return;
+        }
         setPage(value);
         window.scrollTo(0, 0);
     }
@@ -181,12 +184,7 @@ function RulesOverviewPage(){
                 <Box sx={{ marginTop: 4, textAlign: "center" }}>
             <ItemPaginationButtons page={page} pageCount={pageCount} handlePageChange={handlePageChange} />
         </Box>
-
-
-
             <ConfirmDeleteDialog dialogOpen={dialogOpen} handleCancelDelete={handleCancelDelete} handleConfirmDelete={handleConfirmDelete} />
-
-
         </Box>
     );
 }
