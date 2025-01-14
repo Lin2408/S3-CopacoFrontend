@@ -24,5 +24,17 @@ const getSpecificationsValuesFromCategory = async (specName,categoryId) => {
         throw error;
     }
 };
+const getSpecificationsValuesFromUnit = async (specName) => {
+    try {
+        const response = await axios.get('http://localhost:6060/specifications/unique-names-by-unit', {
+            params: { unit: specName},
+        });
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching specification values by category:', error);
+        throw error;
+    }
+};
 
-export {getSpecificationsFromCategory,getSpecificationsValuesFromCategory};
+export {getSpecificationsFromCategory,getSpecificationsValuesFromCategory,getSpecificationsValuesFromUnit};

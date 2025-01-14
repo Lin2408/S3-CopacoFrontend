@@ -14,12 +14,13 @@ import {
     ListItemText,
 } from '@mui/material';
 import { fetchCategories } from '/src/Apis/get-categories.service.js';
-import { getSpecificationsFromCategory, getSpecificationsValuesFromCategory } from '../Apis/get-specifications-from-categories.service.js';
+import { getSpecificationsFromCategory, getSpecificationsValuesFromCategory ,getSpecificationsValuesFromUnit} from '../Apis/get-specifications-from-categories.service.js';
 import createRule from '../Apis/create-rule.service.js';
 import './RulesPage.css';
 import {useNavigate} from "react-router-dom";
 
 const RulesPage = () => {
+    const [autocompleteOptions, setAutocompleteOptions] = React.useState([]);
     const [step, setStep] = useState(1);
     const [categories, setCategories] = useState([]);
     const [specifications, setSpecifications] = useState([]);
@@ -72,6 +73,15 @@ const RulesPage = () => {
             console.error(error);
         }
     };
+    const fetchSpecUnits = async (specName) => {
+        if (!specName) return;
+        try {
+            const { specifications } = await getSpecificationsValuesFromUnit(specName);
+            return specifications || [];
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handleCheckboxChange1 = (e) => {
         setShowOnlySpecNames1(e.target.checked);
@@ -95,7 +105,7 @@ const RulesPage = () => {
             isNameFrom: showOnlySpecNames1,
             categoryTo: selected.category2,
             nameTo: selected.specification2?.name,
-            valuesTo: selected.valuesToCategory2,
+            valuesTo: selected.valuesTo,
             isNameTo: showOnlySpecNames2,
             unit: isUnitBasedRule ? selected.unit : null,
         };
@@ -122,7 +132,7 @@ const RulesPage = () => {
     useEffect(() => {
         if (selected.specification1?.name && selected.category1?.id) {
             fetchSpecValues(selected.specification1.name, selected.category1.id).then((values) =>
-                setSelected((prev) => ({ ...prev, valuesFrom: values }))
+                setSelected((prev) => ({ ...prev, valuesToCategory2: values }))
             );
         }
     }, [selected.specification1]);
@@ -140,6 +150,11 @@ const RulesPage = () => {
             );
         }
     }, [selected.specification2]);
+    useEffect(() => {
+        if (selected.unit && selected.category1?.id) {
+
+        }
+    }, [selected.unit]);
 
     const handleNext = () => setStep((prev) => prev + 1);
     const handleBack = () => {
@@ -150,10 +165,7 @@ const RulesPage = () => {
         });
     };
     return (
-        <>
-
         <Box className="categories-container">
-
             <Card className="outer-card">
                 <CardContent>
                     <Typography
@@ -188,7 +200,12 @@ const RulesPage = () => {
                                 control={
                                     <Checkbox
                                         checked={isUnitBasedRule}
-                                        onChange={(e) => setIsUnitBasedRule(e.target.checked)}
+                                        onChange={(e) => {
+                                            setIsUnitBasedRule(e.target.checked);
+                                            if (e.target.checked && selected.category1) {
+                                                setSelected((prev) => ({ ...prev, category2: prev.category1 }));
+                                            }
+                                        }}
                                     />
                                 }
                                 label="Is Unit Based Rule"
@@ -204,19 +221,37 @@ const RulesPage = () => {
                                         value={selected.unit}
                                         onChange={(e) => setSelected((prev) => ({ ...prev, unit: e.target.value }))}
                                     />
-                                    <Autocomplete
-                                        options={[]}
-                                        getOptionLabel={(option) => option || ''}
-                                        value={newAutocompleteValue}
-                                        onChange={(e, value) => setNewAutocompleteValue(value)}
-                                        renderInput={(params) => (
-                                            <TextField {...params} label="Additional Input" variant="outlined" sx={{ mt: 2 }} />
-                                        )}
-                                    />
+                                    {selected.unit && (
+                                        <Autocomplete
+                                            options={autocompleteOptions}
+                                            getOptionLabel={(option) => option || ''}
+                                            value={newAutocompleteValue}
+                                            onChange={(e, value) => {
+                                                setNewAutocompleteValue(value);
+                                                setSelected((prev) => ({
+                                                    ...prev,
+                                                    valuesFrom: value ? [...prev.valuesFrom, value] : prev.valuesFrom,
+                                                }));
+                                            }}
+                                            renderInput={(params) => (
+                                                <TextField {...params} label="Additional Input" variant="outlined" sx={{ mt: 2 }} />
+                                            )}
+                                            onOpen={async () => {
+                                                const units = await fetchSpecUnits(selected.unit);
+                                                setAutocompleteOptions(units);
+                                            }}
+                                        />
+                                    )}
                                 </Box>
                             )}
                             {selected.category1 && (
-                                <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => {
+                                    if (isUnitBasedRule) {
+                                        setStep(7); // Skip to the last step
+                                    } else {
+                                        handleNext();
+                                    }
+                                }}>
                                     Next
                                 </Button>
                             )}
@@ -250,11 +285,11 @@ const RulesPage = () => {
                                     Has weird name
                                 </label>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
                             {!showOnlySpecNames1 && selected.specification1 && (
-                                <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -282,16 +317,16 @@ const RulesPage = () => {
                                     {showOnlySpecNames1 ? 'Specification Names:' : 'Specification Values:'}
                                 </Typography>
                                 <List>
-                                    {(showOnlySpecNames1 ? specifications : selected.valuesFrom).map((item, index) => (
+                                    {(showOnlySpecNames1 ? specifications : selected.valuesToCategory2).map((item, index) => (
                                         <ListItemButton
                                             key={index}
-                                            selected={selected.valuesTo.includes(item.name || item)}
+                                            selected={selected.valuesFrom.includes(item.name || item)}
                                             onClick={() =>
                                                 setSelected((prev) => ({
                                                     ...prev,
-                                                    valuesTo: prev.valuesTo.includes(item.name || item)
-                                                        ? prev.valuesTo.filter((v) => v !== (item.name || item))
-                                                        : [...prev.valuesTo, item.name || item],
+                                                    valuesFrom: prev.valuesFrom.includes(item.name || item)
+                                                        ? prev.valuesFrom.filter((v) => v !== (item.name || item))
+                                                        : [...prev.valuesFrom, item.name || item],
                                                 }))
                                             }
                                         >
@@ -300,11 +335,11 @@ const RulesPage = () => {
                                     ))}
                                 </List>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
-                            {selected.valuesTo.length > 0 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2 , backgroundColor:"#003f74" }} onClick={handleNext}>
+                            {selected.valuesFrom.length > 0 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -325,11 +360,11 @@ const RulesPage = () => {
                                 onInputChange={(e, value) => setInputValue(value)}
                                 renderInput={(params) => <TextField {...params} label="Select Category" variant="outlined" />}
                             />
-                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2}} onClick={handleBack}>
                                 Back
                             </Button>
                             {selected.category2 && (
-                                <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -363,11 +398,11 @@ const RulesPage = () => {
                                     Has weird name
                                 </label>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
                             {!showOnlySpecNames2 && selected.specification2 && (
-                                <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -398,13 +433,13 @@ const RulesPage = () => {
                                     {(showOnlySpecNames2 ? specifications : selected.valuesFromCategory2).map((item, index) => (
                                         <ListItemButton
                                             key={index}
-                                            selected={selected.valuesToCategory2.includes(item.name || item)}
+                                            selected={selected.valuesTo.includes(item.name || item)}
                                             onClick={() =>
                                                 setSelected((prev) => ({
                                                     ...prev,
-                                                    valuesToCategory2: prev.valuesToCategory2.includes(item.name || item)
-                                                        ? prev.valuesToCategory2.filter((v) => v !== (item.name || item))
-                                                        : [...prev.valuesToCategory2, item.name || item],
+                                                    valuesTo: prev.valuesTo.includes(item.name || item)
+                                                        ? prev.valuesTo.filter((v) => v !== (item.name || item))
+                                                        : [...prev.valuesTo, item.name || item],
                                                 }))
                                             }
                                         >
@@ -413,11 +448,11 @@ const RulesPage = () => {
                                     ))}
                                 </List>
                             </Box>
-                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74" }} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2 }} onClick={handleBack}>
                                 Back
                             </Button>
-                            {selected.valuesToCategory2.length > 0 && (
-                                <Button variant="contained" color="primary" sx={{ mt: 2, backgroundColor:"#003f74" }} onClick={handleNext}>
+                            {selected.valuesTo.length > 0 && (
+                                <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleNext}>
                                     Next
                                 </Button>
                             )}
@@ -433,29 +468,28 @@ const RulesPage = () => {
                             <Typography variant="body1">
                                 Selected Specification 1: {selected.specification1?.name}
                             </Typography>
-                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 1: {selected.valuesTo.join(', ')}</Typography>
+                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 1: {selected.valuesFrom.join(', ')}</Typography>
                             <Typography variant="body1">Selected Category 2: {selected.category2?.value}</Typography>
                             <Typography variant="body1">
                                 Selected Specification 2: {selected.specification2?.name}
                             </Typography>
-                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 2: {selected.valuesToCategory2.join(', ')}</Typography>
+                            <Typography variant="body1" sx={{ mb: 2}}>Selected Values for Category 2: {selected.valuesTo.join(', ')}</Typography>
                             {isUnitBasedRule && (
                                 <Typography variant="body1">Unit: {selected.unit}</Typography>
                             )}
-                            <Button variant="contained" sx={{ mt: 2, mr: 2, backgroundColor:"#003f74"}} onClick={handleBack}>
+                            <Button variant="contained" sx={{ mt: 2, mr: 2, }} onClick={handleBack}>
                                 Back
                             </Button>
-                            <Button variant="contained" sx={{ mt: 2, backgroundColor:"#003f74"}} onClick={handleSubmit}>
+                            <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmit}>
                                 Submit Rule
                             </Button>
-                            {resultMessage && <Typography className="result-message" sx={{ mt: 2 }}>{resultMessage}</Typography>}
+                            {resultMessage && <Typography className="result-message" sx={{ mt: 2}}>{resultMessage}</Typography>}
                         </Box>
                     )}
                 </CardContent>
             </Card>
             <Button variant="contained" sx={{ mt: 2, backgroundColor:"grey"}} onClick={() => navigate(-1)}>Discard and go back</Button>
         </Box>
-        </>
     );
 };
 

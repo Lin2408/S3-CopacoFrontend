@@ -45,6 +45,7 @@ const ListOfDetailedItems = ({selectedCategory, search, loading, setLoading}) =>
                 setError("Something went wrong while trying to get items");
             } finally {
                 setLoading(false);
+                console.log(items);
             }
         };
         getItems();

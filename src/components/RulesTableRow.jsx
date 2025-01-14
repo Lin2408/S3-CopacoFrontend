@@ -9,10 +9,10 @@ function RulesTableRow({ rule, handleEdit, handleDeleteClick, index }) {
                 style={{
                     backgroundColor: index % 2 === 1 ? '#f3faff' : 'white',
                 }}>
-          <TableCell>{rule.nameFrom}</TableCell>
+          <TableCell>{rule.nameFrom !== null? rule.nameFrom : "Multiple values"}</TableCell>
           <TableCell>{rule.categoryFrom.value}</TableCell>
           <TableCell>{rule.categoryTo.value}</TableCell>
-          <TableCell>{rule.unit === 'unit' ? 'N/A' : rule.unit}</TableCell>
+          <TableCell>{rule.unit === null ? 'N/A' : rule.unit}</TableCell>
           <TableCell>
               <IconButton
                   onClick={() => handleEdit(rule.id)}
