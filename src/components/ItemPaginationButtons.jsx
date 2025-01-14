@@ -1,11 +1,21 @@
-import {Pagination, Stack} from "@mui/material";
-import * as React from "react";
-import {useEffect} from "react";
+import {Pagination, Stack, TextField} from "@mui/material";
+import {useState} from "react";
 
 const ItemPaginationButtons = ({pageCount, page, handlePageChange}) => {
+    const [inputPage, setInputPage] = useState('');
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            const pageNumber = parseInt(inputPage, 10);
+            setInputPage('');
+            if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= pageCount) {
+                handlePageChange(null, pageNumber);
+            }
+
+        }
+    };
     return (
-        <Stack spacing={5}  sx={{mt: 1, mb: 5, display: 'flex', alignItems: 'flex-end',}}>
+        <Stack spacing={5}  sx={{mt: 1, mb: 5, display: 'flex', alignItems: 'flex-end', flexDirection: 'row', justifyContent: 'flex-end'}}>
             <Pagination
                 className="pagination"
                 count={pageCount}
@@ -13,6 +23,15 @@ const ItemPaginationButtons = ({pageCount, page, handlePageChange}) => {
                 variant="outlined"
                 shape="rounded"
                 onChange={handlePageChange}
+               /* renderItem={(item) => {
+                    if (item.type === 'start-ellipsis' || item.type === 'end-ellipsis') {
+                        // Replace ellipsis with a TextField
+                        return (
+
+                        );
+                    }
+                    return <PaginationItem {...item} />;
+                }}*/
                 sx={{
                     '& .MuiPaginationItem-root': {
                         width: 43, // Custom width
@@ -36,6 +55,21 @@ const ItemPaginationButtons = ({pageCount, page, handlePageChange}) => {
                         '&:hover': {
                             backgroundColor: '#e5f6ff',
                         },
+                    },
+                }}
+            />
+            <TextField
+                key="pagination-input"
+                variant="outlined"
+                size="small"
+                placeholder="Page"
+                value={inputPage}
+                onChange={(e) => setInputPage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                sx={{
+                    width: 70,
+                    '& input': {
+                        textAlign: 'center',
                     },
                 }}
             />

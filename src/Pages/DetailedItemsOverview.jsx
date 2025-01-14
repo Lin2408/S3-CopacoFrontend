@@ -13,13 +13,13 @@ import {useEffect, useState} from "react";
 import ListOfDetailedItems from "../components/itemDetailedOverview/ListOfDetailedItems.jsx";
 import "../Pages/CSS/DetailedItemOverview.css"
 import {fetchCategories} from "../Apis/get-item-categories.service.js";
+import {fetchManufacturerFilter} from "../Apis/Get-ManufacturerFilter.js";
 
 
-const filterData = [
-    {title: "Brand", options: [{name: "Intel"},{name: "AMD"}]},
-    {title: "Cores", options: [{name: "4"},{name: "6"},{name: "8"},{name: "12"},{name: "16"}]},
+/*const filterData = [
+    {title: "Manufacturer", options: ["Intel","AMD"]}
 
-]
+]*/
 
 function DetailedItemsOverview() {
     const [searchTerm, setSearchTerm] = useState([]);
@@ -28,6 +28,9 @@ function DetailedItemsOverview() {
     const [categorySelection, setCategorySelection] = useState(null);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(true);
+    const [filterData, setFilterData] = useState([]);
+    const [selectedManufacturers, setSelectedManufacturers] = useState([]);
+
     useEffect(() => {
         const getCategories = async () => {
             try {
@@ -43,9 +46,26 @@ function DetailedItemsOverview() {
                 console.error("Error fetching categories:", error);
                 }
         };
+
         getCategories();
     }, []);
+    useEffect(() => {
+        if (!categorySelection?.id) {
+            return;
+        }
+        const getManufacturerFilter = async () => {
+            fetchManufacturerFilter(categorySelection.id).then(data => {
+                const filterItems = Array.isArray(data.data.filterItem)
+                    ? data.data.filterItem
+                    : [data.data.filterItem];
 
+                setFilterData(filterItems);
+            }).catch(error => {
+                console.error("Error fetching manufacturer filter:", error);
+            });
+        }
+        getManufacturerFilter();
+    }, [categorySelection]);
 
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
@@ -65,9 +85,17 @@ function DetailedItemsOverview() {
             return;
         }
         setCategorySelection(value);
+        setSelectedManufacturers([]);
         setSearchTerm('');
         setSearch('');
     }
+    const handleCheckboxChange = (event, option) => {
+        if (event.target.checked) {
+            setSelectedManufacturers((prev) => [...prev, option]);
+        } else {
+            setSelectedManufacturers((prev) => prev.filter(manufacturer => manufacturer !== option));
+        }
+    };
     return (
     <div>
         <h1>{categorySelection ? categorySelection.value : "Item overview"}</h1>
@@ -141,10 +169,10 @@ function DetailedItemsOverview() {
                             <div className="filter-content">
 
                                 <AccordionDetails>
-                                    <FormGroup>
+                                    <FormGroup  >
                                         {filter.options.map((option, index) => (
-                                            <FormControlLabel key={index} control={<Checkbox value="value"/>}
-                                                              label={option.name}/>
+                                            <FormControlLabel key={index} control={<Checkbox disabled={loading} value="value" onChange={(e) => handleCheckboxChange(e, option)}/>}
+                                                              label={option}/>
                                         ))}
                                     </FormGroup>
                                 </AccordionDetails>
@@ -154,7 +182,7 @@ function DetailedItemsOverview() {
                     ))}
                 </Grid>
                 <Grid size={8}>
-                    <ListOfDetailedItems selectedCategory={categorySelection} search={search} loading={loading} setLoading={setLoading}/>
+                    <ListOfDetailedItems selectedCategory={categorySelection} search={search} selectedManufacturers={selectedManufacturers} loading={loading} setLoading={setLoading}/>
                 </Grid>
             </Grid>
         </div>

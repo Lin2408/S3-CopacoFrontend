@@ -7,7 +7,9 @@ const fetchItemsByCategory = async (request) => {
         page: request.page,
         itemPerPage: request.itemPerPage,
         searchString: request.searchString,
+        manufacturer: request.manufacturers,
     }).toString();
+    console.log("slctManu", queryString)
 
     const config = {
         url: `http://localhost:6060/items/category?${queryString}`,

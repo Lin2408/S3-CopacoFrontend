@@ -8,14 +8,11 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-const filterData = [
-    {title: "Brand", options: [{name: "Intel"},{name: "AMD"}]},
-    {title: "Cores", options: [{name: "4"},{name: "6"},{name: "8"},{name: "12"},{name: "16"}]},
+import {fetchManufacturerFilter} from "../Apis/Get-ManufacturerFilter.js";
 
-]
 function load(key) {
     const items = sessionStorage.getItem(key);
     return items != null ? JSON.parse(items) : [];
@@ -27,12 +24,30 @@ function ItemSelectionOverview() {
     const navigate = useNavigate();
     const { state } = useLocation();
     const [search, setSearch] = useState('');
+    const [filterData, setFilterData] = useState([]);
     const category = state?.category || '';
+    const [selectedManufacturers, setSelectedManufacturers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     console.log('Category:', category);
     const handleSearch = () => {
         console.log('Search for:', searchTerm);
         setSearch(searchTerm);
     };
+    useEffect(() => {
+        console.log(category?.id);
+        const getManufacturerFilter = async () => {
+            fetchManufacturerFilter(category.id).then(data => {
+                const filterItems = Array.isArray(data.data.filterItem)
+                    ? data.data.filterItem
+                    : [data.data.filterItem];
+                setFilterData(filterItems);
+            }).catch(error => {
+                console.error("Error fetching manufacturer filter:", error);
+            });
+        }
+        getManufacturerFilter();
+    }, [category]);
 
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
@@ -50,7 +65,13 @@ function ItemSelectionOverview() {
         sessionStorage.setItem('items', JSON.stringify(updatedItems));
         navigate('/Configurator');
     };
-
+    const handleCheckboxChange = (event, option) => {
+        if (event.target.checked) {
+            setSelectedManufacturers((prev) => [...prev, option]);
+        } else {
+            setSelectedManufacturers((prev) => prev.filter(manufacturer => manufacturer !== option));
+        }
+    };
     return (
         <div>
             <h1>Choose {category.value}</h1>{/*{ /^[aeiou]/i.test(category) ? 'an' : 'a' }*/}
@@ -93,7 +114,7 @@ function ItemSelectionOverview() {
                                     <AccordionDetails>
                                         <FormGroup>
                                             {filter.options.map((option, index) => (
-                                                <FormControlLabel key={index} control={<Checkbox value="value"/>} label={option.name}/>
+                                                <FormControlLabel key={index} control={<Checkbox disabled={loading} onChange={(e) => handleCheckboxChange(e, option)} value="value"/>} label={option}/>
                                             ))}
                                         </FormGroup>
 
@@ -104,7 +125,7 @@ function ItemSelectionOverview() {
                         ))}
                     </Grid>
                     <Grid size={8}>
-                        <ListOfItemSelections onSelect={onSelect} category={category} search={search}/>
+                        <ListOfItemSelections onSelect={onSelect} category={category} search={search} selectedManufacturers={selectedManufacturers} loading={loading} setLoading={setLoading}/>
                     </Grid>
                 </Grid>
             </div>
