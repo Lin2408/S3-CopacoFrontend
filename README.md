@@ -48,8 +48,6 @@ The frontend includes user-facing pages for profile information and prebuilt PC 
 - **CSS** (custom page styling)
 - **Backend API integration** (for template/configurator data)
 
-> Please verify exact package versions and additional libraries in `package.json`.
-
 ## Project Structure (Contribution-Related)
 - `ProfilePage.jsx` / `ProfilePage.css`
 - `PrebuildTemplatesPage.jsx` / `PrebuildTemplatesPage.css`
